@@ -207,6 +207,7 @@ def cmd_publish(args) -> int:
         print(f"OK  uploaded -> fileId={up.file_id}  url={up.url}")
 
     caption = read_caption(args.caption_file, args.caption)
+    target_status = args.status
     try:
         resp = api.create_post(
             account_ids=account_ids,
@@ -214,17 +215,17 @@ def cmd_publish(args) -> int:
             media=media,
             schedule_iso=schedule_iso,
             post_type=args.post_type,
-            status="scheduled",
+            status=target_status,
         )
     except GHLError as e:
         print(f"ERROR create_post: {e}", file=sys.stderr)
         return 6
 
-    print("\nOK  scheduled.")
+    print(f"\nOK  {target_status}.")
     print(json.dumps(resp, indent=2))
     pid = (resp or {}).get("postId") or (resp or {}).get("id")
     if pid:
-        print(f"\nVerify:  python -m publisher.cli verify --client {args.client} --post-id {pid}")
+        print(f"\nVerify:  python -m publisher.cli verify --client {args.client} --post-id {pid} --status {target_status}")
     return 0
 
 
@@ -312,6 +313,13 @@ def build_parser() -> argparse.ArgumentParser:
     pub.add_argument("--post-type", default="post", choices=["post", "story", "reel"])
     pub.add_argument("--out-dir", default=None, help="Where to drop rendered PNGs (default publisher/.render_cache)")
     pub.add_argument("--dry-run", action="store_true", help="Render only — skip upload+schedule")
+    pub.add_argument(
+        "--status",
+        default="draft",
+        choices=["draft", "scheduled"],
+        help="GHL post status. Default 'draft' — post lands in Social Planner as draft for review. "
+             "Use 'scheduled' only when the caller has explicitly authorized auto-publishing on the schedule date.",
+    )
     pub.set_defaults(func=cmd_publish)
 
     # verify
@@ -320,7 +328,7 @@ def build_parser() -> argparse.ArgumentParser:
     v.add_argument("--post-id", help="Specific post to fetch")
     v.add_argument("--from-date", help="ISO start of listing window")
     v.add_argument("--to-date", help="ISO end of listing window")
-    v.add_argument("--status", default="scheduled", choices=["all", "scheduled", "draft", "published", "failed", "in_review"])
+    v.add_argument("--status", default="draft", choices=["all", "scheduled", "draft", "published", "failed", "in_review"])
     v.set_defaults(func=cmd_verify)
 
     return p
