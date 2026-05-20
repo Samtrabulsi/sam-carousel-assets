@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "WebFetch(*)",
+      "mcp__canva__*",
+      "mcp__notion__*",
+      "mcp__figma__*"
+    ],
+    "deny": []
+  },
+  "mcpServersApproved": ["canva", "notion", "figma"]
+}

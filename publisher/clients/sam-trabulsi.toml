@@ -1,0 +1,25 @@
+[location]
+id = "DJF1cXSN62BdSBLbMN7I"
+user_id = "07YxoKsjRnURMpG8A2sB"
+default_timezone = "Europe/Athens"
+name = "Sam Trabulsi"
+
+[accounts]
+facebook = "64b669ae33572f1b2ffdf00b_DJF1cXSN62BdSBLbMN7I_111964065021282_page"
+instagram = "64b66a1d33572fcd09fdf01b_DJF1cXSN62BdSBLbMN7I_17841401807114247"
+# linkedin = "64db0ecfbae3cd4573a00be5_DJF1cXSN62BdSBLbMN7I_3Qm9AKT2rM_profile"   # EXPIRED 2024-06-10 — reconnect
+# twitter  = "64db0eebbae3cd856fa00be8_DJF1cXSN62BdSBLbMN7I_150648716_profile"    # EXPIRED — reconnect
+# tiktok   = "64db0f43bae3cd34f6a00bec_DJF1cXSN62BdSBLbMN7I_000z1WLz38SCg8J2XRGWdtnOA6Z8g0vBoF_profile"  # EXPIRED 2024-08-14 — reconnect
+
+[brand]
+primary = "#C17A5A"
+brand_light = "#E8C4B0"
+brand_dark = "#8B4A2A"
+poster_bg = "#0B0B0B"
+font = "Plus Jakarta Sans"
+handle = "@samtrabulsi"
+domain = "Brandvictory.com"
+
+[notes]
+discovered_at = "2026-05-20"
+notes = "FB Page + IG (linked via FB) are valid. LinkedIn/X/TikTok OAuth expired in 2024 — reconnect via GHL UI -> Social Planner -> Socials before scheduling to those platforms."

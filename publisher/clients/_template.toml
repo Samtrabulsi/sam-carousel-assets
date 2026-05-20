@@ -1,0 +1,27 @@
+# Per-client config template.
+# Copy this to clients/<slug>.toml and fill in. Or run:
+#   python -m publisher.cli setup --client <slug> --token <PIT> --location-id <LOC>
+# ...which auto-discovers most of this from the GHL API.
+
+[location]
+id = ""                       # GHL sub-account location ID
+user_id = ""                  # Author user_id (whoever the post is attributed to)
+default_timezone = "UTC"      # IANA tz, e.g. "Europe/Athens", "America/New_York"
+name = ""                     # Optional, for logging
+
+[accounts]
+# platform = "<account_id>"   # Add one line per connected platform
+# facebook = ""
+# instagram = ""
+# linkedin = ""
+# twitter = ""
+# tiktok = ""
+
+[brand]
+# Free-form brand reference values. Used by your HTML templates, not by the publisher itself.
+primary = "#000000"
+handle = "@yourhandle"
+domain = "yoursite.com"
+
+[notes]
+# Anything worth remembering about this client's setup.

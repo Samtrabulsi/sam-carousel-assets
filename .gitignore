@@ -1,0 +1,43 @@
+# Secrets — never commit
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*token*.txt
+*credentials*
+
+# Claude Code local state
+.claude/settings.local.json
+.claude/worktrees/
+
+# Slash commands — DANGER: most existing ones (linkedin.md, carousel.md, etc.) have
+# hardcoded GitHub PATs and must NEVER be committed in their current state.
+# Whitelist only files known to be clean.
+.claude/commands/*
+!.claude/commands/schedule-post.md
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Publisher render cache (regenerated each run)
+publisher/.render_cache/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Local backups
+*.backup-*
