@@ -42,10 +42,15 @@ values in individual pages.
 - `assets/app.js` renders the shared sidebar nav into `#nav-root` and provides
   the `Store` localStorage helper used by every page.
 - `server.js` is a zero-dependency Node server (built-in `http` + global
-  `fetch`). It serves the static files and exposes two API routes:
-  - `POST /api/instagram/refresh` — Apify Instagram profile scrape.
-  - `POST /api/script/generate` — draft script in my voice.
-- Persistence is `localStorage` (see `Store` keys in `assets/app.js`).
+  `fetch`). It serves the static files and exposes three API routes:
+  - `POST /api/instagram/refresh` — Apify Instagram profile scrape (own account).
+  - `POST /api/competitors/refresh` — public profile-level metrics for a named
+    list (user-authorized benchmarking; never harvests audience data).
+  - `POST /api/script/generate` — draft script in my voice, with `brand-voice.md`
+    injected as context (read fresh each request, so edits apply without restart).
+- `brand-voice.md` holds my distilled voice + frameworks; it drives script quality.
+- Persistence is `localStorage` (see `DATA_KEYS` / `Store` in `assets/app.js`),
+  including dated metric `history` for trends and a JSON export/import backup.
 
 ## My script voice
 Direct, no fluff, no preamble. Structure: **Hook → body that teaches one clear

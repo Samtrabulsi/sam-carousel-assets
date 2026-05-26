@@ -46,6 +46,13 @@
       <h2>Draft script · <span id="sm-title"></span></h2>
       <div class="sub">In your voice: Hook → teach one thing → CTA. Edit freely — you're the final editor.</div>
       <div id="sm-banner" class="banner"></div>
+      <label class="field">Content type (Sam's framework)</label>
+      <select id="sm-type" style="margin-bottom:12px">
+        <option value="auto">Auto — let it choose</option>
+        <option value="Pain">Pain — they feel seen</option>
+        <option value="System">System — they see the path</option>
+        <option value="Proof">Proof — they believe it's possible</option>
+      </select>
       <textarea id="sm-text" class="script-out" placeholder="Click Generate to draft a script…"></textarea>
       <div class="row">
         <button class="btn btn-secondary" id="sm-regen" onclick="generateScript()">Generate</button>
@@ -134,7 +141,7 @@
       banner.className = 'banner info show';
       banner.textContent = 'Drafting a script in your voice…';
       try {
-        const data = await api('/api/script/generate', { title: c.title, note: c.note, platform: 'instagram' });
+        const data = await api('/api/script/generate', { title: c.title, note: c.note, platform: 'instagram', contentType: document.getElementById('sm-type').value });
         document.getElementById('sm-text').value = data.script;
         banner.className = 'banner';
       } catch (e) {

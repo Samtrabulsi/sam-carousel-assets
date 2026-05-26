@@ -39,6 +39,13 @@ function loadEnv() {
 }
 const ENV = { ...loadEnv(), ...process.env };
 
+// Brand voice reference, read fresh each request so edits to brand-voice.md
+// take effect without a server restart.
+function loadBrandVoice() {
+  const file = path.join(ROOT, 'brand-voice.md');
+  try { return fs.readFileSync(file, 'utf8'); } catch { return ''; }
+}
+
 // ---- Static file serving ----
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -85,15 +92,13 @@ function readBody(req) {
   });
 }
 
-// ---- Apify: Instagram profile scrape ----
-async function refreshInstagram() {
+// ---- Apify: shared actor runner ----
+async function runActor(input) {
   const token = ENV.APIFY_TOKEN;
   if (!token) {
     throw new Error('No Apify token found. Add APIFY_TOKEN to dashboard/.env (see .env.example), then restart the server.');
   }
   const url = `https://api.apify.com/v2/acts/${APIFY_ACTOR}/run-sync-get-dataset-items?token=${encodeURIComponent(token)}`;
-  const input = { usernames: [IG_USERNAME], resultsLimit: 12 };
-
   let res;
   try {
     res = await fetch(url, {
@@ -104,7 +109,6 @@ async function refreshInstagram() {
   } catch (e) {
     throw new Error('Network error reaching Apify: ' + e.message);
   }
-
   if (res.status === 401 || res.status === 403) {
     throw new Error('Apify rejected the token (auth error). Check APIFY_TOKEN in dashboard/.env.');
   }
@@ -112,18 +116,45 @@ async function refreshInstagram() {
     const txt = await res.text().catch(() => '');
     throw new Error(`Apify run failed (${res.status}). ${txt.slice(0, 200)}`);
   }
+  return res.json();
+}
 
-  const items = await res.json();
+function profileEngagement(profile) {
+  const latest = profile.latestPosts || profile.posts || [];
+  const eng = (Array.isArray(latest) ? latest : []).slice(0, 12).map((p) => (p.likesCount ?? p.likes ?? 0) + (p.commentsCount ?? p.comments ?? 0));
+  const followers = profile.followersCount ?? profile.followers ?? null;
+  const total = eng.reduce((a, b) => a + b, 0);
+  const avg = eng.length ? total / eng.length : 0;
+  return {
+    followers,
+    posts: profile.postsCount ?? profile.posts ?? (Array.isArray(latest) ? latest.length : 0),
+    avgEngagement: Math.round(avg),
+    engagementRate: followers ? +((avg / followers) * 100).toFixed(2) : null,
+  };
+}
+
+// ---- Instagram profile scrape (own account, full detail) ----
+async function refreshInstagram() {
+  const items = await runActor({ usernames: [IG_USERNAME], resultsLimit: 12 });
   const profile = Array.isArray(items) ? items.find((x) => x && (x.username || x.followersCount != null)) || items[0] : items;
   if (!profile) {
     throw new Error('Apify returned no data for @' + IG_USERNAME + '. The username or actor input may need adjusting.');
   }
 
   const latest = profile.latestPosts || profile.posts || [];
+  const normalizeType = (t) => {
+    const s = String(t || '').toLowerCase();
+    if (s.includes('video') || s.includes('reel') || s.includes('clip')) return 'Reel';
+    if (s.includes('sidecar') || s.includes('carousel')) return 'Carousel';
+    if (s.includes('image') || s.includes('photo')) return 'Image';
+    return 'Other';
+  };
   const recentPosts = (Array.isArray(latest) ? latest : []).slice(0, 12).map((p) => ({
     caption: (p.caption || '').replace(/\s+/g, ' ').slice(0, 90),
     likes: p.likesCount ?? p.likes ?? 0,
     comments: p.commentsCount ?? p.comments ?? 0,
+    type: normalizeType(p.type || p.productType || p.__typename),
+    timestamp: p.timestamp || p.takenAtTimestamp || null,
     url: p.url || (p.shortCode ? `https://www.instagram.com/p/${p.shortCode}/` : ''),
   }));
 
@@ -144,23 +175,45 @@ async function refreshInstagram() {
   };
 }
 
+// ---- Competitor benchmarking (public profile-level metrics only) ----
+// User-authorized: tracks public follower/engagement numbers for a named list
+// of profiles. Does NOT harvest followers or audience data of anyone.
+async function refreshCompetitors(body) {
+  const list = Array.isArray(body.usernames) ? body.usernames : [];
+  const clean = [...new Set(list.map((u) => String(u).trim().replace(/^@/, '').toLowerCase()).filter(Boolean))].slice(0, 10);
+  if (!clean.length) throw new Error('Add at least one competitor username first.');
+
+  const items = await runActor({ usernames: clean, resultsLimit: 12 });
+  const arr = Array.isArray(items) ? items : [items];
+  const byUser = {};
+  for (const p of arr) {
+    if (p && p.username) byUser[String(p.username).toLowerCase()] = p;
+  }
+  const results = clean.map((u) => {
+    const p = byUser[u];
+    if (!p) return { username: u, error: 'No public data returned (private or not found).' };
+    return { username: p.username || u, ...profileEngagement(p) };
+  });
+  return { competitors: results, fetchedAt: Date.now() };
+}
+
 // ---- Script generation ----
-function buildPrompt({ title, note, platform }) {
-  return `You are drafting a short-form ${platform || 'Instagram'} video script for Sam Trabulsi (@samtrabulsi), a personal-branding and positioning coach for consultants and coaches.
+function buildPrompt({ title, note, platform, contentType }) {
+  const voice = loadBrandVoice();
+  const typeLine = contentType && contentType !== 'auto'
+    ? `\nLEAN INTO THIS CONTENT TYPE: ${contentType} post (per Sam's three content types).`
+    : '';
+  return `You are Sam Trabulsi's ghostwriter, drafting a short-form ${platform || 'Instagram'} video script in his exact voice.
 
-VOICE — match it exactly:
-- Direct, no fluff, no preamble. No "Hey guys", no "In this video".
-- Confident and plain-spoken. Teach one clear thing.
-- Tight and recordable — aim for 120-180 words.
+${voice ? `Here is Sam's brand voice and frameworks — follow them precisely:\n\n${voice}\n\n---\n` : ''}
+TOPIC: ${title}${note ? `\nCONTEXT/ANGLE: ${note}` : ''}${typeLine}
 
-STRUCTURE the script as:
-HOOK: one punchy opening line that stops the scroll.
-BODY: teach ONE clear idea with a concrete point or example.
-CTA: one specific call to action.
+Write the script now. Structure it as:
+HOOK: one punchy, contrarian opening line that stops the scroll (a reframe is ideal).
+BODY: teach ONE clear thing — name the wrong assumption, reveal the real cause, give one concrete shift. Short lines.
+CTA: one specific action in Sam's style.
 
-TOPIC: ${title}${note ? `\nCONTEXT/ANGLE: ${note}` : ''}
-
-Output ONLY the script with the HOOK / BODY / CTA labels. No intro, no explanation, no sign-off.`;
+Output ONLY the script with the HOOK / BODY / CTA labels. No intro, no explanation, no sign-off, no emojis.`;
 }
 
 async function generateViaApi(prompt) {
@@ -216,6 +269,12 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === 'POST' && url === '/api/instagram/refresh') {
     try { sendJson(res, 200, await refreshInstagram()); }
+    catch (e) { sendJson(res, 502, { error: e.message }); }
+    return;
+  }
+
+  if (req.method === 'POST' && url === '/api/competitors/refresh') {
+    try { sendJson(res, 200, await refreshCompetitors(await readBody(req))); }
     catch (e) { sendJson(res, 502, { error: e.message }); }
     return;
   }

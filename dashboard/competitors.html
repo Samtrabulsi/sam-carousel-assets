@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Competitors · Brand Victory</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="app">
+    <div id="nav-root"></div>
+    <main class="main">
+      <div class="page-head">
+        <div class="title">
+          <h1>Competitors</h1>
+          <p>Benchmark public profiles against your own. Public numbers only — no audience data.</p>
+        </div>
+        <div class="actions">
+          <span id="last-updated" class="pill">Not yet refreshed</span>
+          <button class="btn btn-primary" id="refresh-btn" onclick="refreshAll()"><span id="refresh-label">↻ Refresh all</span></button>
+        </div>
+      </div>
+
+      <div id="banner" class="banner"></div>
+
+      <div class="card" style="margin-bottom:22px">
+        <label class="field">Add a competitor (public Instagram username)</label>
+        <div style="display:flex;gap:10px">
+          <input type="text" id="comp-input" placeholder="e.g. garyvee" onkeydown="if(event.key==='Enter')addComp()">
+          <button class="btn btn-secondary" onclick="addComp()">+ Add</button>
+        </div>
+        <p class="muted" style="margin:12px 0 0;font-size:12px">Tracks public follower and engagement numbers for benchmarking. Up to 10 profiles. Each refresh runs an Apify scrape (a fraction of a cent per profile).</p>
+      </div>
+
+      <div class="card">
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:14px" id="bench-table">
+            <thead>
+              <tr style="text-align:left;color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:0.05em">
+                <th style="padding:10px 8px">Account</th>
+                <th style="padding:10px 8px">Followers</th>
+                <th style="padding:10px 8px">Posts</th>
+                <th style="padding:10px 8px">Avg engagement</th>
+                <th style="padding:10px 8px">Eng. rate</th>
+                <th style="padding:10px 8px"></th>
+              </tr>
+            </thead>
+            <tbody id="bench-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    const { Store, fmt, toast, api, escapeHtml } = window.BV;
+    let list = Store.get('competitorList', []);
+
+    function render() {
+      const results = Store.get('competitors', null);
+      const byUser = {};
+      if (results && results.competitors) results.competitors.forEach(c => byUser[c.username.toLowerCase()] = c);
+      const me = Store.get('metrics', null);
+
+      const rows = [];
+      if (me) {
+        rows.push(rowHtml({
+          username: me.username || 'samtrabulsi',
+          followers: me.followers, posts: me.posts,
+          avgEngagement: me.recentEngagement ? Math.round(me.recentEngagement.reduce((a, b) => a + b, 0) / Math.max(me.recentEngagement.length, 1)) : null,
+          engagementRate: me.engagementRate,
+        }, true, null));
+      }
+      list.forEach(u => {
+        const c = byUser[u.toLowerCase()];
+        rows.push(rowHtml(c || { username: u }, false, u));
+      });
+
+      const body = document.getElementById('bench-body');
+      if (!rows.length) {
+        body.innerHTML = '<tr><td colspan="6"><div class="empty">No competitors yet. Add a public username above, then hit Refresh all.</div></td></tr>';
+      } else {
+        body.innerHTML = rows.join('');
+      }
+      if (results) document.getElementById('last-updated').textContent = 'Updated ' + new Date(results.fetchedAt).toLocaleString();
+    }
+
+    function rowHtml(c, isMe, removable) {
+      if (c.error) {
+        return `<tr style="border-top:1px solid var(--border)">
+          <td style="padding:12px 8px">@${escapeHtml(c.username)}</td>
+          <td colspan="4" style="padding:12px 8px" class="muted">${escapeHtml(c.error)}</td>
+          <td style="padding:12px 8px">${removable ? `<button class="btn btn-ghost sm" onclick="removeComp('${escapeHtml(removable)}')">Remove</button>` : ''}</td></tr>`;
+      }
+      return `<tr style="border-top:1px solid var(--border);${isMe ? 'background:rgba(45,79,232,0.08)' : ''}">
+        <td style="padding:12px 8px;font-weight:600">${isMe ? '★ ' : ''}@${escapeHtml(c.username)}${isMe ? ' <span class="pill" style="margin-left:6px">you</span>' : ''}</td>
+        <td style="padding:12px 8px">${c.followers != null ? fmt(c.followers) : '—'}</td>
+        <td style="padding:12px 8px">${c.posts != null ? fmt(c.posts) : '—'}</td>
+        <td style="padding:12px 8px;color:var(--gold)">${c.avgEngagement != null ? fmt(c.avgEngagement) : '—'}</td>
+        <td style="padding:12px 8px">${c.engagementRate != null ? c.engagementRate + '%' : '—'}</td>
+        <td style="padding:12px 8px">${removable ? `<button class="btn btn-ghost sm" onclick="removeComp('${escapeHtml(removable)}')">Remove</button>` : ''}</td></tr>`;
+    }
+
+    function addComp() {
+      const input = document.getElementById('comp-input');
+      const u = input.value.trim().replace(/^@/, '').toLowerCase();
+      if (!u) return;
+      if (list.length >= 10) { toast('Max 10 competitors', true); return; }
+      if (list.map(x => x.toLowerCase()).includes(u)) { toast('Already added', true); input.value = ''; return; }
+      list.push(u); Store.set('competitorList', list); input.value = '';
+      render(); toast('Added · hit Refresh all to pull numbers');
+    }
+
+    function removeComp(u) {
+      list = list.filter(x => x.toLowerCase() !== u.toLowerCase());
+      Store.set('competitorList', list); render();
+    }
+
+    async function refreshAll() {
+      if (!list.length) { toast('Add a competitor first', true); return; }
+      const btn = document.getElementById('refresh-btn');
+      const label = document.getElementById('refresh-label');
+      const banner = document.getElementById('banner');
+      btn.disabled = true; label.innerHTML = '<span class="spinner"></span> Fetching…';
+      banner.className = 'banner info show';
+      banner.textContent = `Scraping ${list.length} public profile${list.length > 1 ? 's' : ''} via Apify…`;
+      try {
+        const data = await api('/api/competitors/refresh', { usernames: list });
+        Store.set('competitors', data);
+        render();
+        banner.className = 'banner'; toast('Competitors refreshed');
+      } catch (e) {
+        banner.className = 'banner error show';
+        banner.textContent = 'Could not refresh: ' + e.message;
+      } finally {
+        btn.disabled = false; label.textContent = '↻ Refresh all';
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>

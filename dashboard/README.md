@@ -4,15 +4,17 @@ A local command center for the content operation. Runs on your laptop, in your
 browser — not hosted anywhere. Instagram only in v1 (TikTok/YouTube come later).
 
 ## Pages
-- **Command Center** (`dashboard.html`) — headline metrics + performance chart.
+- **Command Center** (`dashboard.html`) — headline metrics, performance chart, and a Data &amp; backup card (export/import all your data).
 - **Content Pipeline** (`pipeline.html`) — drag-and-drop board: Idea → Scripted → Recorded → Scheduled → Published.
 - **Content Research** (`research.html`) — capture ideas, push them into the pipeline.
-- **Performance** (`performance.html`) — Instagram metrics in detail.
+- **Performance** (`performance.html`) — Instagram metrics, follower/engagement **trend over time**, top posts, format breakdown, and best day to post.
+- **Competitors** (`competitors.html`) — benchmark public profiles you name against your own (public numbers only).
 - **SOP Library** (`sops.html`) — saved processes.
 - **Tasks** (`tasks.html`) — to-do list.
 
 Everything you enter is saved in the browser's local storage, so the pipeline,
-ideas, SOPs, tasks, saved scripts, and last Instagram numbers survive a refresh.
+ideas, SOPs, tasks, saved scripts, competitors, and metric history survive a
+refresh. Use **Export backup** on the Command Center to save it all to a file.
 
 ## Run it
 
@@ -53,7 +55,22 @@ official Graph API — the documented v1→v2 upgrade path).
 
 **Generate Script for IG (Phase 5).** Sends the idea title/notes to Claude and
 returns a draft in Sam's voice — Hook → teach one thing → CTA — that you edit
-in place before saving. Saving moves the card to **Scripted**.
+in place before saving. Saving moves the card to **Scripted**. The voice is
+defined in **`brand-voice.md`** (distilled from Sam's brand-messaging system and
+Content GPS framework); the server injects it into every script prompt, so edit
+that file to tune the voice. You can also pick a content type (Pain / System /
+Proof) per Sam's framework.
+
+**Competitor benchmarking.** On the Competitors page, add public Instagram
+usernames; *Refresh all* scrapes their **public profile-level** follower and
+engagement numbers (via Apify) and tabulates them next to yours. It does **not**
+collect any account's followers or audience data — profile-level public metrics
+only.
+
+**Trends &amp; analytics.** Every Instagram refresh appends a dated snapshot to a
+local history, charted on the Performance page (follower growth + engagement-rate
+trend). The same page derives top posts, a Reel/Carousel/Image format breakdown,
+and your best day to post from recent-post data.
 
 ## Design system
 See `CLAUDE.md` for the full token list. Tokens live as CSS variables in

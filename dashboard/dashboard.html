@@ -75,12 +75,25 @@
           <div id="task-snap" class="muted">No open tasks.</div>
         </div>
       </div>
+
+      <div class="card" style="margin-top:22px">
+        <div class="section-title" style="margin:0 0 10px">
+          <h2 style="font-size:17px">Data &amp; backup</h2>
+          <span class="pill">Stored in this browser</span>
+        </div>
+        <p class="muted" style="margin:0 0 14px;font-size:13px">Your pipeline, scripts, ideas, SOPs, tasks, competitors and metric history live in this browser. Export a backup so you never lose them, or restore from one.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-secondary" onclick="exportData()">↓ Export backup</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">↑ Import backup</button>
+          <input type="file" id="import-file" accept="application/json" style="display:none" onchange="doImport(this)">
+        </div>
+      </div>
     </main>
   </div>
 
   <script src="assets/app.js"></script>
   <script>
-    const { Store, fmt, toast, api, escapeHtml, PIPELINE_COLUMNS } = window.BV;
+    const { Store, fmt, toast, api, escapeHtml, recordHistory, exportData, importData, PIPELINE_COLUMNS } = window.BV;
     const PLACEHOLDER = [42, 58, 35, 71, 49, 88, 63, 95, 54, 77, 68, 102];
 
     function renderChart(values, isPlaceholder) {
@@ -139,6 +152,7 @@
         const data = await api('/api/instagram/refresh', {});
         const metrics = { ...data, fetchedAt: Date.now() };
         Store.set('metrics', metrics);
+        recordHistory(metrics);
         renderMetrics();
         banner.className = 'banner';
         toast('Instagram data refreshed');
@@ -149,6 +163,17 @@
         btn.disabled = false;
         label.textContent = '↻ Refresh Instagram';
       }
+    }
+
+    function doImport(input) {
+      const file = input.files[0];
+      if (!file) return;
+      importData(file, (err) => {
+        input.value = '';
+        if (err) { toast(err.message, true); return; }
+        toast('Backup restored');
+        renderMetrics(); renderSnapshots();
+      });
     }
 
     renderMetrics();
