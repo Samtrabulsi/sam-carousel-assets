@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasks · Brand Victory</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="app">
+    <div id="nav-root"></div>
+    <main class="main">
+      <div class="page-head">
+        <div class="title">
+          <h1>Tasks</h1>
+          <p>The short list. Add it, do it, check it off.</p>
+        </div>
+        <div class="actions"><span class="pill gold" id="progress">0 / 0 done</span></div>
+      </div>
+
+      <div class="card" style="margin-bottom:22px">
+        <div style="display:flex;gap:10px">
+          <input type="text" id="task-input" placeholder="Add a task and press Enter…" onkeydown="if(event.key==='Enter')addTask()">
+          <button class="btn btn-primary" onclick="addTask()">Add</button>
+        </div>
+      </div>
+
+      <div id="list"></div>
+    </main>
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    const { Store, uid, toast, escapeHtml } = window.BV;
+    let tasks = Store.get('tasks', []);
+    function save() { Store.set('tasks', tasks); }
+
+    function render() {
+      const done = tasks.filter(t => t.done).length;
+      document.getElementById('progress').textContent = `${done} / ${tasks.length} done`;
+      const list = document.getElementById('list');
+      if (!tasks.length) { list.innerHTML = '<div class="empty">Nothing here yet. Add your first task above.</div>'; return; }
+      list.innerHTML = tasks.map(t => `
+        <div class="item ${t.done ? 'done' : ''}">
+          <div class="check ${t.done ? 'done' : ''}" onclick="toggle('${t.id}')">✓</div>
+          <div class="body"><div class="h">${escapeHtml(t.text)}</div></div>
+          <div class="acts"><button class="btn btn-ghost sm" onclick="del('${t.id}')">Delete</button></div>
+        </div>`).join('');
+    }
+
+    function addTask() {
+      const input = document.getElementById('task-input');
+      const text = input.value.trim();
+      if (!text) return;
+      tasks.unshift({ id: uid(), text, done: false });
+      input.value = '';
+      save(); render();
+    }
+
+    function toggle(id) { const t = tasks.find(x => x.id === id); t.done = !t.done; save(); render(); }
+    function del(id) { tasks = tasks.filter(t => t.id !== id); save(); render(); }
+
+    render();
+  </script>
+</body>
+</html>

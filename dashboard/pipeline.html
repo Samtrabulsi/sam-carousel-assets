@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Pipeline · Brand Victory</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="app">
+    <div id="nav-root"></div>
+    <main class="main">
+      <div class="page-head">
+        <div class="title">
+          <h1>Content Pipeline</h1>
+          <p>Drag a card across the stages: Idea → Scripted → Recorded → Scheduled → Published.</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="openNew()">+ New card</button>
+        </div>
+      </div>
+
+      <div id="board" class="board"></div>
+    </main>
+  </div>
+
+  <!-- New card modal -->
+  <div class="modal-bg" id="new-modal">
+    <div class="modal">
+      <h2>New pipeline card</h2>
+      <div class="sub">Add a piece of content to the board.</div>
+      <label class="field">Title</label>
+      <input type="text" id="nc-title" placeholder="e.g. Why low prices repel premium clients">
+      <label class="field" style="margin-top:14px">Note (optional)</label>
+      <textarea id="nc-note" rows="3" placeholder="Angle, hook idea, reference…"></textarea>
+      <div class="row">
+        <button class="btn btn-secondary" onclick="closeModal('new-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="addCard()">Add to Idea</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script modal -->
+  <div class="modal-bg" id="script-modal">
+    <div class="modal">
+      <h2>Draft script · <span id="sm-title"></span></h2>
+      <div class="sub">In your voice: Hook → teach one thing → CTA. Edit freely — you're the final editor.</div>
+      <div id="sm-banner" class="banner"></div>
+      <textarea id="sm-text" class="script-out" placeholder="Click Generate to draft a script…"></textarea>
+      <div class="row">
+        <button class="btn btn-secondary" id="sm-regen" onclick="generateScript()">Generate</button>
+        <button class="btn btn-secondary" onclick="closeModal('script-modal')">Close</button>
+        <button class="btn btn-primary" onclick="saveScript()">Save & move to Scripted</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    const { Store, uid, toast, api, escapeHtml, PIPELINE_COLUMNS } = window.BV;
+    let cards = Store.get('pipeline', []);
+    let activeCardId = null;
+
+    function save() { Store.set('pipeline', cards); }
+
+    function render() {
+      const board = document.getElementById('board');
+      board.innerHTML = PIPELINE_COLUMNS.map(col => {
+        const inCol = cards.filter(c => c.column === col);
+        return `
+          <div class="col" data-col="${col}"
+               ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'${col}')">
+            <div class="col-head"><span class="ttl">${col}</span><span class="count">${inCol.length}</span></div>
+            ${inCol.map(cardHtml).join('') || '<div class="empty" style="padding:14px">—</div>'}
+          </div>`;
+      }).join('');
+    }
+
+    function cardHtml(c) {
+      const hasScript = c.script && c.script.trim();
+      return `
+        <div class="kcard" draggable="true" data-id="${c.id}"
+             ondragstart="onDragStart(event,'${c.id}')" ondragend="onDragEnd(event)">
+          <div class="ktitle">${escapeHtml(c.title)}</div>
+          ${c.note ? `<div class="knote">${escapeHtml(c.note)}</div>` : ''}
+          ${hasScript ? '<span class="ktag">✓ script saved</span>' : ''}
+          <div class="kactions">
+            <button class="btn btn-secondary sm" onclick="openScript('${c.id}')">${hasScript ? 'Edit script' : 'Generate Script for IG'}</button>
+            <button class="btn btn-ghost sm" onclick="delCard('${c.id}')">Delete</button>
+          </div>
+        </div>`;
+    }
+
+    // ---- Drag & drop ----
+    let draggingId = null;
+    function onDragStart(e, id) { draggingId = id; e.target.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; }
+    function onDragEnd(e) { e.target.classList.remove('dragging'); }
+    function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+    function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+    function onDrop(e, col) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      const c = cards.find(x => x.id === draggingId);
+      if (c && c.column !== col) { c.column = col; save(); render(); }
+      draggingId = null;
+    }
+
+    // ---- CRUD ----
+    function openNew() { document.getElementById('nc-title').value = ''; document.getElementById('nc-note').value = ''; openModal('new-modal'); }
+    function addCard() {
+      const title = document.getElementById('nc-title').value.trim();
+      if (!title) { toast('Give the card a title', true); return; }
+      cards.push({ id: uid(), title, note: document.getElementById('nc-note').value.trim(), column: 'Idea', script: '' });
+      save(); render(); closeModal('new-modal'); toast('Card added to Idea');
+    }
+    function delCard(id) { cards = cards.filter(c => c.id !== id); save(); render(); }
+
+    // ---- Script generation ----
+    function openScript(id) {
+      activeCardId = id;
+      const c = cards.find(x => x.id === id);
+      document.getElementById('sm-title').textContent = c.title;
+      document.getElementById('sm-text').value = c.script || '';
+      document.getElementById('sm-banner').className = 'banner';
+      openModal('script-modal');
+      if (!c.script) generateScript();
+    }
+
+    async function generateScript() {
+      const c = cards.find(x => x.id === activeCardId);
+      const btn = document.getElementById('sm-regen');
+      const banner = document.getElementById('sm-banner');
+      btn.disabled = true; btn.textContent = 'Generating…';
+      banner.className = 'banner info show';
+      banner.textContent = 'Drafting a script in your voice…';
+      try {
+        const data = await api('/api/script/generate', { title: c.title, note: c.note, platform: 'instagram' });
+        document.getElementById('sm-text').value = data.script;
+        banner.className = 'banner';
+      } catch (e) {
+        banner.className = 'banner error show';
+        banner.textContent = 'Could not generate: ' + e.message;
+      } finally {
+        btn.disabled = false; btn.textContent = 'Regenerate';
+      }
+    }
+
+    function saveScript() {
+      const c = cards.find(x => x.id === activeCardId);
+      c.script = document.getElementById('sm-text').value;
+      if (c.script.trim()) c.column = 'Scripted';
+      save(); render(); closeModal('script-modal'); toast('Script saved · moved to Scripted');
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Research · Brand Victory</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="app">
+    <div id="nav-root"></div>
+    <main class="main">
+      <div class="page-head">
+        <div class="title">
+          <h1>Content Research</h1>
+          <p>Capture ideas as they hit. Push the good ones into the pipeline.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:22px">
+        <label class="field">New idea</label>
+        <input type="text" id="idea-title" placeholder="e.g. The hesitation tax: what indecision really costs buyers">
+        <label class="field" style="margin-top:12px">Notes / angle (optional)</label>
+        <textarea id="idea-note" rows="2" placeholder="Hook, source, why it matters…"></textarea>
+        <div style="margin-top:14px;display:flex;justify-content:flex-end">
+          <button class="btn btn-primary" onclick="addIdea()">+ Add idea</button>
+        </div>
+      </div>
+
+      <div class="section-title"><h2 style="font-size:18px">Idea feed</h2><span class="pill" id="count-pill">0 ideas</span></div>
+      <div id="feed"></div>
+    </main>
+  </div>
+
+  <!-- Script modal -->
+  <div class="modal-bg" id="script-modal">
+    <div class="modal">
+      <h2>Draft script · <span id="sm-title"></span></h2>
+      <div class="sub">In your voice: Hook → teach one thing → CTA. Edit freely — you're the final editor.</div>
+      <div id="sm-banner" class="banner"></div>
+      <textarea id="sm-text" class="script-out" placeholder="Click Generate to draft a script…"></textarea>
+      <div class="row">
+        <button class="btn btn-secondary" id="sm-regen" onclick="generateScript()">Generate</button>
+        <button class="btn btn-secondary" onclick="closeModal('script-modal')">Close</button>
+        <button class="btn btn-primary" onclick="saveToPipelineScripted()">Save & send to pipeline (Scripted)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    const { Store, uid, toast, api, escapeHtml } = window.BV;
+    let ideas = Store.get('research', []);
+    let activeId = null;
+
+    function save() { Store.set('research', ideas); }
+
+    function render() {
+      document.getElementById('count-pill').textContent = ideas.length + (ideas.length === 1 ? ' idea' : ' ideas');
+      const feed = document.getElementById('feed');
+      if (!ideas.length) { feed.innerHTML = '<div class="empty">No ideas yet. Add your first above.</div>'; return; }
+      feed.innerHTML = ideas.map(i => `
+        <div class="item">
+          <div class="body">
+            <div class="h">${escapeHtml(i.title)}</div>
+            ${i.note ? `<div class="m">${escapeHtml(i.note)}</div>` : ''}
+            ${i.inPipeline ? '<span class="ktag" style="color:var(--gold)">✓ in pipeline</span>' : ''}
+          </div>
+          <div class="acts">
+            <button class="btn btn-secondary sm" onclick="openScript('${i.id}')">Generate Script for IG</button>
+            <button class="btn btn-secondary sm" onclick="toPipeline('${i.id}')" ${i.inPipeline ? 'disabled' : ''}>Add to Pipeline</button>
+            <button class="btn btn-ghost sm" onclick="del('${i.id}')">Delete</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function addIdea() {
+      const title = document.getElementById('idea-title').value.trim();
+      if (!title) { toast('Type an idea first', true); return; }
+      ideas.unshift({ id: uid(), title, note: document.getElementById('idea-note').value.trim(), inPipeline: false });
+      document.getElementById('idea-title').value = '';
+      document.getElementById('idea-note').value = '';
+      save(); render(); toast('Idea added');
+    }
+
+    function del(id) { ideas = ideas.filter(i => i.id !== id); save(); render(); }
+
+    function toPipeline(id, column = 'Idea', script = '') {
+      const idea = ideas.find(i => i.id === id);
+      const pipeline = Store.get('pipeline', []);
+      pipeline.push({ id: uid(), title: idea.title, note: idea.note, column, script });
+      Store.set('pipeline', pipeline);
+      idea.inPipeline = true;
+      save(); render();
+      toast(`Sent to pipeline · ${column}`);
+    }
+
+    // ---- Script generation ----
+    function openScript(id) {
+      activeId = id;
+      const i = ideas.find(x => x.id === id);
+      document.getElementById('sm-title').textContent = i.title;
+      document.getElementById('sm-text').value = '';
+      document.getElementById('sm-banner').className = 'banner';
+      openModal('script-modal');
+      generateScript();
+    }
+
+    async function generateScript() {
+      const i = ideas.find(x => x.id === activeId);
+      const btn = document.getElementById('sm-regen');
+      const banner = document.getElementById('sm-banner');
+      btn.disabled = true; btn.textContent = 'Generating…';
+      banner.className = 'banner info show';
+      banner.textContent = 'Drafting a script in your voice…';
+      try {
+        const data = await api('/api/script/generate', { title: i.title, note: i.note, platform: 'instagram' });
+        document.getElementById('sm-text').value = data.script;
+        banner.className = 'banner';
+      } catch (e) {
+        banner.className = 'banner error show';
+        banner.textContent = 'Could not generate: ' + e.message;
+      } finally {
+        btn.disabled = false; btn.textContent = 'Regenerate';
+      }
+    }
+
+    function saveToPipelineScripted() {
+      const i = ideas.find(x => x.id === activeId);
+      const script = document.getElementById('sm-text').value;
+      if (i.inPipeline) {
+        // update existing pipeline card by title match
+        const pipeline = Store.get('pipeline', []);
+        const card = pipeline.find(c => c.title === i.title);
+        if (card) { card.script = script; card.column = 'Scripted'; Store.set('pipeline', pipeline); }
+      } else {
+        toPipeline(i.id, 'Scripted', script);
+      }
+      closeModal('script-modal'); render(); toast('Saved to pipeline · Scripted');
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+    render();
+  </script>
+</body>
+</html>

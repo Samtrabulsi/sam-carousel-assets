@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performance · Brand Victory</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="app">
+    <div id="nav-root"></div>
+    <main class="main">
+      <div class="page-head">
+        <div class="title">
+          <h1>Performance</h1>
+          <p>Instagram metrics for <span class="muted">@samtrabulsi</span>, in detail.</p>
+        </div>
+        <div class="actions">
+          <span id="last-updated" class="pill">Not yet refreshed</span>
+          <button class="btn btn-primary" id="refresh-btn" onclick="refreshInstagram()">
+            <span id="refresh-label">↻ Refresh Instagram</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="banner" class="banner"></div>
+
+      <div class="grid cols-4">
+        <div class="card metric"><div class="label">Followers</div><div class="value" id="m-followers">—</div><div class="delta">Profile total</div></div>
+        <div class="card metric"><div class="label">Posts</div><div class="value text-blue" id="m-posts">—</div><div class="delta">All-time</div></div>
+        <div class="card metric"><div class="label">Total Reach</div><div class="value text-white" id="m-reach">—</div><div class="delta">Recent posts</div></div>
+        <div class="card metric"><div class="label">Engagement Rate</div><div class="value" id="m-eng">—</div><div class="delta">Likes+comments / followers</div></div>
+      </div>
+
+      <div class="section-title"><h2>Engagement per recent post</h2><span class="pill gold">Likes + comments</span></div>
+      <div class="card pad-lg">
+        <div id="chart" class="chart"></div>
+        <p id="chart-note" class="muted" style="margin-top:30px;font-size:13px">Refresh to load live numbers. Placeholders shown until then.</p>
+      </div>
+
+      <div class="section-title"><h2 style="font-size:18px">Recent posts</h2></div>
+      <div class="card">
+        <div id="posts-list" class="muted">No posts loaded yet — hit Refresh.</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    const { Store, fmt, toast, api, escapeHtml } = window.BV;
+    const PLACEHOLDER = [42, 58, 35, 71, 49, 88, 63, 95, 54, 77, 68, 102];
+
+    function renderChart(values, isPlaceholder) {
+      const max = Math.max(...values, 1);
+      document.getElementById('chart').innerHTML = values.map((v, i) =>
+        `<div class="bar" style="height:${Math.max(6, (v / max) * 100)}%" data-v="${isPlaceholder ? '' : fmt(v)}"><span>${i + 1}</span></div>`
+      ).join('');
+    }
+
+    function render() {
+      const m = Store.get('metrics', null);
+      if (!m) { renderChart(PLACEHOLDER, true); return; }
+      document.getElementById('m-followers').textContent = fmt(m.followers);
+      document.getElementById('m-posts').textContent = fmt(m.posts);
+      document.getElementById('m-reach').textContent = fmt(m.reach);
+      document.getElementById('m-eng').textContent = m.engagementRate != null ? m.engagementRate + '%' : '—';
+      document.getElementById('last-updated').textContent = 'Updated ' + new Date(m.fetchedAt).toLocaleString();
+      if (m.recentEngagement && m.recentEngagement.length) {
+        renderChart(m.recentEngagement, false);
+        document.getElementById('chart-note').textContent = `Live engagement across your ${m.recentEngagement.length} most recent posts.`;
+      }
+      if (m.recentPosts && m.recentPosts.length) {
+        document.getElementById('posts-list').innerHTML = m.recentPosts.map(p => `
+          <div class="item">
+            <div class="body">
+              <div class="h">${escapeHtml(p.caption || 'Untitled post')}</div>
+              <div class="m">❤ ${fmt(p.likes)} likes · 💬 ${fmt(p.comments)} comments${p.url ? ` · <a href="${escapeHtml(p.url)}" target="_blank" rel="noopener">view</a>` : ''}</div>
+            </div>
+          </div>`).join('');
+      }
+    }
+
+    async function refreshInstagram() {
+      const btn = document.getElementById('refresh-btn');
+      const label = document.getElementById('refresh-label');
+      const banner = document.getElementById('banner');
+      btn.disabled = true; label.innerHTML = '<span class="spinner"></span> Fetching…';
+      banner.className = 'banner info show';
+      banner.textContent = 'Running the Apify Instagram scrape for @samtrabulsi…';
+      try {
+        const data = await api('/api/instagram/refresh', {});
+        Store.set('metrics', { ...data, fetchedAt: Date.now() });
+        render();
+        banner.className = 'banner'; toast('Instagram data refreshed');
+      } catch (e) {
+        banner.className = 'banner error show';
+        banner.textContent = 'Could not refresh: ' + e.message;
+      } finally {
+        btn.disabled = false; label.textContent = '↻ Refresh Instagram';
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>

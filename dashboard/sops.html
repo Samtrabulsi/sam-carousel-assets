@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOP Library · Brand Victory</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="app">
+    <div id="nav-root"></div>
+    <main class="main">
+      <div class="page-head">
+        <div class="title">
+          <h1>SOP Library</h1>
+          <p>Your saved processes. Write it once, run it every time.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:22px">
+        <label class="field">Process name</label>
+        <input type="text" id="sop-title" placeholder="e.g. Weekly Instagram batch-record routine">
+        <label class="field" style="margin-top:12px">Steps / details</label>
+        <textarea id="sop-body" rows="4" placeholder="1. …&#10;2. …&#10;3. …"></textarea>
+        <div style="margin-top:14px;display:flex;justify-content:flex-end">
+          <button class="btn btn-primary" onclick="addSop()">+ Save SOP</button>
+        </div>
+      </div>
+
+      <div class="section-title"><h2 style="font-size:18px">Saved SOPs</h2><span class="pill" id="count-pill">0</span></div>
+      <div id="list"></div>
+    </main>
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    const { Store, uid, toast, escapeHtml } = window.BV;
+    let sops = Store.get('sops', []);
+    function save() { Store.set('sops', sops); }
+
+    function render() {
+      document.getElementById('count-pill').textContent = sops.length;
+      const list = document.getElementById('list');
+      if (!sops.length) { list.innerHTML = '<div class="empty">No SOPs yet. Save your first process above.</div>'; return; }
+      list.innerHTML = sops.map(s => `
+        <div class="item">
+          <div class="body">
+            <div class="h">${escapeHtml(s.title)}</div>
+            <div class="m">${escapeHtml(s.body)}</div>
+          </div>
+          <div class="acts"><button class="btn btn-ghost sm" onclick="del('${s.id}')">Delete</button></div>
+        </div>`).join('');
+    }
+
+    function addSop() {
+      const title = document.getElementById('sop-title').value.trim();
+      const body = document.getElementById('sop-body').value.trim();
+      if (!title) { toast('Name the process first', true); return; }
+      sops.unshift({ id: uid(), title, body });
+      document.getElementById('sop-title').value = '';
+      document.getElementById('sop-body').value = '';
+      save(); render(); toast('SOP saved');
+    }
+
+    function del(id) { sops = sops.filter(s => s.id !== id); save(); render(); }
+
+    render();
+  </script>
+</body>
+</html>

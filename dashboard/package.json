@@ -1,0 +1,12 @@
+{
+  "name": "brand-victory-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Brand Victory Operations Dashboard — local content command center (Instagram v1).",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
