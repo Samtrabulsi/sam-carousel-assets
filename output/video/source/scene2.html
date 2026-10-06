@@ -1,0 +1,292 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;700;800&display=block" rel="stylesheet">
+<style>
+:root{--bg:#080d17;--surface:#111a2a;--line:#263246;--text:#f2f5fb;--muted:#aebacd;--ice:#accbff;--accent:#2d63f5;--indigo:#4632DA}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text)}
+canvas{position:absolute;inset:0}
+.layer{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0}
+.h1{font-family:'Varela Round',sans-serif;font-size:132px;line-height:1.08;letter-spacing:-2px;text-align:center}
+.h2{font-family:'Varela Round',sans-serif;font-size:100px;line-height:1.1;letter-spacing:-1.5px;text-align:center}
+.it{font-family:'Instrument Serif',serif;font-style:italic;letter-spacing:0;font-size:1.12em}
+.shine{background:linear-gradient(110deg,#accbff 20%,#fff 48%,#accbff 65%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.chrome{background:linear-gradient(180deg,#ffffff 0%,#dfe6f2 35%,#8e9bb3 52%,#e9eef8 70%,#b9c6dc 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bluechrome{background:linear-gradient(180deg,#e9f1ff 0%,#accbff 35%,#2d63f5 60%,#accbff 82%,#ffffff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.w{display:inline-block}
+.kicker{font-family:'DM Sans';font-weight:700;font-size:30px;letter-spacing:10px;text-transform:uppercase;color:var(--ice)}
+.chip{position:relative;font-family:'DM Sans';font-weight:500;font-size:52px;padding:22px 44px;margin:16px;border:1px solid var(--line);border-radius:22px;background:rgba(17,26,42,.85);color:var(--text)}
+.chip .strike{position:absolute;left:28px;right:28px;top:52%;height:5px;border-radius:3px;background:#ff5d6c;transform-origin:left;transform:scaleX(0)}
+.chip .x{position:absolute;right:-24px;top:-24px;width:52px;height:52px;border-radius:50%;background:#ff5d6c;color:#fff;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;opacity:0}
+.count{font-family:'Varela Round';font-size:460px;position:absolute}
+.logo{font-family:'Varela Round';font-size:200px;letter-spacing:2px;line-height:1;white-space:nowrap;position:relative}
+.ver{font-family:'Varela Round';font-size:300px;line-height:1;letter-spacing:-6px}
+.sweep{position:absolute;inset:-20px -60px;background:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.9) 50%,transparent 60%);mix-blend-mode:overlay}
+.feat{position:absolute;inset:0;display:flex;align-items:center;padding:60px 150px 0;opacity:0}
+.feat .num{font-family:'Varela Round';font-size:300px;line-height:1;color:transparent;-webkit-text-stroke:3px var(--ice);width:390px;flex:none}
+.feat .txt{width:800px;flex:none}
+.feat .ttl{font-family:'Varela Round';font-size:100px;line-height:1.05;letter-spacing:-1.5px;margin-bottom:30px}
+.feat .sub{font-weight:400;font-size:44px;line-height:1.35;color:var(--muted)}
+.feat .tag{display:inline-block;font-weight:700;font-size:28px;letter-spacing:8px;color:var(--ice);text-transform:uppercase;margin-bottom:26px;padding:10px 22px;border:1px solid rgba(172,203,255,.35);border-radius:999px;background:rgba(45,99,245,.12)}
+.feat svg{position:absolute;right:150px;top:50%;margin-top:-190px;width:420px;height:420px;overflow:visible}
+.cards{position:absolute;right:130px;top:200px;width:820px}
+.card{display:flex;align-items:center;gap:30px;background:rgba(17,26,42,.92);border:1px solid var(--line);border-radius:26px;padding:24px 30px;margin-bottom:22px;opacity:0;position:relative;overflow:hidden}
+.card .av{width:96px;height:96px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#e9f1ff,#accbff 30%,#2d63f5 70%,#1a2f8a);display:flex;align-items:center;justify-content:center;font-family:'Varela Round';font-size:36px;color:#fff;box-shadow:0 0 30px rgba(45,99,245,.5)}
+.card .role{font-family:'Varela Round';font-size:44px;line-height:1.1}
+.card .job{font-size:32px;color:var(--muted);margin-top:6px}
+.card .on{position:absolute;right:28px;top:24px;font-size:24px;font-weight:700;color:#7ef0c6;letter-spacing:2px}
+.card .on b{display:inline-block;width:14px;height:14px;border-radius:50%;background:#7ef0c6;margin-right:10px;vertical-align:1px}
+.card .bar{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--ice));transform-origin:left;transform:scaleX(0)}
+#prog{position:absolute;left:150px;right:150px;bottom:80px;display:flex;gap:20px;opacity:0}
+#prog div{flex:1;height:6px;background:rgba(172,203,255,.15);position:relative;overflow:hidden;border-radius:3px}
+#prog div i{position:absolute;inset:0;background:linear-gradient(90deg,var(--accent),var(--ice));transform-origin:left;transform:scaleX(0)}
+.btn{font-family:'DM Sans';font-weight:700;font-size:58px;color:#0a1020;background:var(--text);padding:34px 80px;border-radius:18px;display:flex;align-items:center;gap:30px}
+#flash{position:absolute;inset:0;background:#dbe7ff;opacity:0}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.7) 100%)}
+/* chapter tracker */
+#trk{position:absolute;top:44px;left:0;right:0;display:flex;justify-content:center;gap:0;opacity:0;z-index:20}
+#trk .ch{white-space:nowrap;padding:0 36px;text-align:center;font-weight:700;font-size:27px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);position:relative;padding-bottom:26px}
+#trk .ch .n{display:block;font-family:'Varela Round';font-size:24px;letter-spacing:2px;margin-bottom:6px;opacity:.8}
+#trkline{position:absolute;bottom:6px;height:3px;background:rgba(172,203,255,.18);border-radius:2px}
+#trkfill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--ice));border-radius:2px}
+#trkdot{position:absolute;bottom:-3px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:#fff;box-shadow:0 0 0 6px rgba(45,99,245,.45),0 0 24px #accbff}
+#youhere{position:absolute;bottom:-46px;margin-left:-80px;width:160px;text-align:center;font-size:18px;font-weight:800;letter-spacing:3px;color:#fff}
+.mono{font-family:'Varela Round';font-weight:400;color:var(--indigo);font-size:56px;letter-spacing:-3px;position:relative}
+</style></head>
+<body><div id="stage">
+<canvas id="bg" width="1920" height="1080"></canvas>
+
+<!-- S1 where you are -->
+<div class="layer" id="s1">
+  <div class="kicker" id="s1k" style="margin-bottom:50px">Where you are now</div>
+  <div class="h1" id="s1t"><span class="w">You're</span> <span class="w">the</span> <span class="w">expert.</span><br><span class="w">But</span> <span class="w">you're</span> <span class="w it shine" id="invis">invisible.</span></div>
+</div>
+
+<!-- S2 problem -->
+<div class="layer" id="s2">
+  <div class="h2" id="s2t" style="margin-bottom:60px"><span class="w">And</span> <span class="w">you're</span> <span class="w">doing</span> <span class="w">it</span> <span class="w it shine">all</span> <span class="w it shine">yourself.</span></div>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;width:1640px" id="chips">
+    <div class="chip">Posting with no results<div class="strike"></div><div class="x">✕</div></div>
+    <div class="chip">Chasing every lead by hand<div class="strike"></div><div class="x">✕</div></div>
+    <div class="chip">Answering DMs at midnight<div class="strike"></div><div class="x">✕</div></div>
+    <div class="chip">Competing on price<div class="strike"></div><div class="x">✕</div></div>
+  </div>
+</div>
+
+<!-- S3 shift + countdown -->
+<div class="layer" id="s3">
+  <div class="h1" id="s3t" style="font-size:118px"><span class="w">What</span> <span class="w">if</span> <span class="w">you</span> <span class="w">had</span> <span class="w">a</span> <span class="w it shine">mentor</span><br><span class="w">and</span> <span class="w">a</span> <span class="w it shine">team</span> <span class="w">that</span> <span class="w">never</span> <span class="w">sleeps?</span></div>
+  <div class="count bluechrome" id="c3">3</div><div class="count bluechrome" id="c2">2</div><div class="count bluechrome" id="c1">1</div>
+</div>
+
+<!-- S4 reveal -->
+<div class="layer" id="s4">
+  <div class="kicker" id="intro" style="margin-bottom:40px">Introducing</div>
+  <div class="logo" id="logo"></div>
+  <div class="ver bluechrome" id="ver">2.0</div>
+  <div id="tag1" style="font-family:'Varela Round';font-size:66px;margin-top:18px;letter-spacing:-1px">Mentorship <span style="color:var(--ice)">+</span> Done-For-You</div>
+  <div id="tag2" class="it shine" style="font-size:64px;margin-top:6px">powered by expert AI employees.</div>
+</div>
+
+<!-- S5 how we get you there -->
+<div class="layer" id="s5" style="opacity:1">
+  <div id="s5h" class="layer"><div class="kicker">How we get you there</div>
+    <div class="h1" style="margin-top:34px;font-size:120px">Two engines.<br><span class="it shine">One clear plan.</span></div></div>
+
+  <div class="feat" id="f1"><div class="num">01</div><div class="txt"><div class="tag">Mentorship</div><div class="ttl">Sam in your <span class="it shine">corner.</span></div><div class="sub">1:1 strategy for your brand, message and offer — so you always know your next move.</div></div>
+    <svg viewBox="-210 -210 420 420"><g fill="none" stroke="#accbff" stroke-width="3"><circle class="dr" r="190" opacity=".35"/><circle class="dr" r="150"/></g>
+      <g font-family="DM Sans" font-weight="700" font-size="34" fill="#aebacd" text-anchor="middle"><text x="0" y="-160" dy="12">N</text><text x="165" y="0" dy="12">E</text><text x="0" y="165" dy="12">S</text><text x="-165" y="0" dy="12">W</text></g>
+      <g id="needle"><path d="M0,-120 L22,0 L0,20 L-22,0Z" fill="#2d63f5"/><path d="M0,120 L22,0 L0,-20 L-22,0Z" fill="#263246"/><circle r="12" fill="#fff"/></g></svg></div>
+
+  <div class="feat" id="f2"><div class="num">02</div><div class="txt"><div class="tag">Done For You</div><div class="ttl">We build it. <span class="it shine">You approve it.</span></div><div class="sub">Your brand, content and systems — built by our team, not left on your to-do list.</div></div>
+    <svg viewBox="-210 -210 420 420" id="f2svg"></svg></div>
+
+  <div class="feat" id="f3"><div class="txt" style="width:760px"><div class="num" style="font-size:200px;width:auto;margin-bottom:10px">03</div><div class="tag">Expert AI Employees</div><div class="ttl" style="font-size:96px">Your AI team, <span class="it shine">working 24/7.</span></div><div class="sub">Every enquiry answered. Every lead followed up. You stay in control.</div></div>
+    <div class="cards">
+      <div class="card"><div class="av">AI</div><div><div class="role">AI Receptionist</div><div class="job">Answers every enquiry</div></div><div class="on"><b></b>ONLINE</div><div class="bar"></div></div>
+      <div class="card"><div class="av">AI</div><div><div class="role">AI Follow-Up</div><div class="job">Nurtures every lead</div></div><div class="on"><b></b>ONLINE</div><div class="bar"></div></div>
+      <div class="card"><div class="av">AI</div><div><div class="role">AI Scheduler</div><div class="job">Books your appointments</div></div><div class="on"><b></b>ONLINE</div><div class="bar"></div></div>
+      <div class="card"><div class="av">AI</div><div><div class="role">AI Content Assistant</div><div class="job">Keeps you visible</div></div><div class="on"><b></b>ONLINE</div><div class="bar"></div></div>
+    </div></div>
+
+  <div id="prog"><div><i></i></div><div><i></i></div><div><i></i></div></div>
+</div>
+
+<!-- S6 where you're going -->
+<div class="layer" id="s6">
+  <svg id="map" width="1920" height="1080" viewBox="0 0 1920 1080" style="position:absolute;inset:0;overflow:visible"></svg>
+</div>
+
+<!-- S7 CTA -->
+<div class="layer" id="s7">
+  <div class="kicker" id="s7k">Brand Victory 2.0 · Applications open</div>
+  <div class="h1" id="s7t" style="font-size:180px;margin:30px 0 50px"><span class="w">Apply</span> <span class="w it shine">today.</span></div>
+  <div class="btn" id="btn">Apply Now <span style="font-size:60px">↗</span></div>
+  <div id="s7s" style="font-family:'Varela Round';font-size:56px;margin-top:50px;color:var(--text)">samtrabulsi.com</div>
+  <div id="s7s2" style="font-size:32px;color:var(--muted);margin-top:16px;letter-spacing:1px">Mentorship + Done-For-You + Expert AI Employees</div>
+  <div id="brand" style="position:absolute;bottom:64px;display:flex;align-items:center;gap:16px"><span class="mono">BV<sup style="font-size:18px;position:absolute;top:2px;right:-14px">®</sup></span><span style="font-weight:700;font-size:22px;letter-spacing:5px;line-height:1.15;color:var(--indigo);margin-left:10px">BRAND<br>VICTORY</span></div>
+</div>
+
+<!-- chapter tracker: where you are / where you're going -->
+<div id="trk">
+  <div class="ch"><span class="n">01</span>Where you are</div>
+  <div class="ch"><span class="n">02</span>The shift</div>
+  <div class="ch"><span class="n">03</span>How we get you there</div>
+  <div class="ch"><span class="n">04</span>Where you're going</div>
+  <div class="ch"><span class="n">05</span>Apply</div>
+  <div id="trkline"><div id="trkfill"></div><div id="trkdot"></div></div>
+</div>
+
+<div id="flash"></div>
+<div id="vig"></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const P=(t,a,b)=>clamp((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3), eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, eo5=x=>1-Math.pow(1-x,5);
+const back=x=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const lerp=(a,b,x)=>a+(b-a)*x;
+function words(sel,t,start,stag,dur=.6){ $$(sel+' .w').forEach((w,i)=>{const p=eo(P(t,start+i*stag,start+i*stag+dur));
+  w.style.opacity=p; w.style.transform=`translateY(${(1-p)*60}px)`; w.style.filter=`blur(${(1-p)*14}px)`;});}
+function env(t,a,b,fi=.4,fo=.5){return Math.min(P(t,a,a+fi),1-P(t,b-fo,b))}
+function rise(el,p,dy=40){el.style.opacity=p;el.style.transform=`translateY(${(1-p)*dy}px)`;}
+
+// ---- build ----
+$('#logo').innerHTML=[...'BRAND VICTORY'].map(c=>c===' '?'<span class="w" style="width:56px"> </span>':`<span class="w chrome">${c}</span>`).join('')+'<div class="sweep" id="sw"></div>';
+// f2 checklist
+(()=>{let s='<rect class="dr" x="-170" y="-200" width="340" height="400" rx="28" fill="none" stroke="#accbff" stroke-width="3"/>';
+ ['Brand','Content','Systems'].forEach((l,i)=>{const y=-110+i*110;s+=`<g class="ck" opacity="0"><rect x="-130" y="${y-30}" width="60" height="60" rx="14" fill="rgba(45,99,245,.18)" stroke="#2d63f5" stroke-width="3"/><path class="tick" d="M${-117},${y} l14,14 l26,-28" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><text x="-45" y="${y+14}" font-family="Varela Round" font-size="44" fill="#f2f5fb">${l}</text></g>`});
+ $('#f2svg').innerHTML=s;})();
+// journey map
+const route=[[280,850]];
+(()=>{const d='M280,850 C 440,850 540,770 720,720 S 1000,640 1160,560 S 1420,450 1580,420';
+ let s=`<defs><linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#2d63f5"/><stop offset="1" stop-color="#accbff"/></linearGradient><radialGradient id="pg"><stop offset="0" stop-color="#accbff" stop-opacity=".6"/><stop offset="1" stop-color="#2d63f5" stop-opacity="0"/></radialGradient></defs>`;
+ s+=`<text id="m_t" x="960" y="250" text-anchor="middle" font-family="Varela Round" font-size="86" fill="#f2f5fb" letter-spacing="-1.5">From where you are <tspan font-family="Instrument Serif" font-style="italic" font-size="98" fill="#accbff">to where you're going.</tspan></text>`;
+ s+=`<path id="rbg" d="${d}" fill="none" stroke="rgba(172,203,255,.14)" stroke-width="10" stroke-dasharray="2 22" stroke-linecap="round"/>`;
+ s+=`<path id="rt" d="${d}" fill="none" stroke="url(#rg)" stroke-width="10" stroke-linecap="round"/>`;
+ [['Clarity',720,720],['Authority',1160,560]].forEach(([l,x,y])=>{s+=`<g class="mst" transform="translate(${x},${y})" opacity="0"><circle r="18" fill="#accbff"/><text y="${l==='Authority'?-42:70}" x="${l==='Authority'?-30:0}" text-anchor="${l==='Authority'?'end':'middle'}" font-family="DM Sans" font-weight="700" font-size="42" fill="#f2f5fb">${l}</text></g>`});
+ // start pin
+ s+=`<g id="pinA" transform="translate(280,850)" opacity="0"><circle r="70" fill="url(#pg)"/><circle r="24" fill="#fff"/><circle r="24" fill="none" stroke="#2d63f5" stroke-width="8"/>
+   <rect x="-150" y="-140" width="300" height="64" rx="32" fill="#f2f5fb"/><text y="-97" text-anchor="middle" font-family="DM Sans" font-weight="800" font-size="30" letter-spacing="3" fill="#0a1020">YOU ARE HERE</text>
+   <text y="90" text-anchor="middle" font-family="DM Sans" font-weight="500" font-size="40" fill="#aebacd">Invisible.</text><text y="140" text-anchor="middle" font-family="DM Sans" font-weight="500" font-size="40" fill="#aebacd">Doing it all alone.</text></g>`;
+ // destination flag
+ s+=`<g id="pinB" transform="translate(1580,420)" opacity="0"><circle r="90" fill="url(#pg)"/><circle r="30" fill="#2d63f5" stroke="#fff" stroke-width="6"/>
+   <text x="0" y="110" text-anchor="middle" font-family="DM Sans" font-weight="800" font-size="30" letter-spacing="3" fill="#accbff">WHERE YOU'RE GOING</text>
+   <text x="0" y="168" text-anchor="middle" font-family="Varela Round" font-size="50" fill="#f2f5fb">Trusted. Booked.</text><text x="0" y="226" text-anchor="middle" font-family="Varela Round" font-size="50" fill="#f2f5fb">Scaling with AI.</text></g>`;
+ s+=`<circle id="trav" r="16" fill="#fff" opacity="0" style="filter:drop-shadow(0 0 14px #accbff)"/>`;
+ $('#map').innerHTML=s;})();
+let TC=[];
+function prepDraw(){ TC=$$('#trk .ch').map(c=>c.offsetLeft+c.offsetWidth/2); const tl=$('#trkline'); tl.style.left=TC[0]+'px'; tl.style.width=(TC[4]-TC[0])+'px'; $$('.dr,#rt,.tick').forEach(e=>{const L=e.getTotalLength();e.dataset.L=L;e.style.strokeDasharray=L;e.style.strokeDashoffset=L;});}
+function draw(e,p){e.style.strokeDashoffset=e.dataset.L*(1-p);}
+
+// ---- background ----
+const bg=$('#bg').getContext('2d');
+function rnd(i){const x=Math.sin(i*127.1+311.7)*43758.5453;return x-Math.floor(x)}
+const dust=[...Array(150)].map((_,i)=>({x:rnd(i)*1920,y:rnd(i+500)*1080,r:.6+rnd(i+900)*2.4,s:6+rnd(i+77)*26,ph:rnd(i+33)*6.28,a:.15+rnd(i+12)*.55}));
+const grain=document.createElement('canvas');grain.width=480;grain.height=270;{const g=grain.getContext('2d'),id=g.createImageData(480,270);for(let i=0;i<id.data.length;i+=4){const v=Math.random()*255;id.data[i]=id.data[i+1]=id.data[i+2]=v;id.data[i+3]=255}g.putImageData(id,0,0)}
+function drawBG(t){
+  bg.fillStyle='#080d17';bg.fillRect(0,0,1920,1080);
+  const gi=.35+.25*P(t,15,21)+.7*Math.exp(-Math.pow((t-21.2)/1.2,2))+.4*Math.exp(-Math.pow((t-23.6)/1,2))+.25*P(t,21,23)+(t>53?.3:0);
+  const gx=960+Math.sin(t*.25)*160, gy=600+Math.cos(t*.2)*80;
+  let gr=bg.createRadialGradient(gx,gy,0,gx,gy,950);gr.addColorStop(0,`rgba(45,99,245,${.22*gi})`);gr.addColorStop(.5,`rgba(70,50,218,${.07*gi})`);gr.addColorStop(1,'rgba(0,0,0,0)');
+  bg.fillStyle=gr;bg.fillRect(0,0,1920,1080);
+  // floor glow like the site hero
+  gr=bg.createLinearGradient(0,780,0,1080);gr.addColorStop(0,'rgba(45,99,245,0)');gr.addColorStop(1,`rgba(45,99,245,${.10+.08*gi})`);bg.fillStyle=gr;bg.fillRect(0,780,1920,300);
+  for(const d of dust){
+    let y=(d.y - t*d.s*(1+3*P(t,18,21)*(1-P(t,21,22))))%1080; if(y<0)y+=1080;
+    const x=d.x+Math.sin(t*.6+d.ph)*20, tw=.6+.4*Math.sin(t*2+d.ph);
+    bg.beginPath();bg.arc(x,y,d.r,0,6.283);bg.fillStyle=`rgba(172,203,255,${d.a*tw*(.5+gi*.6)})`;bg.fill();
+  }
+  [[21.0,1.6],[23.5,1.2],[53.0,1.2]].forEach(([s,du])=>{const p=P(t,s,s+du);if(p>0&&p<1){bg.beginPath();bg.arc(960,540,eo(p)*1300,0,6.283);bg.strokeStyle=`rgba(172,203,255,${(1-p)*.7})`;bg.lineWidth=2+18*(1-p);bg.stroke();}});
+  bg.globalAlpha=.05;bg.globalCompositeOperation='overlay';
+  const ox=Math.floor(rnd(Math.floor(t*30))*480), oy=Math.floor(rnd(Math.floor(t*30)+9)*270);
+  bg.drawImage(grain,-ox,-oy,2400,1350);bg.globalAlpha=1;bg.globalCompositeOperation='source-over';
+}
+
+// chapter tracker
+const CH=[0,15,29,47,53];
+function tracker(t){
+  const T=$('#trk'); T.style.opacity=Math.min(P(t,.3,1.0),1-.85*Math.exp(-Math.pow((t-21.4)/.5,2)),1-P(t,59.2,60));
+  let idx=0; CH.forEach((c,i)=>{if(t>=c)idx=i});
+  $$('#trk .ch').forEach((c,i)=>{const act=i===idx; const done=i<idx; c.style.color=act?'#ffffff':done?'#accbff':'rgba(174,186,205,.5)';
+    const k=act?eo(P(t,CH[i],CH[i]+.5)):0; c.style.transform=`scale(${1+.12*k})`;});
+  // dot glides from chapter to chapter
+  const cx=i=>TC[i]-TC[0];
+  let pos=cx(0);
+  for(let i=1;i<CH.length;i++){const p=eio(P(t,CH[i]-.4,CH[i]+.4)); pos=lerp(pos,cx(i),p);}
+  $('#trkdot').style.left=pos+'px'; $('#trkfill').style.width=pos+'px';
+}
+
+function render(t){
+  drawBG(t); tracker(t);
+  // S1
+  { $('#s1').style.opacity=env(t,0,7,.01,.6);
+    rise($('#s1k'),eo(P(t,.5,1.2)),20);
+    words('#s1t',t,1.0,.26,.7);
+    const fade=eio(P(t,4.3,5.5)); const iv=$('#invis'); if(t>4.3){iv.style.opacity=1-fade*.85; iv.style.filter=`blur(${fade*7}px)`; iv.style.letterSpacing=`${fade*16}px`;}
+    $('#s1t').style.transform=`scale(${1+t*.008})`; }
+  // S2
+  { $('#s2').style.opacity=env(t,7,15,.3,.5);
+    words('#s2t',t,7.2,.16,.55);
+    $$('#chips .chip').forEach((c,i)=>{const a=9.2+i*.9, p=back(P(t,a,a+.5)); c.style.opacity=P(t,a,a+.25); c.style.transform=`translateY(${(1-p)*80}px) scale(${.85+.15*p})`;
+      const sp=eo(P(t,a+.45,a+.8)); c.querySelector('.strike').style.transform=`scaleX(${sp})`; const x=c.querySelector('.x'); x.style.opacity=P(t,a+.7,a+.8); x.style.transform=`scale(${back(P(t,a+.7,a+.95))})`; c.style.color=sp>.5?'#6f7a8e':'#f2f5fb';});
+    $('#s2').style.transform=`scale(${1+P(t,7,15)*.04})`; }
+  // S3
+  { $('#s3').style.opacity=env(t,15,21,.3,.05);
+    words('#s3t',t,15.2,.13,.55);
+    $('#s3t').style.opacity=1-P(t,18.2,18.6); $('#s3t').style.transform=`scale(${1+P(t,15,18.6)*.06})`;
+    [['#c3',18.5],['#c2',19.3],['#c1',20.1]].forEach(([id,a])=>{const p=P(t,a,a+.8); const e=$(id); e.style.opacity=p>0&&p<1?Math.min(1,p*6)*(1-P(t,a+.55,a+.8)):0; e.style.transform=`scale(${lerp(1.6,.9,eo(p))})`; e.style.filter=`blur(${(1-Math.min(1,p*5))*20}px)`;}); }
+  { const f=Math.max(Math.exp(-Math.pow((t-21.0)/.18,2))*(t>=20.95?1:0), .5*Math.exp(-Math.pow((t-23.5)/.12,2)), .35*Math.exp(-Math.pow((t-53)/.12,2))); $('#flash').style.opacity=f; }
+  // S4
+  { $('#s4').style.opacity=env(t,21,29,.05,.5);
+    const ip=eo(P(t,21.3,22)); $('#intro').style.opacity=ip; $('#intro').style.letterSpacing=`${lerp(40,10,ip)}px`;
+    $$('#logo .w').forEach((w,i)=>{const a=21.8+i*.07,p=eo5(P(t,a,a+.6)); w.style.opacity=p; w.style.transform=`translateY(${(1-p)*120}px) rotateX(${(1-p)*80}deg)`; w.style.filter=`blur(${(1-p)*10}px)`;});
+    const vp=P(t,23.5,24.1); const v=$('#ver'); v.style.opacity=Math.min(1,vp*4); v.style.transform=`scale(${t<23.5?3:lerp(3,1,back(vp))})`; v.style.filter=`blur(${(1-Math.min(1,vp*3))*20}px) drop-shadow(0 0 ${30+40*Math.exp(-(t-23.5)*2)}px rgba(45,99,245,.7))`;
+    const sp=eio(P(t,24.5,25.4)); $('#sw').style.transform=`translateX(${lerp(-1500,1500,sp)}px)`; $('#sw').style.opacity=sp>0&&sp<1?1:0;
+    rise($('#tag1'),eo(P(t,25.2,25.9)),30); rise($('#tag2'),eo(P(t,25.9,26.6)),30);
+    $('#s4').style.transform=`scale(${1+P(t,21,29)*.04 + (t>23.5? .03*Math.exp(-(t-23.5)*6)*Math.sin((t-23.5)*60):0)})`; }
+  // S5
+  { $('#s5h').style.opacity=env(t,29,31.6,.4,.5); $('#s5h').style.transform=`scale(${1+P(t,29,31.6)*.05})`;
+    const fs=[31.6,36.6,41.6], fe=[36.6,41.6,47];
+    $('#prog').style.opacity=env(t,31.6,47,.4,.5);
+    fs.forEach((a,i)=>{const b=fe[i], f=$('#f'+(i+1));
+      const pin=eo5(P(t,a,a+.7)), pout=eio(P(t,b-.45,b));
+      f.style.opacity=Math.min(P(t,a,a+.35),1-pout); f.style.transform=`translateX(${(1-pin)*260-pout*260}px)`; f.style.filter=`blur(${(1-pin)*12+pout*12}px)`;
+      const ttl=f.querySelector('.ttl'),sub=f.querySelector('.sub'),tag=f.querySelector('.tag');
+      tag.style.opacity=pin; rise(ttl,eo(P(t,a+.2,a+.9))); rise(sub,eo(P(t,a+.5,a+1.2)),30);
+      $$('#prog i')[i].style.transform=`scaleX(${P(t,a,b)})`;
+      const lt=t-a;
+      f.querySelectorAll('.dr').forEach((e,k)=>draw(e,eio(P(lt,.3+k*.15,1.3+k*.15))));
+      if(i==0){const sw=Math.exp(-Math.max(0,lt-1)*1.3)*Math.sin(Math.max(0,lt-1)*7)*70; const ang=lt<1?-120+lt*60:45+sw*(1)-0; $('#needle').setAttribute('transform',`rotate(${lt<1?lerp(-160,-60,eo(lt)):45+sw})`); $('#needle').style.opacity=P(lt,.4,.8);}
+      if(i==1){$$('#f2svg .ck').forEach((g,k)=>{const p=eo(P(lt,1.0+k*.6,1.4+k*.6)); g.setAttribute('opacity',p); g.setAttribute('transform',`translate(${(1-p)*40},0)`); draw(g.querySelector('.tick'),eo(P(lt,1.3+k*.6,1.7+k*.6)));});}
+      if(i==2){$$('#f3 .card').forEach((c,k)=>{const s=.9+k*.45, p=eo5(P(lt,s,s+.6)); c.style.opacity=P(lt,s,s+.3); c.style.transform=`translateX(${(1-p)*160}px)`;
+        c.querySelector('.bar').style.transform=`scaleX(${((lt-s-.6)*.35)%1>0?((lt-s-.6)*.35)%1:0})`;
+        const on=c.querySelector('.on b'); on.style.opacity=.5+.5*Math.sin(lt*5+k);});}
+    }); }
+  // S6 journey
+  { $('#s6').style.opacity=env(t,47,53,.4,.35);
+    const tp=eo(P(t,47.1,47.8)); const mt=$('#m_t'); mt.setAttribute('opacity',tp); mt.setAttribute('transform',`translate(0,${(1-tp)*30})`);
+    const pa=back(P(t,47.5,48.0)); $('#pinA').setAttribute('opacity',P(t,47.5,47.7)); $('#pinA').setAttribute('transform',`translate(280,850) scale(${pa})`);
+    $('#rbg').setAttribute('opacity',P(t,47.6,48));
+    const rp=eio(P(t,48.4,51.4)); const rt=$('#rt'); draw(rt,rp);
+    const L=+rt.dataset.L, pt=rt.getPointAtLength(L*rp); const tr=$('#trav'); tr.setAttribute('cx',pt.x); tr.setAttribute('cy',pt.y); tr.setAttribute('opacity',rp>0&&rp<1?1:0);
+    $$('#map .mst').forEach((g,k)=>{const a=48.4+3*[.33,.66][k]; g.setAttribute('opacity',P(t,a,a+.3));});
+    const pb=back(P(t,51.3,51.8)); $('#pinB').setAttribute('opacity',P(t,51.3,51.5)); $('#pinB').setAttribute('transform',`translate(1580,420) scale(${pb})`);
+    $('#s6').style.transform=`scale(${1+P(t,47,53)*.03})`; }
+  // S7
+  { $('#s7').style.opacity=Math.min(P(t,53,53.15),1-P(t,59.2,60));
+    const kp=eo(P(t,53.2,53.9)); $('#s7k').style.opacity=kp; $('#s7k').style.letterSpacing=`${lerp(26,10,kp)}px`;
+    words('#s7t',t,53.4,.3,.7);
+    const bp=back(P(t,54.4,55.0)), b=$('#btn'); b.style.opacity=P(t,54.4,54.6); const pulse=t>55?1+.035*Math.sin((t-55)*Math.PI*2):1; b.style.transform=`scale(${bp*pulse})`;
+    b.style.boxShadow=`0 0 ${t>55?40+30*Math.sin((t-55)*6.283):0}px rgba(45,99,245,.8)`;
+    rise($('#s7s'),eo(P(t,55.3,56.0)),20); rise($('#s7s2'),eo(P(t,55.7,56.4)),20);
+    $('#brand').style.opacity=eo(P(t,56.2,57));
+    $('#s7').style.transform=`scale(${1.04-P(t,53,60)*.04})`; }
+}
+window.render=render;
+window.ready=document.fonts.ready.then(()=>{prepDraw();render(0);return true;});
+</script>
+</body></html>
