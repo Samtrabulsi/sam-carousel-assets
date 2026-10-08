@@ -240,10 +240,16 @@ V.roadmap = (b, lt, d) => {
       const [m, rest] = s.split(': '); txt(m, 420, y + 62, F(800, 38), i === 0 ? C.ink : C.teal2); txt(rest, 700, y + 62, F(800, 46), i === 0 ? C.ink : C.text); }); });
 };
 V.end = (b, lt) => {
-  pop(W/2, 380, back((lt - 0.2)/0.7), () => { x.beginPath(); x.arc(0, 0, 120, 0, Math.PI*2); x.fillStyle = C.teal; x.fill(); txt('G', 0, 8, F(800, 130), '#fff', 'center'); });
-  txt('Grow Success Online', W/2, 580, F(800, 64), C.text, 'center', ph(lt, 0.6));
-  const clicked = lt > 2.6; pop(W/2, 720, back((lt - 1.2)/0.6), () => { rr(-230, -55, 460, 110, 55, clicked ? '#3A4A66' : '#FF3B3B'); txt(clicked ? 'Subscribed ✓' : 'SUBSCRIBE', 0, 4, F(900, 46), '#fff', 'center'); });
-  txt(b.next, W/2, 870, F(600, 40), C.muted, 'center', ph(lt, 3));
+  pop(W/2, 330, back((lt - 0.2)/0.7), () => { x.beginPath(); x.arc(0, 0, 110, 0, Math.PI*2); x.fillStyle = C.teal; x.fill(); txt('G', 0, 8, F(800, 120), '#fff', 'center'); });
+  txt('Grow Success Online', W/2, 520, F(800, 60), C.text, 'center', ph(lt, 0.5));
+  // Like button: pops in, then gets "clicked" with a burst
+  const liked = lt > 2.0, lp = back((lt - 0.9)/0.6);
+  pop(W/2 - 260, 690, lp * (liked ? 1 + 0.15*Math.max(0, 1 - (lt - 2.0)/0.3) : 1), () => {
+    rr(-210, -60, 420, 120, 60, liked ? C.teal : '#26375A'); txt('👍  ' + (liked ? 'Liked' : 'Like'), 0, 4, F(900, 46), '#fff', 'center'); });
+  if (liked && lt < 2.8) { const k = (lt - 2.0)/0.8; for (let i = 0; i < 10; i++) { const a = i/10*Math.PI*2; x.beginPath(); x.arc(W/2 - 260 + Math.cos(a)*(150 + 120*k), 690 + Math.sin(a)*(90 + 80*k), 8*(1-k), 0, Math.PI*2); x.fillStyle = C.amber; x.fill(); } }
+  const subbed = lt > 3.4;
+  pop(W/2 + 260, 690, back((lt - 1.2)/0.6), () => { rr(-230, -60, 460, 120, 60, subbed ? '#3A4A66' : '#FF3B3B'); txt(subbed ? 'Subscribed ✓' : 'SUBSCRIBE', 0, 4, F(900, 46), '#fff', 'center'); });
+  txt(b.next, W/2, 870, F(600, 40), C.muted, 'center', ph(lt, 4));
 };
 
 // Chained "steps" beats: only the newly added item animates.
