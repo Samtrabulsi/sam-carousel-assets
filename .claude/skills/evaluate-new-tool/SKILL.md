@@ -31,6 +31,19 @@ Mark guesses as guesses. Separate the maker's own benchmarks from independent on
 - Add helper scripts under `scripts/` only when they remove real repeated work; test them before committing.
 - Commit on a `claude/` branch, push, and remind Sam that skills load in new sessions only after merging to `main`.
 
+## Already reviewed
+
+Check this list first. If the tool is here, give the recorded verdict in a few lines and re-check only what may have changed (new release, new features, pricing). Add every new review to this table.
+
+| Tool | Reviewed | Verdict | Notes |
+|---|---|---|---|
+| LongCat-Video / Avatar (meituan-longcat/LongCat-Video) | 2026-10 | Saved as skill | `longcat-video`, `talking-head-video` |
+| PhotoCraft (storytold/photocraft) | 2026-10 | Saved as skill | `photocraft`; early alpha, test on real PSDs first |
+| Compositor (robbietilton/Compositor) | 2026-10 | Saved as skill | `compositor-projects`; Mac-only app |
+| awesome-opus5-5-videos (yihui-dev) | 2026-10 | Saved as skill | `code-motion-video` |
+| instagram-agent-skill (Jakeschincariol) | 2026-10 | Installed | 13 `ig-*` skills; English-only scorers |
+| REA, Reverse Engineer Anything (morluto/rea) | 2026-10-08 | Known, not needed | Developer reverse-engineering MCP (binaries, apps, websites; needs Node 22+, often Ghidra/Hopper). No use for content, social, ads or video. Only possible use: understanding a feature on another website for a client build, and only to rebuild the idea, never to copy code or get around licences/logins. Re-evaluate only if Sam takes on that kind of dev work. |
+
 ## Guardrails
 
 - Downloaded code is untrusted: own directory, don't run it unless Sam asked to.
