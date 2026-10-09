@@ -1,33 +1,12 @@
 [
  {
-  "say": "It's nine p.m. A homeowner's water heater just burst. They call the first plumber on Google. Voicemail. They call the second. Voicemail again. The third one answers with a text in thirty seconds, and books the job.",
-  "v": {
-   "t": "scenario",
-   "icon": "📞",
-   "title": "9:04 PM",
-   "lines": [
-    "Call #1 → voicemail",
-    "Call #2 → voicemail",
-    "Call #3 → instant text → BOOKED"
-   ],
-   "hl": 2
-  }
- },
- {
-  "say": "The third plumber wasn't better. They were just automated.",
-  "v": {
-   "t": "bigtext",
-   "text": "Not better. Just automated.",
-   "kicker": "The difference"
-  }
- },
- {
   "say": "In this video, I'll walk you through five real problems that cost small businesses money every single week, and exactly how to fix each one with AI. Real tools, real setup steps, and the mistakes to avoid.",
   "v": {
    "t": "title",
    "kicker": "AI FOR SMALL BUSINESS",
    "title": "5 Problems AI Fixes",
-   "badge": "STEP BY STEP"
+   "badge": "STEP BY STEP",
+   "bg": "owner_3"
   }
  },
  {
@@ -40,6 +19,13 @@
     "Forgotten meetings",
     "Late invoices",
     "No time for content"
+   ],
+   "photos": [
+    "phone_0",
+    "laptop_4",
+    "meeting_1",
+    "money_3",
+    "social_2"
    ]
   }
  },
@@ -48,7 +34,8 @@
   "v": {
    "t": "chapter",
    "n": 1,
-   "title": "Missed leads & repeat questions"
+   "title": "Missed leads & repeat questions",
+   "bg": "phone_2"
   }
  },
  {
@@ -62,7 +49,8 @@
     "After 6 PM",
     "On weekends"
    ],
-   "hl": -1
+   "hl": -1,
+   "photo": "owner_1"
   }
  },
  {
@@ -100,7 +88,8 @@
     "AI answers from YOUR info",
     "Ready to buy?",
     "Lead sent to you"
-   ]
+   ],
+   "bg": "phone_0"
   }
  },
  {
@@ -124,7 +113,8 @@
      "ManyChat",
      "Instagram & Facebook DMs"
     ]
-   ]
+   ],
+   "bg": "laptop_4"
   }
  },
  {
@@ -219,7 +209,8 @@
   "v": {
    "t": "chapter",
    "n": 2,
-   "title": "Slow follow-ups"
+   "title": "Slow follow-ups",
+   "bg": "laptop_5"
   }
  },
  {
@@ -245,7 +236,8 @@
      "They booked someone else"
     ]
    ],
-   "bad": true
+   "bad": true,
+   "bg": "laptop_4"
   }
  },
  {
@@ -255,7 +247,8 @@
    "num": 21,
    "suffix": "×",
    "label": "more likely to qualify a lead when you reply in 5 minutes vs 30",
-   "source": "Lead Response Management Study, MIT / InsideSales"
+   "source": "Lead Response Management Study, MIT / InsideSales",
+   "bg": "phone_3"
   }
  },
  {
@@ -269,7 +262,8 @@
     "AI personal reply < 1 min",
     "Task: call them",
     "Day 3 + Day 7 check-ins"
-   ]
+   ],
+   "bg": "laptop_2"
   }
  },
  {
@@ -293,7 +287,8 @@
      "Claude / ChatGPT",
      "Writes the personal reply"
     ]
-   ]
+   ],
+   "bg": "laptop_5"
   }
  },
  {
@@ -329,7 +324,8 @@
   "v": {
    "t": "bigtext",
    "text": "Specific + one easy question",
-   "kicker": "What gets replies"
+   "kicker": "What gets replies",
+   "bg": "phone_0"
   }
  },
  {
@@ -345,7 +341,8 @@
   "v": {
    "t": "chapter",
    "n": 3,
-   "title": "Forgotten meeting promises"
+   "title": "Forgotten meeting promises",
+   "bg": "meeting_2"
   }
  },
  {
@@ -360,7 +357,8 @@
     "Intro to designer ✗ forgotten"
    ],
    "hl": 2,
-   "bad": true
+   "bad": true,
+   "photo": "handshake_3"
   }
  },
  {
@@ -370,7 +368,8 @@
    "num": 20,
    "suffix": " min",
    "label": "of note-writing per call, so most people skip it",
-   "source": ""
+   "source": "",
+   "bg": "laptop_2"
   }
  },
  {
@@ -400,7 +399,8 @@
      "Zoom / Meet AI",
      "Built in to paid plans"
     ]
-   ]
+   ],
+   "bg": "meeting_1"
   }
  },
  {
@@ -413,7 +413,8 @@
     "AI summary + action items",
     "Tasks in your CRM / to-do app",
     "Every promise has a due date"
-   ]
+   ],
+   "bg": "meeting_2"
   }
  },
  {
@@ -443,14 +444,16 @@
   "v": {
    "t": "chapter",
    "n": 4,
-   "title": "Late invoices"
+   "title": "Late invoices",
+   "bg": "money_5"
   }
  },
  {
   "say": "You did the work. The client is happy. And the invoice is thirty days overdue. Chasing it feels awkward, so you put it off, and meanwhile your cash flow takes the hit.",
   "v": {
    "t": "invoice",
-   "state": "overdue"
+   "state": "overdue",
+   "bg": "money_3"
   }
  },
  {
@@ -474,7 +477,8 @@
      "Stripe",
      "Reminder emails"
     ]
-   ]
+   ],
+   "bg": "money_1"
   }
  },
  {
@@ -500,7 +504,8 @@
      "Without you lifting a finger"
     ]
    ],
-   "bad": false
+   "bad": false,
+   "bg": "money_3"
   }
  },
  {
@@ -542,13 +547,15 @@
   "v": {
    "t": "chapter",
    "n": 5,
-   "title": "No time for content"
+   "title": "No time for content",
+   "bg": "social_2"
   }
  },
  {
   "say": "You know you should be posting. It builds trust, it brings in leads. But between running the business and serving clients, it's always the first thing to slip.",
   "v": {
-   "t": "calendar"
+   "t": "calendar",
+   "bg": "laptop_0"
   }
  },
  {
@@ -556,7 +563,8 @@
   "v": {
    "t": "bigtext",
    "text": "Record once. Let AI slice it.",
-   "kicker": "The weekly habit"
+   "kicker": "The weekly habit",
+   "bg": "phone_4"
   }
  },
  {
@@ -569,7 +577,8 @@
     "Newsletter",
     "3 social posts",
     "Short clips"
-   ]
+   ],
+   "bg": "phone_4"
   }
  },
  {
@@ -579,7 +588,8 @@
    "num": 1,
    "suffix": " hour",
    "label": "a week becomes a full week of posts",
-   "source": ""
+   "source": "",
+   "bg": "laptop_0"
   }
  },
  {
@@ -608,7 +618,8 @@
   "v": {
    "t": "bigtext",
    "text": "Don't start with all five.",
-   "kicker": "Where to start"
+   "kicker": "Where to start",
+   "bg": "owner_4"
   }
  },
  {
@@ -630,7 +641,8 @@
   "v": {
    "t": "bigtext",
    "text": "Hours × your rate + lost revenue",
-   "kicker": "The biggest number wins"
+   "kicker": "The biggest number wins",
+   "bg": "money_1"
   }
  },
  {
@@ -642,14 +654,16 @@
     "Month 2: Missed leads",
     "Month 3: Invoices",
     "Month 4: Meetings + content"
-   ]
+   ],
+   "bg": "owner_1"
   }
  },
  {
   "say": "If this helped you, hit the like button, and subscribe so you don't miss the next one. In the next video, I'll build the follow-up system from this video, step by step, on screen, so you can copy it.",
   "v": {
    "t": "end",
-   "next": "Next: build the follow-up system, step by step"
+   "next": "Next: build the follow-up system, step by step",
+   "bg": "owner_3"
   }
  }
 ]

@@ -46,6 +46,37 @@ function arrow(x1, y1, x2, y2, p, col=C.teal2) {
 // Evenly stagger n items across the first `span` of the beat (at least `min` s apart)
 const stag = (i, n, d, span=0.6, min=0.35) => 0.3 + i * Math.max(min, Math.min(1.2, (d*span) / Math.max(1, n)));
 
+// ---------- photos ----------
+const IMG = {};
+const photoNames = new Set(); BEATS.forEach(b => { const v = b.v; if (v.bg) photoNames.add(v.bg); if (v.photo) photoNames.add(v.photo); (v.photos || []).forEach(n => photoNames.add(n)); });
+const imgReady = Promise.all([...photoNames].map(n => new Promise(res => { const im = new Image(); im.onload = im.onerror = () => res(); im.src = 'photos/' + n + '.jpg'; IMG[n] = im; })));
+// draw image to cover a box, with zoom k (>=1) and pan (-1..1)
+function cover(im, bx, by, bw, bh, k=1, px=0, py=0) {
+  if (!im || !im.naturalWidth) return;
+  const s = Math.max(bw / im.naturalWidth, bh / im.naturalHeight) * k, w = im.naturalWidth * s, h = im.naturalHeight * s;
+  x.drawImage(im, bx + (bw - w)/2 + px*(w - bw)/2, by + (bh - h)/2 + py*(h - bh)/2, w, h);
+}
+function photoCard(name, bx, by, bw, bh, r, k=1, px=0, py=0) {
+  x.save(); x.beginPath(); x.roundRect(bx, by, bw, bh, r); x.clip(); cover(IMG[name], bx, by, bw, bh, k, px, py); x.restore();
+}
+// Full-bleed photo with slow Ken Burns push and a dark brand overlay so text stays readable
+function photoBg(name, lt, d, idx, strong) {
+  const k = 1.14 - 0.1 * cl(lt / Math.max(d, 1)), dir = idx % 2 ? 1 : -1;
+  x.save(); x.globalAlpha *= 0.95; cover(IMG[name], 0, 0, W, H, k, dir * 0.6 * (1 - lt / Math.max(d, 1)), 0); x.restore();
+  let g = x.createLinearGradient(0, 0, W, 0);
+  g.addColorStop(0, `rgba(11,20,38,${strong ? 0.94 : 0.86})`); g.addColorStop(0.55, `rgba(11,20,38,${strong ? 0.82 : 0.6})`); g.addColorStop(1, `rgba(11,20,38,${strong ? 0.7 : 0.45})`);
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  g = x.createLinearGradient(0, H*0.55, 0, H); g.addColorStop(0, 'rgba(11,20,38,0)'); g.addColorStop(1, 'rgba(11,20,38,0.9)');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+}
+const rnd = (i) => { const v = Math.sin(i * 127.1 + 311.7) * 43758.5453; return v - Math.floor(v); };
+function particles(t) {
+  for (let i = 0; i < 46; i++) {
+    const sp = 18 + rnd(i) * 40, px = rnd(i + 99) * W + Math.sin(t * 0.3 + i) * 30, py = H - ((t * sp + rnd(i + 7) * H) % (H + 40));
+    const r = 1.5 + rnd(i + 3) * 3.5; x.beginPath(); x.arc(px, py, r, 0, Math.PI*2);
+    x.fillStyle = i % 5 === 0 ? 'rgba(255,181,71,0.35)' : 'rgba(95,211,217,0.28)'; x.fill();
+  }
+}
 function bg(t) {
   x.fillStyle = C.bg; x.fillRect(0, 0, W, H);
   const gx = 1500 + Math.sin(t*0.13)*260, gy = 300 + Math.cos(t*0.11)*160;
@@ -78,6 +109,10 @@ V.agenda = (b, lt, d) => {
     const y = 300 + i*120; rr(160, y, 1100, 96, 24, C.card);
     txt(String(i+1), 220, y + 50, F(900, 48), C.teal, 'center'); txt(s, 290, y + 50, F(700, 44), C.text);
   }));
+  (b.photos || []).forEach((n, i) => { const p = back((lt - stag(i, 5, d)) / 0.6); if (p <= 0) return;
+    x.save(); x.translate(1560, 560); x.rotate((i % 2 ? 1 : -1) * 0.05 * (i + 1) / 3); x.scale(p, p); x.globalAlpha *= cl(p);
+    rr(-290, -200, 580, 400, 26, '#fff'); photoCard(n, -276, -186, 552, 372, 18, 1.1 - 0.06*cl((lt - stag(i, 5, d))/3));
+    x.restore(); });
 };
 V.chapter = (b, lt) => {
   const p = back((lt-0.1)/0.7);
@@ -86,7 +121,10 @@ V.chapter = (b, lt) => {
   slide(ph(lt, 0.6), 0, 30, () => txt(b.title, W/2, 710, F(900, fit(b.title, 1600, 92, 900)), C.text, 'center'));
 };
 V.scenario = (b, lt, d) => {
-  pop(330, 470, back((lt-0.1)/0.6), () => { x.beginPath(); x.arc(0, 0, 170, 0, Math.PI*2); x.fillStyle = C.card; x.fill(); txt(b.icon, 0, 10, F(500, 150), C.text, 'center'); });
+  pop(330, 470, back((lt-0.1)/0.6), () => {
+    if (b.photo) { x.save(); x.beginPath(); x.arc(0, 0, 210, 0, Math.PI*2); x.clip(); cover(IMG[b.photo], -210, -210, 420, 420, 1.15 - 0.1*cl(lt/d)); x.restore();
+      x.save(); x.rotate(lt * 0.4); x.setLineDash([18, 14]); x.strokeStyle = C.teal2; x.lineWidth = 5; x.beginPath(); x.arc(0, 0, 232, 0, Math.PI*2); x.stroke(); x.restore(); }
+    else { x.beginPath(); x.arc(0, 0, 170, 0, Math.PI*2); x.fillStyle = C.card; x.fill(); txt(b.icon, 0, 10, F(500, 150), C.text, 'center'); } });
   txt(b.title, 640, 260, F(900, fit(b.title, 1150, 84, 900)), C.text, 'left', ph(lt, 0.2));
   b.lines.forEach((s, i) => slide(ph(lt, stag(i, b.lines.length, d, 0.75)), 60, 0, () => {
     const y = 360 + i*140, hl = i === b.hl;
@@ -127,7 +165,6 @@ V.tools = (b, lt, d) => {
       x.beginPath(); x.arc(-260, 0, 52, 0, Math.PI*2); x.fillStyle = C.teal; x.fill(); txt(name[0], -260, 4, F(900, 52), '#fff', 'center');
       txt(name, -180, -26, F(800, fit(name, 500, 46)), C.text); txt(note, -180, 34, F(600, fit(note, 500, 32, 600)), C.muted); });
   });
-  txt('Logos not shown · names for reference only', W/2, 1000, F(500, 22), C.muted, 'center', 0.5*ph(lt, 1));
 };
 V.steps = (b, lt, d) => {
   txt(b.title, 160, 200, F(900, fit(b.title, 1600, 72, 900)), C.text, 'left', ph(lt, 0));
@@ -276,11 +313,22 @@ function chrome(s) {
 function draw(t) {
   bg(t);
   let i = SEG.length - 1; while (i > 0 && t < SEG[i].start) i--;
-  const s = SEG[i], lt = t - s.start, d = s.end - s.start;
-  x.save(); x.globalAlpha = cl(lt / 0.3) * cl((d - lt) / 0.3 + (i === SEG.length - 1 ? 1 : 0));
+  const s = SEG[i], lt = t - s.start, d = s.end - s.start, last = i === SEG.length - 1;
+  const fin = cl(lt / 0.35), fout = last ? 1 : cl((d - lt) / 0.35);
+  if (s.v.bg) { x.save(); x.globalAlpha = Math.min(fin, fout); photoBg(s.v.bg, lt, d, i, s.v.t !== 'chapter'); x.restore(); }
+  particles(t);
+  // content slides in from the right, drifts slightly while on screen (camera push), slides out left
+  x.save(); x.globalAlpha = fin * fout;
+  const push = 1 + 0.025 * cl(lt / Math.max(d, 1));
+  x.translate(W/2 + 90 * (1 - eo(lt / 0.5)) - 60 * (1 - fout), H/2); x.scale(push, push); x.translate(-W/2, -H/2);
   (V[s.v.t] || (() => {}))(s.v, lt, d); x.restore();
+  // light-sweep wipe at the start of each chapter
+  if (s.v.t === 'chapter' && lt < 0.9) { const k = eo(lt / 0.9), wx = -400 + k * (W + 800);
+    const g = x.createLinearGradient(wx - 300, 0, wx + 300, 0); g.addColorStop(0, 'rgba(95,211,217,0)'); g.addColorStop(0.5, 'rgba(95,211,217,0.35)'); g.addColorStop(1, 'rgba(95,211,217,0)');
+    x.fillStyle = g; x.fillRect(0, 0, W, H); }
   chrome(s); captions(s, t);
+  x.fillStyle = 'rgba(143,163,191,0.18)'; x.fillRect(0, H - 6, W, 6); x.fillStyle = C.teal; x.fillRect(0, H - 6, W * cl(t / TL.total), 6);
 }
 function loop() { draw(performance.now() / 1000); requestAnimationFrame(loop); }
-document.fonts.load(F(800, 40)).then(() => requestAnimationFrame(loop));
+Promise.all([document.fonts.load(F(800, 40)), imgReady]).then(() => requestAnimationFrame(loop));
 </script></body></html>

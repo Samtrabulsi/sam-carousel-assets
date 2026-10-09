@@ -1,6 +1,6 @@
 # Episode 1 (v2): 5 Problems AI Fixes for Small Businesses
 
-9:49 long-form explainer. Each problem shows the real cost, the fix, specific tools, setup steps, a worked example, and the mistake to avoid.
+9:31 long-form explainer. Opens straight on the 5 problems; 30 of 49 scenes use CC0 photos (see `photos/CREDITS.md`) with slow zooms, slide transitions and chapter light-sweeps. Each problem shows the real cost, the fix, specific tools, setup steps, a worked example, and the mistake to avoid.
 
 **Files**
 - `5-problems-ai-fixes.mp4`: final video, 1920x1080, 30fps, burned-in captions
@@ -25,13 +25,13 @@ python3 -c "import json;open('data.js','w').write('const BEATS='+json.dumps(json
 **Description:**
 Most small businesses lose money every week to five problems AI can now fix: missed leads, slow follow-ups, forgotten meeting promises, late invoices, and no time for content. For each one you'll see the real cost, the exact tools, the setup steps, and the mistake to avoid.
 
-00:00 Why the third plumber gets the job
-00:41 Problem 1: Missed leads & repeat questions
-02:43 Problem 2: Slow follow-ups
-04:46 Problem 3: Forgotten meeting promises
-06:16 Problem 4: Late invoices
-07:38 Problem 5: No time for content
-08:58 Where to start
+00:00 Intro: 5 problems AI fixes
+00:23 Problem 1: Missed leads & repeat questions
+02:25 Problem 2: Slow follow-ups
+04:27 Problem 3: Forgotten meeting promises
+05:58 Problem 4: Late invoices
+07:20 Problem 5: No time for content
+08:40 Where to start
 
 Tools mentioned: Tidio, Intercom Fin, Chatbase, ManyChat, HubSpot CRM, Zapier, Make, Claude, ChatGPT, Fathom, Fireflies, Otter, QuickBooks, Xero, FreshBooks, Stripe, Descript, Opus Clip, Canva, Metricool, Buffer. Not sponsored.
 
