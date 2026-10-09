@@ -1,12 +1,12 @@
 {
- "name": "Company histories",
- "channel": "TBD (new channel)",
+ "name": "Money stories",
+ "channel": "CashFlow Champions",
  "queries": [
+  "how company actually makes money",
   "the entire history of company",
-  "history of walmart",
-  "how nike became",
+  "how company lost billions",
   "rise and fall of company",
-  "company history documentary"
+  "business documentary"
  ],
  "candidate_template": "the entire history of {}",
  "candidates": [
@@ -40,9 +40,9 @@
   "music": "lofi-business-85bpm.mp3",
   "presenter": false,
   "brand": {
-   "name": "BRAND HISTORIES",
-   "initial": "B",
-   "display": "Brand Histories"
+   "name": "CASHFLOW CHAMPIONS",
+   "initial": "C",
+   "display": "CashFlow Champions"
   },
   "chapterLabel": "CHAPTER",
   "thumbnail": {
@@ -54,8 +54,13 @@
   }
  },
  "rpm_notes": "Business/finance advertisers; avoid defamation, cite sources for every number.",
- "slug": "company-histories",
- "channel_url": null,
- "notion_channel": "Company histories",
- "cadence": "2 per week (Tue, Fri 15:00 UTC)"
+ "slug": "cashflow-champions",
+ "channel_url": "https://www.youtube.com/@CashFlow-Champions",
+ "notion_channel": "Money stories (CashFlow Champions)",
+ "cadence": "2 per week (Tue, Fri 15:00 UTC)",
+ "title_patterns": [
+  "How {X} Actually Makes Money",
+  "The ENTIRE History of {X} in {N} Minutes",
+  "How {X} Lost ${N} Billion"
+ ]
 }

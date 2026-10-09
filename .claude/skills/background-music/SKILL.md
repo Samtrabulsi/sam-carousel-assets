@@ -9,9 +9,10 @@ description: Add a background music bed under a narrated video (YouTube episodes
 
 1. **Saved library first**: `youtube/music/` in this repo. Reuse a track the channel already has, so episodes sound consistent and cost nothing.
    - `lofi-business-85bpm.mp3`: 178 s, warm lofi (e-piano, soft bass, brushed drums). Generated with vidIQ 2026-10-09; original and royalty-free.
-2. **vidIQ music generator** (`vidiq_generate_music`, 25 credits per track, up to 180 s, returns WAV). Prompt pattern: genre + mood + instruments + tempo + "loop-friendly ending" + "Instrumental". Save every new track to `youtube/music/<style>-<bpm>bpm.mp3` with a line in this file.
-3. **Runway** `generate_music` when the Runway workspace has credits.
-4. **YouTube Audio Library** (Sam downloads it in YouTube Studio → Audio Library; safest for Content ID). Put the file in `youtube/music/`.
+2. **Suno** (Sam has an account: trabulsi_sam). Best quality; there's no official API, so Sam or the assistant makes tracks in the browser: Create → turn on **Instrumental** → prompt with the pattern in 3 (genre, mood, instruments, tempo, "no vocals") → download MP3/WAV → save to `youtube/music/<style>-<bpm>bpm.mp3`. Make 3–4 beds per channel in one sitting so the routines never wait. **Licence:** only tracks made while on a paid Suno plan (Pro/Premier) are cleared for monetized YouTube; free-plan songs are non-commercial. Note the plan and song link in this file.
+3. **vidIQ music generator** (`vidiq_generate_music`, 25 credits per track, up to 180 s, returns WAV). Prompt pattern: genre + mood + instruments + tempo + "loop-friendly ending" + "Instrumental". Save every new track to `youtube/music/<style>-<bpm>bpm.mp3` with a line in this file.
+4. **Runway** `generate_music` when the Runway workspace has credits.
+5. **YouTube Audio Library** (Sam downloads it in YouTube Studio → Audio Library; safest for Content ID). Put the file in `youtube/music/`.
 
 Avoid: tracks with unclear licences, anything from a "free music" site that needs scraping. Freesound's CDN refuses direct downloads, so don't work around it. MusicGen weights are non-commercial. ACE-Step 1.5 / Stable Audio Open need a 12 GB+ GPU (not available in cloud sessions).
 

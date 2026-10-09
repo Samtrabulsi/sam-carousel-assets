@@ -1,0 +1,58 @@
+{
+ "name": "Body explainers",
+ "channel": "Chattylytics (rename pending)",
+ "slug": "body-explainers",
+ "channel_url": "https://www.youtube.com/@Chattylytics",
+ "notion_channel": "Body explainers (Chattylytics)",
+ "queries": [
+  "what happens to your body if you",
+  "what happens to your body when you stop",
+  "what happens if you dont sleep",
+  "what happens to your body when you fast",
+  "body explained documentary"
+ ],
+ "candidate_template": "what happens to your body if you {}",
+ "candidates": [
+  "stop eating sugar",
+  "walk every day",
+  "stop drinking alcohol",
+  "fast for 3 days",
+  "sleep 5 hours",
+  "drink only water",
+  "stop drinking coffee",
+  "eat eggs every day",
+  "sit all day",
+  "take cold showers",
+  "stop eating bread",
+  "do 100 pushups a day",
+  "skip breakfast",
+  "eat bananas every day",
+  "stop using your phone"
+ ],
+ "min_duration": 480,
+ "format": {
+  "length_min": 15,
+  "length_max": 20,
+  "title": "What Happens to Your Body If You {X}",
+  "style": "timeline explainer: hour/day/week/month milestones with stat, list, compare and photo scenes, 6-8 chapters",
+  "voice": "af_heart",
+  "speed": 0.93,
+  "music": "lofi-business-85bpm.mp3",
+  "presenter": true,
+  "brand": {
+   "name": "CHATTYLYTICS",
+   "initial": "C",
+   "display": "Chattylytics"
+  },
+  "chapterLabel": "STAGE",
+  "thumbnail": {
+   "layout": "combo",
+   "colors": {
+    "accent": "#4FD1C5",
+    "alert": "#FF5C6C"
+   }
+  }
+ },
+ "rpm_notes": "Health advertisers; YMYL topic: cite peer-reviewed or official sources (NIH, Mayo Clinic, NHS) for every claim, add a 'not medical advice' line, never promise cures.",
+ "cadence": "2 per week (Mon, Thu 15:00 UTC)"
+}
