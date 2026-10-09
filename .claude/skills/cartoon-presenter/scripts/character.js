@@ -2,7 +2,7 @@
 // identical in every video. drawGia(ctx, opts) draws her waist-up with the bottom-centre at (0,0)
 // in a ~560-unit-tall box; scale/translate the context to place her.
 //
-// opts: { t, pose, mouth (0..1), look (-1..1), blinkSeed, lt (time in pose, s) }
+// opts: { t, pose, viseme (Rhubarb A–H/X, preferred), mouth (0..1 fallback), look (-1..1), blinkSeed, lt (time in pose, s) }
 // poses: idle, wave, point, worried, think, surprised, happy, cheer
 (function () {
   const SKIN = '#C98E6B', SKIN_D = '#B07656', HAIR = '#2A1A16', HAIR_L = '#3D2722',
@@ -34,6 +34,38 @@
     c.fillStyle = SKIN; c.beginPath(); c.arc(hx, hy, 27, 0, Math.PI * 2); c.fill();
     c.fillStyle = SKIN_D; c.beginPath(); c.arc(hx + s * 10, hy - 6, 9, 0, Math.PI * 2); c.fill(); // thumb
   }
+
+  // Rhubarb Lip Sync mouth shapes (https://github.com/DanielSWolf/rhubarb-lip-sync#mouth-shapes)
+  // A: closed (M B P)  B: slightly open, teeth (K S T EE)  C: open (EH AE)  D: wide open (AA)
+  // E: rounded (AO ER)  F: puckered (UW OW W)  G: teeth on lip (F V)  H: tongue up (L)  X: rest
+  function drawViseme(c, v, my) {
+    const LIP = '#5A1E22', IN = '#5A1E22', TONGUE = '#E86E7A';
+    const open = (w, h, teethTop, teethBot, tongue) => {
+      c.fillStyle = IN; c.beginPath(); c.ellipse(0, my, w, h, 0, 0, Math.PI * 2); c.fill();
+      if (tongue) { c.fillStyle = TONGUE; c.beginPath(); c.ellipse(0, my + h * 0.45, w * 0.6, h * 0.42, 0, 0, Math.PI); c.fill(); }
+      c.fillStyle = '#fff';
+      if (teethTop) c.fillRect(-w * 0.62, my - h + 1, w * 1.24, Math.min(8, h * 0.4));
+      if (teethBot) c.fillRect(-w * 0.55, my + h - Math.min(7, h * 0.35) - 1, w * 1.1, Math.min(7, h * 0.35));
+    };
+    c.lineCap = 'round';
+    switch (v) {
+      case 'A': c.strokeStyle = LIP; c.lineWidth = 8; c.beginPath(); c.moveTo(-20, my); c.lineTo(20, my); c.stroke(); break;
+      case 'B': open(24, 8, true, true, false); break;
+      case 'C': open(25, 16, true, false, true); break;
+      case 'D': open(27, 26, true, false, true); break;
+      case 'E': open(19, 18, false, false, true); break;
+      case 'F': c.fillStyle = IN; c.beginPath(); c.ellipse(0, my, 10, 11, 0, 0, Math.PI * 2); c.fill();
+        c.strokeStyle = '#B5525C'; c.lineWidth = 5; c.stroke(); break;
+      case 'G': open(22, 9, true, false, false); c.fillStyle = '#C46A6A'; c.fillRect(-18, my + 2, 36, 6); break;
+      case 'H': open(24, 17, true, false, false); c.fillStyle = TONGUE; c.beginPath(); c.ellipse(0, my - 6, 11, 7, 0, 0, Math.PI * 2); c.fill(); break;
+    }
+  }
+  // cues: Rhubarb JSON mouthCues; returns the shape at time t (seconds)
+  window.giaViseme = function (cues, t) {
+    let lo = 0, hi = cues.length - 1;
+    while (lo <= hi) { const m = (lo + hi) >> 1; if (cues[m].end <= t) lo = m + 1; else if (cues[m].start > t) hi = m - 1; else return cues[m].value; }
+    return 'X';
+  };
 
   window.drawGia = function (c, o) {
     const t = o.t || 0, lt = o.lt ?? 9, P = POSES[o.pose] || POSES.idle, I = POSES.idle;
@@ -91,7 +123,9 @@
     c.strokeStyle = SKIN_D; c.lineWidth = 5; c.beginPath(); c.moveTo(2, hy + 14); c.quadraticCurveTo(-8, hy + 36, 4, hy + 38); c.stroke();
     // mouth: open shape follows the voice; otherwise a smile/frown curve
     const my = hy + 62;
-    if (mouth > 0.08 || P.oh) {
+    if (o.viseme && o.viseme !== 'X') {
+      drawViseme(c, o.viseme, my);
+    } else if (mouth > 0.08 || P.oh) {
       const h = P.oh && mouth < 0.3 ? 16 * k : 6 + mouth * 26, w = 26 - mouth * 6;
       c.fillStyle = '#5A1E22'; c.beginPath(); c.ellipse(0, my, w, h, 0, 0, Math.PI * 2); c.fill();
       c.fillStyle = '#E86E7A'; c.beginPath(); c.ellipse(0, my + h * 0.45, w * 0.6, h * 0.4, 0, 0, Math.PI); c.fill();

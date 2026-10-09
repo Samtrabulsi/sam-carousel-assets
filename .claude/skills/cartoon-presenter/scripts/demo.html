@@ -1,0 +1,27 @@
+<!doctype html>
+<!-- Gia presenter demo. Needs cues.js (window.CUES = Rhubarb mouthCues) next to it.
+     Render: node .claude/skills/code-motion-video/scripts/record.mjs demo.html out.mp4 --w 1920 --h 1080 --fps 30 --sec 12 --audio voice.wav -->
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&display=block" rel="stylesheet">
+<style>html,body{margin:0;background:#0B1426;overflow:hidden}</style></head>
+<body><canvas id="c" width="1920" height="1080"></canvas>
+<script src="character.js"></script><script src="cues.js"></script>
+<script>
+const x = document.getElementById('c').getContext('2d');
+// pose script: [startSec, pose]; change poses on sentence beats, never every word
+const POSE_KEYS = window.POSE_KEYS || [[0, 'wave'], [2.5, 'point'], [6, 'think'], [8.5, 'happy']];
+function poseAt(t) { let k = POSE_KEYS[0]; for (const p of POSE_KEYS) if (t >= p[0]) k = p; return { pose: k[1], lt: t - k[0] }; }
+function draw(t) {
+  x.fillStyle = '#0B1426'; x.fillRect(0, 0, 1920, 1080);
+  const g = x.createRadialGradient(520, 700, 0, 520, 700, 700); g.addColorStop(0, 'rgba(18,164,174,0.35)'); g.addColorStop(1, 'rgba(18,164,174,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 1920, 1080);
+  x.fillStyle = '#F4F7FB'; x.font = '900 84px Inter'; x.fillText('5 Problems AI Fixes', 1000, 440);
+  x.fillStyle = '#FFB547'; x.font = '800 44px Inter'; x.fillText('for small businesses', 1000, 520);
+  const p = poseAt(t);
+  x.save(); x.translate(500, 1080); x.scale(1.45, 1.45);
+  drawGia(x, { t, pose: p.pose, lt: p.lt, viseme: giaViseme(window.CUES || [], t), blinkSeed: 0.7, look: 0.4 });
+  x.restore();
+}
+function loop() { draw(performance.now() / 1000); requestAnimationFrame(loop); }
+document.fonts.ready.then(() => requestAnimationFrame(loop));
+</script></body></html>
