@@ -43,6 +43,7 @@ Check this list first. If the tool is here, give the recorded verdict in a few l
 | awesome-opus5-5-videos (yihui-dev) | 2026-10 | Saved as skill | `code-motion-video` |
 | instagram-agent-skill (Jakeschincariol) | 2026-10 | Installed | 13 `ig-*` skills; English-only scorers |
 | REA, Reverse Engineer Anything (morluto/rea) | 2026-10-08 | Known, not needed | Developer reverse-engineering MCP (binaries, apps, websites; needs Node 22+, often Ghidra/Hopper). No use for content, social, ads or video. Only possible use: understanding a feature on another website for a client build, and only to rebuild the idea, never to copy code or get around licences/logins. Re-evaluate only if Sam takes on that kind of dev work. |
+| TubeGen AI (tubegen.ai) | 2026-10-09 | Skip for now | Paid faceless-YouTube suite: niche finder, titles, script, voiceover (8 languages), AI scenes/animations, consistent characters, Storyblocks stock, auto overlays, avatars, music, editor, thumbnails. $149/$297/$849 per month (~$2/min), no free trial, no refunds, ~3.5/5 on Trustpilot. Our own pipeline (vidIQ + Kokoro voice + code-motion-video renderer + CC0 photos) already covers most of it at near-zero cost. Real gaps: AI-generated scene images/animation, consistent characters, stock video, background music. Re-evaluate if Sam wants cartoon/story-style channels. |
 
 ## Guardrails
 
