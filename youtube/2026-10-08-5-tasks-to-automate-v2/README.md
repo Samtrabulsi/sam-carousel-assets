@@ -4,7 +4,7 @@
 
 **Files**
 - `5-problems-ai-fixes.mp4`: final video, 1920x1080, 30fps, burned-in captions
-- `thumbnail.jpg`: 1280x720, main thumbnail (problem list). `thumbnail-face.jpg`: angry-contractor version for A/B testing
+- `thumbnail.jpg`: 1280x720, main thumbnail (problem list). `thumbnail-combo.jpg`: problem list + contractor face (`thumbnail-combo.html`). `thumbnail-face.jpg`: full-face vidIQ version. Test them with YouTube Test & Compare
 - `script.json`: the script as 51 "beats" (narration line + visual spec). Edit this to change the video.
 - `timeline.json`: start time and length of each beat, measured from the voiceover
 - `video.html` + `data.js`: the animation engine (15 visual templates)
