@@ -1,0 +1,10 @@
+{
+  "name": "Company histories",
+  "channel": "TBD (new channel)",
+  "queries": ["the entire history of company", "history of walmart", "how nike became", "rise and fall of company", "company history documentary"],
+  "candidate_template": "the entire history of {}",
+  "candidates": ["Walmart", "Nike", "Coca-Cola", "McDonald's", "Apple", "Amazon", "Toyota", "IKEA", "Starbucks", "Disney", "Costco", "Samsung", "Lego", "Ford", "Nintendo", "Red Bull", "Rolex", "Ferrari"],
+  "min_duration": 480,
+  "format": {"length_min": 15, "length_max": 20, "title": "The ENTIRE History of {X} in {N} Minutes", "style": "illustrated documentary + animated maps/timelines", "voice": "af_heart", "music": "lofi-business-85bpm.mp3", "presenter": false},
+  "rpm_notes": "Business/finance advertisers; avoid defamation, cite sources for every number."
+}
