@@ -37,12 +37,12 @@ The 2026-10-09 scout showed toddler basics (alphabet, colors, body parts) have 1
      .claude/skills/yt-produce/scripts/render_chunks.sh <dir> <seconds> <workdir> 8 4 song.mp3 <name>.mp4
      ```
 ### Tamara as her real picture (photo puppet, free, default look)
-`templates/tamara-photo.js` animates Sam's own Tamara picture (`tamara-reference.webp`) instead of the code-drawn one: background removed (rembg, CPU), bounce + squash on the beat, sway, a small head tilt, blinks, and a jaw that drops on sung vowels (lower teeth/lip/chin slide down over a dark mouth). Build with host `photo`:
+`templates/tamara-photo.js` animates Sam's own Tamara picture (`tamara-reference.webp`) instead of the code-drawn one. It is one smooth WebGL warp of the whole picture, never cut-out pieces (Sam rejected the cut-out jaw and bouncing cut-out as "scary"): hip sway from planted feet, knee dip on the beat, breathing, head tilt fading through the neck, hair ends swinging, blinks using her real eyelid skin, and lips that part while singing (opening below the upper teeth, tapering into the corners, max ~9 px). Build with host `photo`:
 ```bash
 python3 .claude/skills/yt-kids-song/scripts/make_photo_puppet.py tamara-reference.webp <song-dir>   # once per picture
 python3 .claude/skills/yt-kids-song/scripts/build_song.py <song-dir> "<Title>" <bpm> <beat0> photo
 ```
-Limits: one picture = one pose (arms stay where they are in the picture). For waving, pointing, cheering etc., Sam makes more pictures of Tamara in the same tool he made this one (same style, plain cream background, full body), and each gets its own cutout + landmarks; the engine can then switch poses per line. Keep head tilt small (the head layer sits on the body layer; big angles show a double hair edge).
+Limits: one picture = one pose (arms stay where they are in the picture). For waving, pointing, cheering etc., Sam makes more pictures of Tamara in the same tool he made this one (same style, plain cream background, full body), and each gets its own cutout + landmarks; the engine can then switch poses per line. Landmarks (feet, neck, chest, `split` = bottom edge of the upper teeth, eyes) are per picture; check mouth close-ups with stills before a render. `build_song.py` embeds the cutout as `tamara-cutout.js` because WebGL refuses file:// textures.
    - No photos of real children, no real people.
 5. **Thumbnail** (`yt-thumbnail`, layout `face` with a character cut-out): big topic word + one picture (e.g. 8 moons in a row). Max 3 words.
 6. **Upload** (`yt-publish`): `upload.json` must include `"made_for_kids": true`. Title pattern `The {X} Song | {Learn X} | Kids Learning Songs`. Category 27 (Education).

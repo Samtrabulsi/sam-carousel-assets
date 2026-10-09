@@ -9,7 +9,7 @@ html,body{margin:0;background:#000;overflow:hidden} canvas{display:block}
 <canvas id="c" width="1920" height="1080"></canvas>
 <script src="data.js"></script>
 <script src="tamara.js"></script>
-<script>if ((window.SONG || {}).host === "photo") document.write('<script src="tamara-photo.js"><\/script>');</script>
+<script>if ((window.SONG || {}).host === "photo") document.write('<script src="tamara-cutout.js"><\/script><script src="tamara-photo.js"><\/script>');</script>
 <script src="visuals.js"></script>
 <script>
 const c = document.getElementById('c').getContext('2d');
@@ -121,7 +121,8 @@ function draw(t) {
   const mouth = tamaraMouth(WORDS, t);
   if (S.host === 'photo') { // her real picture as a puppet (tamara-photo.js)
     c.save(); c.translate(430, 1035); c.scale(0.59, 0.59);
-    drawTamaraPhoto(c, { t, beat: beatAt(t), dance: /dance|clap|cheer/.test(p.pose), mouth, blinkSeed: 0.4 });
+    const on = /dance|clap|cheer/.test(p.pose), k = ease((t - p.since) / 0.8); // ease in/out of dancing
+    drawTamaraPhoto(c, { t, beat: beatAt(t), danceAmt: on ? k : 1 - k, open: tamaraOpen(WORDS, t), blinkSeed: 0.4 });
     c.restore();
   } else {
     c.save(); c.translate(430, 1010); c.scale(0.9, 0.9);

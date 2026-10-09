@@ -14,4 +14,8 @@ shutil.copy(os.path.join(T, "kids-engine.html"), os.path.join(d, "video.html"))
 for f in ("tamara.js", "tamara-photo.js"):
     shutil.copy(os.path.join(T, f), os.path.join(d, f))
 shutil.copytree(os.path.join(T, "fonts"), os.path.join(d, "fonts"), dirs_exist_ok=True)
+cut = os.path.join(d, "tamara-cutout.png")
+if host == "photo" and os.path.exists(cut):  # WebGL can't load file:// images, so embed the cutout as a data URL
+    import base64
+    open(os.path.join(d, "tamara-cutout.js"), "w").write("window.TAMARA_CUTOUT='data:image/png;base64," + base64.b64encode(open(cut, 'rb').read()).decode() + "';\n")
 print(f"built {d}: {dur:.1f}s, {len(lines)} lines")
