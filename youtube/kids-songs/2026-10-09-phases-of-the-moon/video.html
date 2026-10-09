@@ -1,0 +1,133 @@
+<!doctype html>
+<!-- Little Miss Tamara song engine. Deterministic: draw(t) always gives the same frame, so record.mjs can render in parallel chunks.
+     Loads: data.js (window.SONG: {title, bpm, beat0, duration, lines from words.json}), tamara.js, visuals.js (window.VIS, per song). -->
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: 'Fredoka'; src: url('fonts/Fredoka.ttf'); font-weight: 300 700; }
+html,body{margin:0;background:#000;overflow:hidden} canvas{display:block}
+</style></head><body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script src="data.js"></script>
+<script src="tamara.js"></script>
+<script src="visuals.js"></script>
+<script>
+const c = document.getElementById('c').getContext('2d');
+const S = window.SONG, LINES = S.lines, WORDS = LINES.flatMap(l => l.words);
+const FONT = w => `${w} Fredoka, 'Arial Rounded MT Bold', Arial, sans-serif`;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v)), ease = v => { v = clamp(v, 0, 1); return v * v * (3 - 2 * v); };
+const rand = s => { const x = Math.sin(s * 127.1) * 43758.5453; return x - Math.floor(x); };
+const beatAt = t => Math.max(0, (t - (S.beat0 || 0)) * S.bpm / 60);
+window.SEG = LINES.map(l => ({ start: l.start, end: l.end })); // for stills.cjs
+
+function lineAt(t) { // current line (with 0.25 s lead-in), else null
+  for (const l of LINES) if (t >= l.start - 0.25 && t <= l.end + 0.35) return l;
+  return null;
+}
+function nextLine(t) { return LINES.find(l => l.start > t) || null; }
+
+// ---------- background: night sky, stars, hills ----------
+function sky(t) {
+  const g = c.createLinearGradient(0, 0, 0, 1080);
+  g.addColorStop(0, '#141A46'); g.addColorStop(0.6, '#2B2768'); g.addColorStop(1, '#4A3880');
+  c.fillStyle = g; c.fillRect(0, 0, 1920, 1080);
+  for (let i = 0; i < 140; i++) {
+    const x = rand(i) * 1920, y = rand(i + 99) * 760, r = 1 + rand(i + 7) * 2.6, tw = 0.5 + 0.5 * Math.sin(t * (1 + rand(i + 3) * 2) + i);
+    c.globalAlpha = 0.35 + 0.65 * tw; c.fillStyle = '#FFF6D8'; c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+    if (r > 3.2) { c.strokeStyle = '#FFF6D8'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(x - r * 3 * tw, y); c.lineTo(x + r * 3 * tw, y); c.moveTo(x, y - r * 3 * tw); c.lineTo(x, y + r * 3 * tw); c.stroke(); }
+  }
+  c.globalAlpha = 1;
+  // shooting star every ~11 s
+  const sp = (t % 11) / 1.1;
+  if (sp < 1) { const x = 300 + sp * 900, y = 90 + sp * 220; const gr = c.createLinearGradient(x - 160, y - 40, x, y);
+    gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(1, 'rgba(255,255,255,0.9)'); c.strokeStyle = gr; c.lineWidth = 4; c.beginPath(); c.moveTo(x - 160, y - 40); c.lineTo(x, y); c.stroke(); }
+  // hills
+  c.fillStyle = '#2E3C7E'; c.beginPath(); c.moveTo(0, 900); c.quadraticCurveTo(500, 780, 1000, 880); c.quadraticCurveTo(1500, 960, 1920, 850); c.lineTo(1920, 1080); c.lineTo(0, 1080); c.fill();
+  c.fillStyle = '#25306A'; c.beginPath(); c.moveTo(0, 990); c.quadraticCurveTo(420, 900, 900, 1000); c.quadraticCurveTo(1400, 1080, 1920, 980); c.lineTo(1920, 1080); c.lineTo(0, 1080); c.fill();
+  // little glowing flowers on the hill
+  for (let i = 0; i < 18; i++) { const x = 60 + i * 105 + rand(i + 40) * 40, y = 930 + rand(i + 50) * 60 + (i % 3) * 8;
+    c.fillStyle = ['#FFD43B', '#FF8FB8', '#7FE3FF'][i % 3]; c.globalAlpha = 0.55 + 0.3 * Math.sin(t * 2 + i); c.beginPath(); c.arc(x, y, 6, 0, Math.PI * 2); c.fill(); }
+  c.globalAlpha = 1;
+}
+
+// ---------- karaoke lyrics ----------
+function lyrics(t) {
+  const l = lineAt(t); if (!l) return;
+  const a = ease((t - (l.start - 0.25)) / 0.25) * (1 - ease((t - l.end - 0.1) / 0.25));
+  const x0 = 820, x1 = 1880, y = 1000, size = l.text.length > 40 ? 50 : 58;
+  c.save(); c.globalAlpha = a;
+  c.fillStyle = 'rgba(16,14,48,0.72)'; c.beginPath(); c.roundRect(x0 - 30, y - 70, x1 - x0 + 60, 112, 56); c.fill();
+  c.font = FONT(`600 ${size}px`); c.textBaseline = 'middle';
+  const sp = c.measureText(' ').width * 1.35, widths = l.words.map(w => c.measureText(w.w).width), total = widths.reduce((s, w) => s + w, 0) + sp * (l.words.length - 1);
+  let x = (x0 + x1) / 2 - total / 2;
+  l.words.forEach((w, i) => {
+    const on = t >= w.start, active = t >= w.start && t <= w.end + 0.08, k = active ? Math.sin(clamp((t - w.start) / 0.25, 0, 1) * Math.PI) : 0;
+    c.save(); c.translate(x + widths[i] / 2, y - k * 14); c.scale(1 + k * 0.06, 1 + k * 0.06);
+    c.lineWidth = 10; c.strokeStyle = '#1A1640'; c.lineJoin = 'round'; c.textAlign = 'center'; c.strokeText(w.w, 0, 0);
+    c.fillStyle = on ? '#FFD43B' : '#FFFFFF'; c.fillText(w.w, 0, 0); c.restore();
+    x += widths[i] + sp;
+  });
+  c.restore();
+}
+
+// ---------- title card + end card + logo ----------
+function logo(x, y, s) {
+  c.save(); c.translate(x, y); c.scale(s, s); c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.font = FONT('600 40px'); c.lineWidth = 10; c.strokeStyle = '#1A1640'; c.lineJoin = 'round';
+  c.strokeText('Little Miss', 0, -34); c.fillStyle = '#FF8FB8'; c.fillText('Little Miss', 0, -34);
+  c.font = FONT('700 76px'); c.lineWidth = 14; c.strokeText('Tamara', 0, 24); c.fillStyle = '#FFD43B'; c.fillText('Tamara', 0, 24);
+  c.fillStyle = '#FFF'; [[-150, -50], [150, -40], [130, 50]].forEach(([sx, sy], i) => { star(sx, sy, 14 - i * 3); });
+  c.restore();
+}
+function star(x, y, r) { c.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; c.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); } c.closePath(); c.fill(); }
+function titleCard(t) {
+  const first = LINES[0].start, a = 1 - ease((t - (first - 0.6)) / 0.6); if (a <= 0) return;
+  c.save(); c.globalAlpha = a;
+  const pop = ease(t / 0.8);
+  logo(1300, 300, 1.25 * pop);
+  c.font = FONT('700 96px'); c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineWidth = 16; c.strokeStyle = '#1A1640'; c.lineJoin = 'round';
+  const ty = 560 + (1 - ease((t - 0.5) / 0.7)) * 60; c.globalAlpha = a * ease((t - 0.5) / 0.7);
+  c.strokeText(S.title, 1300, ty); c.fillStyle = '#FFFFFF'; c.fillText(S.title, 1300, ty);
+  c.restore();
+}
+function endCard(t) {
+  const st = S.duration - 7; if (t < st) return;
+  const a = ease((t - st) / 0.8);
+  c.save(); c.globalAlpha = a * 0.55; c.fillStyle = '#100C30'; c.fillRect(0, 0, 1920, 1080); c.globalAlpha = a;
+  logo(1300, 420, 1.3); c.font = FONT('600 60px'); c.textAlign = 'center'; c.fillStyle = '#FFF'; c.strokeStyle = '#1A1640'; c.lineWidth = 12;
+  c.strokeText('Sing it again tomorrow!', 1300, 600); c.fillText('Sing it again tomorrow!', 1300, 600);
+  c.restore();
+}
+
+// ---------- Tamara direction ----------
+function poseAt(t) {
+  const custom = VIS.pose && VIS.pose(t, lineAt(t)); if (custom) return custom;
+  const l = lineAt(t);
+  if (t < LINES[0].start - 0.3) return { pose: 'wave', since: 0.6 };
+  if (t > S.duration - 7) return { pose: 'wave', since: S.duration - 7 };
+  if (!l) return { pose: 'dance', since: (LINES.filter(x => x.end < t).pop() || { end: 0 }).end };
+  const i = LINES.indexOf(l), sec = l.section;
+  if (/Chorus/i.test(sec)) return { pose: i % 2 ? 'clap' : 'dance', since: l.start - 0.25 };
+  return { pose: i % 2 ? 'sing' : 'open', since: l.start - 0.25 };
+}
+
+// ---------- frame ----------
+function draw(t) {
+  sky(t);
+  VIS.background && VIS.background(c, t, { lineAt, beatAt, ease, FONT, LINES, WORDS });
+  titleCard(t);
+  VIS.draw(c, t, { lineAt, beatAt, ease, FONT, LINES, WORDS, titleOn: t < LINES[0].start - 0.3 });
+  const p = poseAt(t);
+  c.save(); c.translate(430, 1010); c.scale(0.9, 0.9);
+  drawTamara(c, { t, pose: p.pose, lt: t - p.since, beat: beatAt(t), mouth: tamaraMouth(WORDS, t), look: 0.5, blinkSeed: 0.4 });
+  c.restore();
+  lyrics(t);
+  if (t > 3) logo(1790, 70, 0.42);
+  endCard(t);
+}
+window.draw = draw;
+const imgs = VIS.images || []; window.imgReady = Promise.all(imgs.map(src => new Promise(r => { const im = new Image(); im.onload = im.onerror = r; im.src = src; })));
+document.fonts.load(FONT('600 40px')).then(() => {
+  const loop = () => { draw(performance.now() / 1000); requestAnimationFrame(loop); };
+  requestAnimationFrame(loop);
+});
+</script></body></html>

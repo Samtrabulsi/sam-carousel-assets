@@ -3,7 +3,7 @@ name: yt-kids-song
 description: Make educational songs for the kids channel (ages 4-8, school topics) — lyrics that teach one idea, a Suno song made from them, a bright cartoon lyric video timed to the vocals, Made-for-Kids upload settings, and 30-60 min compilations for watch hours. Use for "kids song", "make a song about X for kids", "nursery rhyme", "learning song", the kids channel, or when a routine picks up a card on the Kids learning songs channel.
 ---
 
-# Kids learning songs
+# Kids learning songs (channel: Little Miss Tamara)
 
 Niche config: `.claude/skills/yt-automation/niches/kids-songs.json`. Scout report: `youtube/kids-songs/scout-*.md`.
 
@@ -21,10 +21,21 @@ The 2026-10-09 scout showed toddler basics (alphabet, colors, body parts) have 1
    - Style prompt pattern: `upbeat children's educational pop, cheerful female vocal, clear diction, ukulele, glockenspiel, handclaps, 110 bpm, bright, simple melody`.
    - Make 2 versions, pick the one with the clearest words. Download **MP3 + the vocal stem** (Studio → Get stems) to `song.mp3` and `vocals.wav`.
    - Save the Suno song link and plan in `README.md` (proof of licence for Content ID disputes).
-3. **Lyric timing** → `words.json`: word start/end times. Align the lyrics to `vocals.wav` with a Whisper word-timestamp tool (faster-whisper / stable-ts `align`). Check: each line starts within 0.15 s of the sung word.
-4. **Video**: 1920×1080 cartoon lyric video rendered with the `code-motion-video` engine (deterministic canvas, `record.mjs`, chunked render as in `yt-produce`).
-   - The kids engine template (`templates/kids-engine.html`) gets built with the first song. Spec: bright flat colours, 2 recurring original characters drawn in code (same method as Gia in `cartoon-presenter`), one big scene per line, the current word lights up and bounces as it's sung, fact pictures drawn as simple shapes (moon phases, plant parts), a sing-along banner on choruses.
-   - Characters bounce on the beat (bpm from the niche or detected from `song.mp3`).
+3. **Lyric timing** → `words.json`:
+   ```bash
+   python3 -m venv ~/.cache/yt-tools/whisper && ~/.cache/yt-tools/whisper/bin/pip install faster-whisper   # once per container
+   ~/.cache/yt-tools/whisper/bin/python .claude/skills/yt-kids-song/scripts/align_lyrics.py song.mp3 lyrics.md words.json
+   ```
+   Whisper (small.en) hears the sung words, then they're matched to the known lyrics; missed words are interpolated. Works on the full Suno mix (vocals stem is better if you have it). Lines whisper missed entirely: set them by the spacing of an earlier chorus and mark `"estimated": true`.
+4. **Video** (`templates/kids-engine.html`, deterministic canvas):
+   - **Tamara** (`templates/tamara.js`): the channel host, drawn in code so she's identical in every video. Poses `idle, sing, wave, point, clap, cheer, dance, open`; mouth shapes follow the sung words (`tamaraMouth`); dance/clap/bounce on the beat. Change her only in `tamara.js` and re-render `pose-sheet.html` for approval.
+   - The engine draws the night-sky set, title card, karaoke lyrics (each word lights up and bounces when sung), logo and end card. Each song adds its own `visuals.js` (`window.VIS = {draw(c, t, E), pose(t, line)}`) for the teaching pictures — see `youtube/kids-songs/2026-10-09-phases-of-the-moon/visuals.js` (moon drawn accurately for every phase, 8-phase strip, orbit diagram, 29½-day calendar).
+   - Build + check + render:
+     ```bash
+     python3 .claude/skills/yt-kids-song/scripts/build_song.py <dir> "<Title>" <bpm> <first-beat-s>
+     node .claude/skills/yt-kids-song/scripts/stills.cjs <dir>/video.html <outdir> 5 20 40 ...   # look at them
+     .claude/skills/yt-produce/scripts/render_chunks.sh <dir> <seconds> <workdir> 8 4 song.mp3 <name>.mp4
+     ```
    - No photos of real children, no real people.
 5. **Thumbnail** (`yt-thumbnail`, layout `face` with a character cut-out): big topic word + one picture (e.g. 8 moons in a row). Max 3 words.
 6. **Upload** (`yt-publish`): `upload.json` must include `"made_for_kids": true`. Title pattern `The {X} Song | {Learn X} | Kids Learning Songs`. Category 27 (Education).

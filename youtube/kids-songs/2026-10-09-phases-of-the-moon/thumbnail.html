@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><style>@font-face{font-family:Fredoka;src:url('fonts/Fredoka.ttf')}body{margin:0}</style></head><body>
+<canvas id="c" width="1280" height="720"></canvas>
+<script src="data.js"></script><script src="tamara.js"></script><script src="visuals.js"></script>
+<script>
+const c = document.getElementById('c').getContext('2d');
+window.ready = document.fonts.load('700 40px Fredoka').then(() => {
+  const g = c.createLinearGradient(0, 0, 0, 720); g.addColorStop(0, '#141A46'); g.addColorStop(1, '#4A3880'); c.fillStyle = g; c.fillRect(0, 0, 1280, 720);
+  for (let i = 0; i < 70; i++) { const r = Math.sin(i * 12.9) * 43758.5; const x = (r - Math.floor(r)) * 1280, y = ((r * 7) % 1 + 1) % 1 * 720;
+    c.fillStyle = 'rgba(255,246,216,0.8)'; c.beginPath(); c.arc(x, y, 2 + (i % 3), 0, Math.PI * 2); c.fill(); }
+  // big moons: crescent -> half -> full (we reuse the song's moon drawing by calling VIS internals through a tiny shim)
+  const phases = [0.125, 0.25, 0.375, 0.5];
+  phases.forEach((p, i) => { c.save(); c.translate(560 + i * 175, 300); window.__moon(c, 0, 0, 78 + i * 6, p); c.restore(); });
+  const T = (s, x, y, size, fill) => { c.font = `700 ${size}px Fredoka`; c.textAlign = 'center'; c.lineJoin = 'round'; c.lineWidth = size * 0.2; c.strokeStyle = '#1A1640'; c.strokeText(s, x, y); c.fillStyle = fill; c.fillText(s, x, y); };
+  T('PHASES OF', 820, 520, 96, '#FFFFFF'); T('THE MOON', 820, 625, 110, '#FFD43B');
+  c.save(); c.translate(190, 715); c.scale(0.7, 0.7); drawTamara(c, { t: 1.3, pose: 'point', lt: 2, mouth: 'D', look: 0.6 }); c.restore();
+});
+</script></body></html>

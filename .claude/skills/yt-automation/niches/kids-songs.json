@@ -1,6 +1,6 @@
 {
  "name": "Kids learning songs (ages 4-8, school topics)",
- "channel": "NEW channel (to create)",
+ "channel": "Little Miss Tamara (new channel)",
  "slug": "kids-songs",
  "channel_url": null,
  "notion_channel": "Kids learning songs",
@@ -42,11 +42,11 @@
   "title": "The {X} Song | Learn {X} | Kids Learning Songs",
   "style": "bright cartoon lyric video: recurring characters, big on-screen words that light up as they're sung, one teaching idea per verse, repeated chorus",
   "song": "lyrics by yt-kids-song; music + vocals made in Suno (paid plan) from the lyrics and style prompt",
-  "presenter": false,
+  "presenter": "tamara",
   "brand": {
-   "name": "KIDS SONGS",
-   "initial": "K",
-   "display": "Kids Learning Songs"
+   "name": "LITTLE MISS TAMARA",
+   "initial": "T",
+   "display": "Little Miss Tamara"
   },
   "thumbnail": {
    "layout": "face",
