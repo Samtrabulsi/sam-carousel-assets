@@ -1,6 +1,8 @@
+# script.json -> voiceover.wav + timeline.json (one TTS call per beat, so every visual is timed to its own line)
+#   make_vo.py <tools-dir with kokoro/> <episode-dir> [voice=af_heart] [speed=0.93]
 import json, sys, numpy as np, soundfile as sf
 from kokoro_onnx import Kokoro
-S = sys.argv[1]; out = sys.argv[2]; voice = sys.argv[3]; speed = float(sys.argv[4])
+S = sys.argv[1]; out = sys.argv[2]; voice = sys.argv[3] if len(sys.argv) > 3 else "af_heart"; speed = float(sys.argv[4]) if len(sys.argv) > 4 else 0.93
 k = Kokoro(f"{S}/kokoro/kokoro-v1.0.onnx", f"{S}/kokoro/voices-v1.0.bin")
 beats = json.load(open(f"{out}/script.json"))
 sr = 24000; parts = [np.zeros(int(0.4*sr), dtype=np.float32)]; t = 0.4; tl = []

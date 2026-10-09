@@ -1,10 +1,61 @@
 {
-  "name": "Company histories",
-  "channel": "TBD (new channel)",
-  "queries": ["the entire history of company", "history of walmart", "how nike became", "rise and fall of company", "company history documentary"],
-  "candidate_template": "the entire history of {}",
-  "candidates": ["Walmart", "Nike", "Coca-Cola", "McDonald's", "Apple", "Amazon", "Toyota", "IKEA", "Starbucks", "Disney", "Costco", "Samsung", "Lego", "Ford", "Nintendo", "Red Bull", "Rolex", "Ferrari"],
-  "min_duration": 480,
-  "format": {"length_min": 15, "length_max": 20, "title": "The ENTIRE History of {X} in {N} Minutes", "style": "illustrated documentary + animated maps/timelines", "voice": "af_heart", "music": "lofi-business-85bpm.mp3", "presenter": false},
-  "rpm_notes": "Business/finance advertisers; avoid defamation, cite sources for every number."
+ "name": "Company histories",
+ "channel": "TBD (new channel)",
+ "queries": [
+  "the entire history of company",
+  "history of walmart",
+  "how nike became",
+  "rise and fall of company",
+  "company history documentary"
+ ],
+ "candidate_template": "the entire history of {}",
+ "candidates": [
+  "Walmart",
+  "Nike",
+  "Coca-Cola",
+  "McDonald's",
+  "Apple",
+  "Amazon",
+  "Toyota",
+  "IKEA",
+  "Starbucks",
+  "Disney",
+  "Costco",
+  "Samsung",
+  "Lego",
+  "Ford",
+  "Nintendo",
+  "Red Bull",
+  "Rolex",
+  "Ferrari"
+ ],
+ "min_duration": 480,
+ "format": {
+  "length_min": 15,
+  "length_max": 20,
+  "title": "The ENTIRE History of {X} in {N} Minutes",
+  "style": "photo-led documentary: photo/year/timeline/stat/quote/compare scenes, 6-8 chapters",
+  "voice": "af_heart",
+  "speed": 0.93,
+  "music": "lofi-business-85bpm.mp3",
+  "presenter": false,
+  "brand": {
+   "name": "BRAND HISTORIES",
+   "initial": "B",
+   "display": "Brand Histories"
+  },
+  "chapterLabel": "CHAPTER",
+  "thumbnail": {
+   "layout": "number",
+   "colors": {
+    "accent": "#FFB547",
+    "alert": "#FF5C6C"
+   }
+  }
+ },
+ "rpm_notes": "Business/finance advertisers; avoid defamation, cite sources for every number.",
+ "slug": "company-histories",
+ "channel_url": null,
+ "notion_channel": "Company histories",
+ "cadence": "2 per week (Tue, Fri 15:00 UTC)"
 }

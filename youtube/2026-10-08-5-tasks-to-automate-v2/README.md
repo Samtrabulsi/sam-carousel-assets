@@ -12,8 +12,8 @@
 
 ## Rebuild after editing script.json
 ```bash
-S=<dir with the kokoro venv + model, see ../tools/README.md>
-$S/tts/bin/python ../tools/make_vo.py $S $PWD af_heart 0.93          # voiceover.wav + timeline.json
+source ../../.claude/skills/yt-produce/scripts/setup.sh   # sets $YT_TOOLS
+$YT_TOOLS/tts/bin/python ../../.claude/skills/yt-produce/scripts/make_vo.py $YT_TOOLS $PWD af_heart 0.93          # voiceover.wav + timeline.json
 python3 -c "import json;open('data.js','w').write('const BEATS='+json.dumps(json.load(open('script.json')),ensure_ascii=False)+';\nconst TL='+open('timeline.json').read()+';\n')"
 # render 4 chunks in parallel with record.mjs --from, then concat + mux voiceover.wav
 ```

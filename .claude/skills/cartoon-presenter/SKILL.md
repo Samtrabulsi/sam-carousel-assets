@@ -62,7 +62,7 @@ python3 -c "import json;print('window.CUES='+json.dumps(json.load(open('cues.jso
 - Load `character.js` and `cues.js` in `video.html`.
 - In beats where she appears, draw the content scaled to about 0.82 and shifted away from her side. She stands in a ~360 px column at the left or right edge, bottom-anchored, above the progress bar, with captions unchanged.
 - Don't put her in every scene: she works best on intros, chapter titles, problems, stats, warnings and the end card. Leave dense tool, step and flow screens full width.
-- Check a still per beat with `youtube/tools/stills.cjs` and a strip of a speaking moment (mouth shapes changing) before the full render.
+- Check a still per beat with `.claude/skills/yt-produce/scripts/stills.cjs` and a strip of a speaking moment (mouth shapes changing) before the full render.
 
 ### Changing Gia
 Change her design only in `character.js`, never per video. If Sam wants a different look (outfit, skin tone, hair, a second character), add it as a new named function (e.g. `drawSam`) in the same file, and render a pose sheet of all 8 poses for Sam to approve before using it.

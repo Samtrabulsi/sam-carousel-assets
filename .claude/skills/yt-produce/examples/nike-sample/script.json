@@ -1,0 +1,93 @@
+[
+ {
+  "say": "In 1964, two men shook hands on a deal worth five hundred dollars each. Sixty years later, that handshake is a company worth more than a hundred billion.",
+  "v": {
+   "t": "year",
+   "year": 1964,
+   "from": 1940,
+   "kicker": "Where it started",
+   "label": "A $500 handshake",
+   "bg": "running-track-athlete"
+  }
+ },
+ {
+  "say": "This is the entire history of Nike.",
+  "v": {
+   "t": "title",
+   "kicker": "BRAND HISTORIES",
+   "title": "The ENTIRE History of Nike",
+   "badge": "1964 – TODAY",
+   "bg": "running-shoes"
+  }
+ },
+ {
+  "say": "Chapter one. A runner and his coach.",
+  "v": {
+   "t": "chapter",
+   "n": 1,
+   "title": "A runner and his coach",
+   "bg": "track-and-field-stadium"
+  }
+ },
+ {
+  "say": "Phil Knight was a middle distance runner at the University of Oregon. His coach, Bill Bowerman, was obsessed with making shoes lighter.",
+  "v": {
+   "t": "photo",
+   "kicker": "Oregon, 1950s",
+   "title": "Phil Knight & Bill Bowerman",
+   "caption": "Runner and coach, both obsessed with speed"
+  }
+ },
+ {
+  "say": "Knight's plan was simple. Import cheap, high quality running shoes from Japan, and sell them out of the trunk of his car.",
+  "v": {
+   "t": "list",
+   "title": "Knight's plan",
+   "items": [
+    "Import running shoes from Japan",
+    "Sell them at track meets",
+    "Out of the trunk of his car"
+   ],
+   "photo": "vintage-car-trunk"
+  }
+ },
+ {
+  "say": "As Knight later put it, the cowards never started, and the weak died along the way.",
+  "v": {
+   "t": "quote",
+   "text": "The cowards never started and the weak died along the way.",
+   "who": "Phil Knight, Shoe Dog"
+  }
+ },
+ {
+  "say": "Back then, the market looked nothing like today.",
+  "v": {
+   "t": "compare",
+   "title": "Running shoes: then vs now",
+   "left": {
+    "head": "1964",
+    "rows": [
+     "Heavy canvas",
+     "Few brands",
+     "Runners only"
+    ]
+   },
+   "right": {
+    "head": "Today",
+    "rows": [
+     "Engineered foam",
+     "A global fashion item",
+     "Everyone"
+    ]
+   }
+  }
+ },
+ {
+  "say": "If you enjoy stories like this, like and subscribe. Next, we'll cover the swoosh that cost thirty five dollars.",
+  "v": {
+   "t": "end",
+   "outro": true,
+   "next": "Next: the $35 swoosh"
+  }
+ }
+]

@@ -29,7 +29,7 @@ The script:
 - ducks the music under the voice with a sidechain compressor (it comes back up in pauses)
 - normalises the mix to **-14 LUFS / -1.5 dBTP**, YouTube's target
 
-For code-rendered videos (`code-motion-video`, `youtube/tools/render_chunks.sh`), render the video silent, mix the audio with this script, then mux.
+For code-rendered videos (`code-motion-video`, `yt-produce`), render the video silent, mix the audio with this script, then mux.
 
 Tested 2026-10-09 on the 9:31 episode: about 80 s to run. The mix measured -14.1 LUFS; music in pauses was about -27 dB, and speech stayed on top at about -17 dB.
 

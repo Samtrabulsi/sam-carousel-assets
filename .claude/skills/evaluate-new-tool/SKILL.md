@@ -49,6 +49,7 @@ Check this list first. If the tool is here, give the recorded verdict in a few l
 | Rhubarb Lip Sync (DanielSWolf) | 2026-10-09 | Saved as skill | MIT CLI, voice → mouth shapes A–H/X. `cartoon-presenter/scripts/lipsync.sh`; ~5 s per 20 s of audio. |
 | Music: vidIQ generate_music / ACE-Step / Stable Audio Open / MusicGen | 2026-10-09 | vidIQ in use | `background-music` skill. ACE-Step and Stable Audio Open need a 12 GB+ GPU; MusicGen weights are non-commercial; Freesound CDN blocks direct downloads. Remotion + remotion-video-director (ducking) only if we move to Remotion. |
 | synctoon (Automate-Animation) | 2026-10-09 | Skip | GPL-3, needs paid ElevenLabs, known A/V drift bugs. |
+| yt-dlp / YouTube autocomplete / Openverse / Pexels API / YouTube Data + Analytics API | 2026-10-09 | In use (yt-* skills) | Free replacements for vidIQ research, stock photos and uploading. yt-dlp search + channel lists work from cloud; full video pages hit YouTube's bot check (use the Data API key for dates). Unaudited API projects upload as private only. TubeGen-style pipeline rebuilt in-house: yt-scout → yt-script → yt-produce → yt-thumbnail → yt-publish → yt-analytics, run by yt-automation. |
 
 ## Guardrails
 

@@ -2,7 +2,7 @@
 // identical in every video. drawGia(ctx, opts) draws her waist-up with the bottom-centre at (0,0)
 // in a ~560-unit-tall box; scale/translate the context to place her.
 //
-// opts: { t, pose, viseme (Rhubarb A–H/X, preferred), mouth (0..1 fallback), look (-1..1), blinkSeed, lt (time in pose, s) }
+// opts: { t, pose, mirror (true when drawn with ctx.scale(-1,1)), badge ('G'), viseme (Rhubarb A–H/X, preferred), mouth (0..1 fallback), look (-1..1), blinkSeed, lt (time in pose, s) }
 // poses: idle, wave, point, worried, think, surprised, happy, cheer
 (function () {
   const SKIN = '#C98E6B', SKIN_D = '#B07656', HAIR = '#2A1A16', HAIR_L = '#3D2722',
@@ -86,7 +86,8 @@
     // collar + badge
     c.fillStyle = COLLAR; c.beginPath(); c.moveTo(-55, -332); c.lineTo(0, -270); c.lineTo(55, -332); c.lineTo(28, -332); c.lineTo(0, -300); c.lineTo(-28, -332); c.closePath(); c.fill();
     c.fillStyle = AMBER; c.beginPath(); c.arc(-75, -220, 24, 0, Math.PI * 2); c.fill();
-    c.fillStyle = '#fff'; c.font = '800 28px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('G', -75, -218);
+    c.fillStyle = '#fff'; c.font = '800 28px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.save(); c.translate(-75, -218); if (o.mirror) c.scale(-1, 1); c.fillText(o.badge || 'G', 0, 0); c.restore();  // keep the badge letter readable when mirrored
     // neck
     c.fillStyle = SKIN_D; c.fillRect(-28, -372, 56, 50);
 

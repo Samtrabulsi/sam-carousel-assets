@@ -1,0 +1,397 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=block" rel="stylesheet">
+<style>html,body{margin:0;background:#0B1426;overflow:hidden}canvas{display:block}</style>
+</head><body><canvas id="c" width="1920" height="1080"></canvas>
+<script src="data.js"></script>
+<script>if (window.EPISODE && EPISODE.presenter) document.write('<script src="character.js"><\/script>');</script>
+<script>
+// yt-produce episode engine. data.js defines BEATS (script.json), TL (timeline.json), EPISODE (episode.json)
+// and CUES (Rhubarb mouth cues, if the presenter is on). Each beat = one visual, timed to its voice line.
+const EP = Object.assign({ brand: { name: 'GROW SUCCESS ONLINE', initial: 'G' }, chapterLabel: 'CHAPTER', presenter: false }, window.EPISODE || {});
+const W = 1920, H = 1080;
+const C = Object.assign({ bg:'#0B1426', card:'#14223D', card2:'#1B2C4D', teal:'#12A4AE', teal2:'#5FD3D9', amber:'#FFB547', red:'#FF5C6C', green:'#3DDC97', text:'#F4F7FB', muted:'#8FA3BF', paper:'#F4F7FB', ink:'#0B1426' }, EP.colors || {});
+const cv = document.getElementById('c'), x = cv.getContext('2d');
+const F = (w, s) => `${w} ${s}px Inter, Arial, sans-serif`;
+const cl = (v, a=0, b=1) => Math.max(a, Math.min(b, v));
+const eo = v => 1 - Math.pow(1 - cl(v), 3);
+const back = v => { v = cl(v); const c1 = 1.70158, c3 = c1 + 1; return 1 + c3*Math.pow(v-1,3) + c1*Math.pow(v-1,2); };
+const ph = (t, a, d=0.6) => eo((t - a) / d);
+
+function rr(px, py, w, h, r, fill, stroke, lw=3) {
+  x.beginPath(); x.roundRect(px, py, w, h, r);
+  if (fill) { x.fillStyle = fill; x.fill(); }
+  if (stroke) { x.strokeStyle = stroke; x.lineWidth = lw; x.stroke(); }
+}
+function txt(s, px, py, font, col, align='left', alpha=1) {
+  x.save(); x.globalAlpha *= alpha; x.font = font; x.fillStyle = col; x.textAlign = align; x.textBaseline = 'middle'; x.fillText(s, px, py); x.restore();
+}
+function fit(s, w, size, weight=800) { x.font = F(weight, size); while (size > 20 && x.measureText(s).width > w) { size -= 2; x.font = F(weight, size); } return size; }
+function wrap(s, w, font) {
+  x.font = font; const out = []; let line = '';
+  for (const word of s.split(' ')) { const tryL = line ? line + ' ' + word : word; if (x.measureText(tryL).width > w && line) { out.push(line); line = word; } else line = tryL; }
+  if (line) out.push(line); return out;
+}
+function pop(cx, cy, p, fn) { if (p <= 0) return; x.save(); x.translate(cx, cy); x.scale(p, p); x.globalAlpha *= cl(p); fn(); x.restore(); }
+function slide(p, dx, dy, fn) { if (p <= 0) return; x.save(); x.globalAlpha *= p; x.translate(dx*(1-p), dy*(1-p)); fn(); x.restore(); }
+function check(cx, cy, s, col, p) {
+  x.save(); x.strokeStyle = col; x.lineWidth = s * 0.18; x.lineCap = 'round'; x.lineJoin = 'round';
+  const pts = [[-0.45,0],[-0.12,0.32],[0.5,-0.35]]; let left = cl(p) * 2;
+  x.beginPath(); x.moveTo(cx + pts[0][0]*s, cy + pts[0][1]*s);
+  for (let i = 1; i < 3 && left > 0; i++) { const k = Math.min(1, left); left -= 1; const [ax, ay] = pts[i-1], [bx, by] = pts[i]; x.lineTo(cx + (ax + (bx-ax)*k)*s, cy + (ay + (by-ay)*k)*s); }
+  x.stroke(); x.restore();
+}
+function arrow(x1, y1, x2, y2, p, col=C.teal2) {
+  if (p <= 0) return; const ex = x1 + (x2-x1)*p, ey = y1 + (y2-y1)*p;
+  x.save(); x.strokeStyle = col; x.fillStyle = col; x.lineWidth = 5; x.beginPath(); x.moveTo(x1, y1); x.lineTo(ex, ey); x.stroke();
+  const a = Math.atan2(y2-y1, x2-x1); x.beginPath(); x.moveTo(ex, ey); x.lineTo(ex - 18*Math.cos(a-0.5), ey - 18*Math.sin(a-0.5)); x.lineTo(ex - 18*Math.cos(a+0.5), ey - 18*Math.sin(a+0.5)); x.fill(); x.restore();
+}
+// Evenly stagger n items across the first `span` of the beat (at least `min` s apart)
+const stag = (i, n, d, span=0.6, min=0.35) => 0.3 + i * Math.max(min, Math.min(1.2, (d*span) / Math.max(1, n)));
+
+// ---------- photos ----------
+const IMG = {};
+const photoNames = new Set(); BEATS.forEach(b => { const v = b.v; if (v.bg) photoNames.add(v.bg); if (v.photo) photoNames.add(v.photo); (v.photos || []).forEach(n => photoNames.add(n)); });
+const imgReady = Promise.all([...photoNames].map(n => new Promise(res => { const im = new Image(); im.onload = im.onerror = () => res(); im.src = 'photos/' + n + '.jpg'; IMG[n] = im; })));
+// draw image to cover a box, with zoom k (>=1) and pan (-1..1)
+function cover(im, bx, by, bw, bh, k=1, px=0, py=0) {
+  if (!im || !im.naturalWidth) return;
+  const s = Math.max(bw / im.naturalWidth, bh / im.naturalHeight) * k, w = im.naturalWidth * s, h = im.naturalHeight * s;
+  x.drawImage(im, bx + (bw - w)/2 + px*(w - bw)/2, by + (bh - h)/2 + py*(h - bh)/2, w, h);
+}
+function photoCard(name, bx, by, bw, bh, r, k=1, px=0, py=0) {
+  x.save(); x.beginPath(); x.roundRect(bx, by, bw, bh, r); x.clip(); cover(IMG[name], bx, by, bw, bh, k, px, py); x.restore();
+}
+// Full-bleed photo with slow Ken Burns push and a dark brand overlay so text stays readable
+function photoBg(name, lt, d, idx, strong) {
+  const k = 1.14 - 0.1 * cl(lt / Math.max(d, 1)), dir = idx % 2 ? 1 : -1;
+  x.save(); x.globalAlpha *= 0.95; cover(IMG[name], 0, 0, W, H, k, dir * 0.6 * (1 - lt / Math.max(d, 1)), 0); x.restore();
+  let g = x.createLinearGradient(0, 0, W, 0);
+  g.addColorStop(0, `rgba(11,20,38,${strong ? 0.94 : 0.86})`); g.addColorStop(0.55, `rgba(11,20,38,${strong ? 0.82 : 0.6})`); g.addColorStop(1, `rgba(11,20,38,${strong ? 0.7 : 0.45})`);
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  g = x.createLinearGradient(0, H*0.55, 0, H); g.addColorStop(0, 'rgba(11,20,38,0)'); g.addColorStop(1, 'rgba(11,20,38,0.9)');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+}
+const rnd = (i) => { const v = Math.sin(i * 127.1 + 311.7) * 43758.5453; return v - Math.floor(v); };
+function particles(t) {
+  for (let i = 0; i < 46; i++) {
+    const sp = 18 + rnd(i) * 40, px = rnd(i + 99) * W + Math.sin(t * 0.3 + i) * 30, py = H - ((t * sp + rnd(i + 7) * H) % (H + 40));
+    const r = 1.5 + rnd(i + 3) * 3.5; x.beginPath(); x.arc(px, py, r, 0, Math.PI*2);
+    x.fillStyle = i % 5 === 0 ? 'rgba(255,181,71,0.35)' : 'rgba(95,211,217,0.28)'; x.fill();
+  }
+}
+function bg(t) {
+  x.fillStyle = C.bg; x.fillRect(0, 0, W, H);
+  const gx = 1500 + Math.sin(t*0.13)*260, gy = 300 + Math.cos(t*0.11)*160;
+  let g = x.createRadialGradient(gx, gy, 0, gx, gy, 950);
+  g.addColorStop(0, 'rgba(18,164,174,0.20)'); g.addColorStop(1, 'rgba(18,164,174,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const hx = 300 + Math.cos(t*0.09)*200, hy = 900;
+  g = x.createRadialGradient(hx, hy, 0, hx, hy, 700);
+  g.addColorStop(0, 'rgba(255,181,71,0.07)'); g.addColorStop(1, 'rgba(255,181,71,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = 'rgba(143,163,191,0.07)';
+  for (let i = 0; i < 40; i++) for (let j = 0; j < 23; j++) x.fillRect(i*50 + 20, j*50 + ((t*8) % 50) - 10, 3, 3);
+}
+
+// ---------- visual templates: (b, lt, d) ----------
+const V = {};
+V.title = (b, lt) => {
+  txt(b.kicker, W/2, 300, F(700, 34), C.teal2, 'center', ph(lt, 0.1));
+  pop(W/2, 450, back((lt-0.2)/0.8), () => txt(b.title, 0, 0, F(900, fit(b.title, 1500, 130, 900)), C.text, 'center'));
+  pop(W/2, 600, back((lt-0.8)/0.7), () => { x.font = F(900, 54); const w = x.measureText(b.badge).width + 80; rr(-w/2, -50, w, 100, 50, C.amber); txt(b.badge, 0, 4, F(900, 54), C.ink, 'center'); });
+};
+V.bigtext = (b, lt) => {
+  txt((b.kicker || '').toUpperCase(), W/2, 340, F(700, 34), C.teal2, 'center', ph(lt, 0.1));
+  const words = b.text.split(' '), size = fit(b.text, 1600, 110, 900); x.font = F(900, size);
+  let total = x.measureText(b.text).width, cx = W/2 - total/2;
+  words.forEach((w, i) => { const ww = x.measureText(w + ' ').width; const p = back((lt - 0.3 - i*0.12)/0.5);
+    slide(cl(p), 0, 40, () => txt(w, cx, 480, F(900, size), (b.hl ? b.hl.includes(w.replace(/[^\w']/g, '')) : i === words.length-1) ? C.amber : C.text)); cx += ww; });
+};
+V.agenda = (b, lt, d) => {
+  txt(b.title || 'In this video', 160, 200, F(800, 56), C.text, 'left', ph(lt, 0));
+  b.items.forEach((s, i) => slide(ph(lt, stag(i, b.items.length, d)), -60, 0, () => {
+    const y = 300 + i*(b.items.length > 5 ? 100 : 120); rr(160, y, 1100, 96, 24, C.card);
+    txt(String(i+1), 220, y + 50, F(900, 48), C.teal, 'center'); txt(s, 290, y + 50, F(700, 44), C.text);
+  }));
+  (b.photos || []).forEach((n, i) => { const p = back((lt - stag(i, 5, d)) / 0.6); if (p <= 0) return;
+    x.save(); x.translate(1560, 560); x.rotate((i % 2 ? 1 : -1) * 0.05 * (i + 1) / 3); x.scale(p, p); x.globalAlpha *= cl(p);
+    rr(-290, -200, 580, 400, 26, '#fff'); photoCard(n, -276, -186, 552, 372, 18, 1.1 - 0.06*cl((lt - stag(i, 5, d))/3));
+    x.restore(); });
+};
+V.chapter = (b, lt) => {
+  const p = back((lt-0.1)/0.7);
+  pop(W/2, 400, p, () => { x.beginPath(); x.arc(0, 0, 150, 0, Math.PI*2); x.fillStyle = C.teal; x.fill(); txt(String(b.n), 0, 10, F(900, 170), '#fff', 'center'); });
+  txt((b.label || EP.chapterLabel) + ' ' + b.n + (EP.showChapterTotal === false ? '' : ' OF ' + NCH), W/2, 620, F(700, 36), C.teal2, 'center', ph(lt, 0.4));
+  slide(ph(lt, 0.6), 0, 30, () => txt(b.title, W/2, 710, F(900, fit(b.title, 1600, 92, 900)), C.text, 'center'));
+};
+V.scenario = (b, lt, d) => {
+  pop(330, 470, back((lt-0.1)/0.6), () => {
+    if (b.photo) { x.save(); x.beginPath(); x.arc(0, 0, 210, 0, Math.PI*2); x.clip(); cover(IMG[b.photo], -210, -210, 420, 420, 1.15 - 0.1*cl(lt/d)); x.restore();
+      x.save(); x.rotate(lt * 0.4); x.setLineDash([18, 14]); x.strokeStyle = C.teal2; x.lineWidth = 5; x.beginPath(); x.arc(0, 0, 232, 0, Math.PI*2); x.stroke(); x.restore(); }
+    else { x.beginPath(); x.arc(0, 0, 170, 0, Math.PI*2); x.fillStyle = C.card; x.fill(); txt(b.icon, 0, 10, F(500, 150), C.text, 'center'); } });
+  txt(b.title, 640, 260, F(900, fit(b.title, 1150, 84, 900)), C.text, 'left', ph(lt, 0.2));
+  b.lines.forEach((s, i) => slide(ph(lt, stag(i, b.lines.length, d, 0.75)), 60, 0, () => {
+    const y = 360 + i*140, hl = i === b.hl;
+    rr(640, y, 1120, 110, 26, hl ? (b.bad ? 'rgba(255,92,108,0.18)' : 'rgba(61,220,151,0.16)') : C.card, hl ? (b.bad ? C.red : C.green) : null);
+    txt(s, 690, y + 57, F(700, fit(s, 1020, 46, 700)), hl ? (b.bad ? C.red : C.green) : C.text);
+  }));
+};
+V.chat = (b, lt, d) => {
+  wrap(b.title, 760, F(900, 76)).forEach((l, j) => txt(l, 160, 300 + j*92, F(900, 76), C.text, 'left', ph(lt, 0)));
+  const px = 1000, py = 140; slide(ph(lt, 0.2), 60, 0, () => {
+    rr(px, py, 780, 800, 36, C.card); rr(px, py, 780, 90, [36,36,0,0], C.card2);
+    txt('Messages', px + 40, py + 47, F(700, 30), C.text);
+    b.msgs.forEach(([bot, m], i) => { const p = back((lt - stag(i, b.msgs.length, d, 0.8))/0.45); if (p <= 0) return;
+      x.font = F(600, 32); const w = Math.min(680, x.measureText(m).width + 64), by = py + 130 + i*128, bx = bot ? px + 40 : px + 740 - w;
+      x.save(); x.translate(bx + w/2, by + 42); x.scale(p, p); x.translate(-(bx + w/2), -(by + 42));
+      rr(bx, by, w, 86, 30, bot ? C.teal : C.card2); txt(m, bx + 32, by + 45, F(600, 32), C.text); x.restore(); });
+  });
+  txt('🤖 AI', px + 40 - 0, 1000, F(700, 26), C.teal2, 'left', b.msgs.some(m => m[0]) ? ph(lt, 1) : 0);
+};
+V.flow = (b, lt, d) => {
+  txt(b.title, W/2, 230, F(900, 72), C.text, 'center', ph(lt, 0));
+  const n = b.nodes.length, gap = 60, bw = Math.min(330, (1680 - gap*(n-1)) / n), total = n*bw + (n-1)*gap, x0 = (W - total)/2, y = 470;
+  b.nodes.forEach((s, i) => { const at = stag(i, n, d, 0.7), p = back((lt - at)/0.5), cx = x0 + i*(bw+gap);
+    if (i > 0) arrow(cx - gap + 6, y + 110, cx - 8, y + 110, eo((lt - at + 0.25)/0.3));
+    pop(cx + bw/2, y + 110, p, () => { const last = i === n-1;
+      rr(-bw/2, -110, bw, 220, 28, last ? C.amber : C.card, last ? null : C.teal);
+      const lines = wrap(s, bw - 40, F(800, 36)); lines.forEach((l, j) => txt(l, 0, (j - (lines.length-1)/2)*44, F(800, 36), last ? C.ink : C.text, 'center')); });
+  });
+  // moving pulse along the chain once built
+  const built = stag(n-1, n, d, 0.7) + 0.5; if (lt > built) { const k = ((lt - built) * 0.35) % 1, px = x0 + bw/2 + k*(total - bw);
+    x.beginPath(); x.arc(px, y + 260, 10, 0, Math.PI*2); x.fillStyle = C.amber; x.fill(); x.fillStyle = 'rgba(255,181,71,0.25)'; x.fillRect(x0 + bw/2, y + 258, total - bw, 4); }
+};
+V.tools = (b, lt, d) => {
+  txt(b.title || 'Tools that do this', W/2, 210, F(900, 72), C.text, 'center', ph(lt, 0));
+  b.items.forEach(([name, note], i) => { const col = i % 2, row = Math.floor(i/2), cx = 560 + col*800, cy = 430 + row*250;
+    pop(cx, cy, back((lt - stag(i, b.items.length, d, 0.8))/0.5), () => {
+      rr(-360, -100, 720, 200, 30, C.card, C.teal);
+      x.beginPath(); x.arc(-260, 0, 52, 0, Math.PI*2); x.fillStyle = C.teal; x.fill(); txt(name[0], -260, 4, F(900, 52), '#fff', 'center');
+      txt(name, -180, -26, F(800, fit(name, 500, 46)), C.text); txt(note, -180, 34, F(600, fit(note, 500, 32, 600)), C.muted); });
+  });
+};
+V.steps = (b, lt, d) => {
+  txt(b.title, 160, 200, F(900, fit(b.title, 1600, 72, 900)), C.text, 'left', ph(lt, 0));
+  // items shown before this beat appear instantly; the newest animates in
+  const prev = b.items.length - (b.fresh ?? 1);
+  for (let i = 0; i < b.of; i++) { const y = 300 + i*(b.of > 4 ? 128 : 150), on = i < b.items.length, isNew = i >= prev;
+    const p = !on ? 0 : isNew ? ph(lt, 0.2 + (i - prev)*Math.max(0.6, d*0.7/Math.max(1, b.items.length - prev)), 0.5) : 1;
+    rr(160, y, 1600, b.of > 4 ? 108 : 120, 26, on && p > 0 ? C.card : 'rgba(20,34,61,0.45)');
+    x.beginPath(); x.arc(240, y + (b.of > 4 ? 54 : 60), 34, 0, Math.PI*2); x.fillStyle = on && p > 0 ? C.teal : 'rgba(143,163,191,0.2)'; x.fill();
+    txt(String(i+1), 240, y + (b.of > 4 ? 56 : 62), F(900, 36), '#fff', 'center');
+    if (on) slide(p, 40, 0, () => txt(b.items[i], 310, y + (b.of > 4 ? 56 : 62), F(700, fit(b.items[i], 1400, 42, 700)), C.text));
+  }
+};
+V.warning = (b, lt) => {
+  const p = back((lt - 0.1)/0.6);
+  pop(W/2, 520, p, () => {
+    rr(-760, -260, 1520, 520, 40, 'rgba(255,92,108,0.12)', C.red, 5);
+    x.beginPath(); x.moveTo(0, -210); x.lineTo(60, -110); x.lineTo(-60, -110); x.closePath(); x.fillStyle = C.red; x.fill();
+    txt('!', 0, -142, F(900, 60), C.bg, 'center');
+    txt('MISTAKE TO AVOID', 0, -50, F(800, 32), C.red, 'center');
+    txt(b.title, 0, 30, F(900, fit(b.title, 1400, 80, 900)), C.text, 'center');
+    const lines = wrap(b.text, 1300, F(600, 40)); lines.forEach((l, j) => txt(l, 0, 130 + j*52, F(600, 40), C.muted, 'center', ph(lt, 0.8)));
+  });
+};
+V.timeline = (b, lt, d) => {
+  txt(b.title, W/2, 240, F(900, 72), C.text, 'center', ph(lt, 0));
+  const n = b.marks.length, x0 = 260, x1 = 1660, y = 560;
+  x.strokeStyle = 'rgba(143,163,191,0.35)'; x.lineWidth = 8; x.beginPath(); x.moveTo(x0, y); x.lineTo(x0 + (x1-x0)*ph(lt, 0.2, d*0.6), y); x.stroke();
+  b.marks.forEach(([top, lab], i) => { const cx = x0 + i*(x1-x0)/(n-1), p = back((lt - stag(i, n, d, 0.7))/0.5), last = i === n-1;
+    const col = last ? (b.bad ? C.red : C.green) : (b.bad ? C.amber : C.teal2);
+    pop(cx, y, p, () => { x.beginPath(); x.arc(0, 0, 24, 0, Math.PI*2); x.fillStyle = col; x.fill();
+      txt(top, 0, -90, F(900, fit(top, 380, 52, 900)), col, 'center');
+      wrap(lab, 360, F(600, 34)).forEach((l, j) => txt(l, 0, 90 + j*44, F(600, 34), C.text, 'center')); });
+  });
+};
+V.stat = (b, lt) => {
+  const p = eo((lt - 0.2)/1.4), v = Math.round(b.num * p);
+  pop(W/2, 420, back((lt-0.1)/0.6), () => txt(v + b.suffix, 0, 0, F(900, 260), C.amber, 'center'));
+  wrap(b.label, 1400, F(700, 52)).forEach((l, j) => txt(l, W/2, 650 + j*66, F(700, 52), C.text, 'center', ph(lt, 0.8)));
+  if (b.source) txt('Source: ' + b.source, W/2, 840, F(500, 28), C.muted, 'center', ph(lt, 1.2));
+};
+V.email = (b, lt, d) => {
+  slide(ph(lt, 0.1), 0, 60, () => {
+    const px = 360, py = 150, w = 1200, h = 720;
+    rr(px, py, w, h, 30, C.paper);
+    rr(px, py, w, 80, [30,30,0,0], '#DCE3EE');
+    [C.red, C.amber, C.green].forEach((c, i) => { x.beginPath(); x.arc(px + 50 + i*36, py + 40, 11, 0, Math.PI*2); x.fillStyle = c; x.fill(); });
+    txt('To: ' + b.to, px + 60, py + 130, F(600, 32), '#51617A');
+    txt(b.subject, px + 60, py + 190, F(800, fit(b.subject, w - 120, 44)), C.ink);
+    x.fillStyle = '#DCE3EE'; x.fillRect(px + 60, py + 235, w - 120, 3);
+    let yy = py + 300;
+    b.body.forEach((s, i) => { const at = stag(i, b.body.length, d, 0.75); const lines = wrap(s, w - 140, F(600, 38));
+      lines.forEach((l, j) => { const full = ph(lt, at, 0.8); const n = Math.floor(l.length * full);
+        txt(l.slice(0, n), px + 60, yy, F(600, 38), '#22324D'); yy += 54; });
+      yy += 14; });
+  });
+};
+V.notes = (b, lt, d) => {
+  txt(b.title || 'AI note taker', 160, 300, F(900, 76), C.text, 'left', ph(lt, 0));
+  (b.points || ['Joins the call', 'Records + transcribes', 'Sends summary + action items']).forEach((s, i) => slide(ph(lt, 0.6 + i*0.8), -40, 0, () => {
+    check(190, 420 + i*80, 34, C.green, ph(lt, 0.8 + i*0.8)); txt(s, 230, 420 + i*80, F(700, 38), C.muted); }));
+  const px = 1040, py = 180; slide(ph(lt, 0.2), 60, 0, () => {
+    rr(px, py, 740, 720, 34, C.card);
+    const pulse = 0.6 + 0.4*Math.sin(lt*6); x.beginPath(); x.arc(px + 50, py + 56, 12, 0, Math.PI*2); x.fillStyle = `rgba(255,92,108,${pulse})`; x.fill();
+    txt(b.card || 'Recording · Client call', px + 76, py + 58, F(700, 30), C.text);
+    for (let i = 0; i < 38; i++) { const h = 12 + Math.abs(Math.sin(i*0.7 + lt*5))*48; rr(px + 40 + i*18, py + 150 - h/2, 9, h, 4, C.teal); }
+    txt(b.listTitle || 'Action items', px + 40, py + 260, F(800, 34), C.amber, 'left', ph(lt, 2));
+    (b.items || ['Proposal by Friday', 'Updated pricing', 'Intro to designer']).forEach((s, i) => { const at = 2.4 + i*0.8; slide(ph(lt, at, 0.5), 30, 0, () => {
+      rr(px + 40, py + 310 + i*110, 660, 88, 18, C.card2); check(px + 92, py + 354 + i*110, 40, C.green, ph(lt, at + 0.2, 0.5)); txt(s, px + 140, py + 356 + i*110, F(600, 34), C.text); }); });
+  });
+};
+V.invoice = (b, lt) => {
+  txt(b.title || '30 days overdue', 160, 360, F(900, 80), C.red, 'left', ph(lt, 0.8));
+  txt(b.sub || '…and chasing it feels awkward', 160, 450, F(600, 42), C.muted, 'left', ph(lt, 1.4));
+  slide(ph(lt, 0.1), 60, 0, () => { x.save(); x.translate(1360, 540); x.rotate(-0.03);
+    rr(-320, -340, 640, 680, 30, C.paper); txt(b.doc || 'INVOICE #1042', -260, -260, F(800, 38), C.ink);
+    [-170, -110, -50].forEach(yy => rr(-260, yy, 400, 22, 8, '#D6DEEA')); txt(b.amount || '$2,400.00', 260, 60, F(900, 58), C.ink, 'right');
+    pop(0, 200, back((lt - 0.9)/0.5), () => { x.rotate(-0.18); x.strokeStyle = C.red; x.lineWidth = 8; x.beginPath(); x.roundRect(-200, -55, 400, 110, 14); x.stroke(); txt(b.stamp || 'OVERDUE', 0, 4, F(900, 64), C.red, 'center'); });
+    x.restore(); });
+};
+V.calendar = (b, lt, d) => {
+  txt(b.title || 'Your posting calendar', 160, 260, F(900, 72), C.text, 'left', ph(lt, 0));
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  days.forEach((dname, i) => { const cx = 160 + i*232, y = 400; slide(ph(lt, 0.2 + i*0.1), 0, 30, () => {
+    rr(cx, y, 210, 360, 24, C.card); txt(dname, cx + 105, y + 50, F(700, 34), C.muted, 'center');
+    const planned = i === 0 || i === 3; if (planned) { const fail = ph(lt, 2 + (i ? 1 : 0), 0.4);
+      rr(cx + 20, y + 120, 170, 90, 16, fail > 0.5 ? 'rgba(255,92,108,0.2)' : C.teal);
+      txt(fail > 0.5 ? 'Skipped' : 'Post', cx + 105, y + 166, F(800, 32), fail > 0.5 ? C.red : '#fff', 'center'); } }); });
+  txt(b.footer || 'Always the first thing to slip.', 160, 860, F(800, 48), C.amber, 'left', ph(lt, 3.5));
+};
+V.split = (b, lt, d) => {
+  pop(W/2, 260, back((lt - 0.1)/0.6), () => { rr(-300, -80, 600, 160, 30, C.amber); txt('🎙 ' + b.src, 0, 4, F(900, 48), C.ink, 'center'); });
+  const n = b.outs.length; b.outs.forEach((s, i) => { const cx = 300 + i*(1320/(n-1)), at = stag(i, n, d, 0.6);
+    arrow(W/2, 345, cx, 640, eo((lt - at)/0.6), 'rgba(95,211,217,0.8)');
+    pop(cx, 740, back((lt - at - 0.4)/0.5), () => { rr(-170, -90, 340, 180, 26, C.card, C.teal); txt(s, 0, 4, F(800, fit(s, 300, 40)), C.text, 'center'); }); });
+};
+V.pick = (b, lt, d) => {
+  txt(b.title || 'Pick ONE to start', W/2, 260, F(900, 76), C.text, 'center', ph(lt, 0));
+  const chosen = lt > d*0.55;
+  b.items.forEach((s, i) => { const cx = 260 + i*350, sel = chosen && i === b.pick;
+    pop(cx, 540, back((lt - 0.4 - i*0.15)/0.5) * (sel ? 1 + 0.12*eo((lt - d*0.55)/0.4) : 1), () => {
+      x.globalAlpha *= chosen && !sel ? 0.35 : 1; rr(-155, -80, 310, 160, 30, sel ? C.amber : C.card, sel ? null : C.teal);
+      txt(s, 0, 4, F(800, fit(s, 270, 38)), sel ? C.ink : C.text, 'center'); }); });
+  if (chosen) txt('↑ ' + (b.caption || 'biggest cost of time or money'), 260 + b.pick*350, 700, F(700, 36), C.amber, 'center', ph(lt, d*0.55 + 0.3));
+};
+V.roadmap = (b, lt, d) => {
+  txt(b.title || 'A simple roadmap', W/2, 220, F(900, 76), C.text, 'center', ph(lt, 0));
+  b.items.forEach((s, i) => { const y = 340 + i*150, at = stag(i, b.items.length, d, 0.7);
+    slide(ph(lt, at), -60, 0, () => { rr(360, y, 1200, 120, 30, i === 0 ? C.amber : C.card);
+      const [m, rest] = s.split(': '); txt(m, 420, y + 62, F(800, 38), i === 0 ? C.ink : C.teal2); txt(rest, 700, y + 62, F(800, 46), i === 0 ? C.ink : C.text); }); });
+};
+V.end = (b, lt) => {
+  pop(W/2, 330, back((lt - 0.2)/0.7), () => { x.beginPath(); x.arc(0, 0, 110, 0, Math.PI*2); x.fillStyle = C.teal; x.fill(); txt(EP.brand.initial, 0, 8, F(800, 120), '#fff', 'center'); });
+  txt(EP.brand.display || EP.brand.name, W/2, 520, F(800, 60), C.text, 'center', ph(lt, 0.5));
+  // Like button: pops in, then gets "clicked" with a burst
+  const liked = lt > 2.0, lp = back((lt - 0.9)/0.6);
+  pop(W/2 - 260, 690, lp * (liked ? 1 + 0.15*Math.max(0, 1 - (lt - 2.0)/0.3) : 1), () => {
+    rr(-210, -60, 420, 120, 60, liked ? C.teal : '#26375A'); txt('👍  ' + (liked ? 'Liked' : 'Like'), 0, 4, F(900, 46), '#fff', 'center'); });
+  if (liked && lt < 2.8) { const k = (lt - 2.0)/0.8; for (let i = 0; i < 10; i++) { const a = i/10*Math.PI*2; x.beginPath(); x.arc(W/2 - 260 + Math.cos(a)*(150 + 120*k), 690 + Math.sin(a)*(90 + 80*k), 8*(1-k), 0, Math.PI*2); x.fillStyle = C.amber; x.fill(); } }
+  const subbed = lt > 3.4;
+  pop(W/2 + 260, 690, back((lt - 1.2)/0.6), () => { rr(-230, -60, 460, 120, 60, subbed ? '#3A4A66' : '#FF3B3B'); txt(subbed ? 'Subscribed ✓' : 'SUBSCRIBE', 0, 4, F(900, 46), '#fff', 'center'); });
+  txt(b.next, W/2, 870, F(600, 40), C.muted, 'center', ph(lt, 4));
+};
+
+// ---------- documentary types ----------
+// photo: full-bleed photo (v.bg) with a lower-third title + caption. The workhorse for story narration.
+V.photo = (b, lt, d) => {
+  slide(ph(lt, 0.4), -50, 0, () => {
+    x.fillStyle = C.amber; x.fillRect(120, 720, 10, 150);
+    if (b.kicker) txt(b.kicker.toUpperCase(), 160, 738, F(700, 30), C.amber);
+    txt(b.title || '', 160, 800, F(900, fit(b.title || '', 1500, 72, 900)), C.text);
+    if (b.caption) txt(b.caption, 160, 862, F(600, fit(b.caption, 1500, 36, 600)), C.muted, 'left', ph(lt, 0.9));
+  });
+};
+// year: a big year counting up to the event, with a one-line label (dates feel like progress)
+V.year = (b, lt) => {
+  const from = b.from ?? b.year - 30, p = eo((lt - 0.1) / 1.2), y = Math.round(from + (b.year - from) * p);
+  txt((b.kicker || '').toUpperCase(), W/2, 300, F(700, 34), C.teal2, 'center', ph(lt, 0));
+  pop(W/2, 470, back((lt - 0.05)/0.6), () => txt(String(y) + (b.suffix || ''), 0, 0, F(900, 240), C.amber, 'center'));
+  wrap(b.label || '', 1400, F(800, 56)).forEach((l, j) => slide(ph(lt, 1.1 + j*0.15), 0, 30, () => txt(l, W/2, 680 + j*70, F(800, 56), C.text, 'center')));
+};
+// quote: a pull quote with attribution, typed in
+V.quote = (b, lt, d) => {
+  txt('“', 220, 330, F(900, 300), C.teal, 'left', ph(lt, 0) * 0.8);
+  const lines = wrap(b.text, 1400, F(800, 64)); const total = b.text.length, shown = Math.floor(total * eo((lt - 0.3) / Math.max(1.5, d * 0.45)));
+  let used = 0; lines.forEach((l, j) => { const n = Math.max(0, Math.min(l.length, shown - used)); used += l.length + 1;
+    txt(l.slice(0, n), 300, 400 + j*86, F(800, 64), C.text); });
+  if (b.who) txt('— ' + b.who, 300, 420 + lines.length*86, F(700, 40), C.amber, 'left', ph(lt, d * 0.5));
+};
+// compare: two columns (then vs now, us vs them), rows reveal left-right
+V.compare = (b, lt, d) => {
+  txt(b.title || '', W/2, 190, F(900, fit(b.title || '', 1600, 70, 900)), C.text, 'center', ph(lt, 0));
+  [[b.left, 160, C.card], [b.right, 1000, C.card2]].forEach(([col, cx, fill], k) => slide(ph(lt, 0.2 + k*0.3), k ? 60 : -60, 0, () => {
+    rr(cx, 280, 760, 640, 32, fill, k ? C.amber : C.teal, 4);
+    txt(col.head, cx + 380, 350, F(900, fit(col.head, 680, 52, 900)), k ? C.amber : C.teal2, 'center');
+    col.rows.forEach((r, i) => { const at = 0.6 + (i*2 + k) * Math.max(0.35, d*0.6/(col.rows.length*2)); slide(ph(lt, at), 0, 20, () => {
+      txt('• ' + r, cx + 50, 450 + i*100, F(700, fit(r, 640, 40, 700)), C.text); }); });
+  }));
+};
+// list: generic numbered/bulleted list with optional side photo (v.photo)
+V.list = (b, lt, d) => {
+  const wide = !b.photo; txt(b.title || '', 160, 200, F(900, fit(b.title || '', wide ? 1600 : 1000, 70, 900)), C.text, 'left', ph(lt, 0));
+  b.items.forEach((s, i) => slide(ph(lt, stag(i, b.items.length, d, 0.75)), -50, 0, () => {
+    const y = 300 + i*(b.items.length > 5 ? 105 : 125), w = wide ? 1600 : 1000;
+    rr(160, y, w, b.items.length > 5 ? 90 : 105, 22, C.card);
+    txt(b.bullets === false ? '•' : String(i+1), 220, y + 48, F(900, 40), C.amber, 'center');
+    txt(s, 280, y + 48, F(700, fit(s, w - 160, 40, 700)), C.text); }));
+  if (b.photo) pop(1500, 560, back((lt - 0.3)/0.6), () => { x.rotate(0.03); rr(-300, -330, 600, 660, 26, '#fff'); photoCard(b.photo, -286, -316, 572, 632, 18, 1.12 - 0.08*cl(lt/d)); });
+};
+
+// ---------- presenter (Gia, from cartoon-presenter skill) ----------
+const GIA_POSE = { title: 'wave', chapter: 'wave', bigtext: 'point', stat: 'surprised', year: 'surprised', warning: 'worried', scenario: 'think', quote: 'think', end: 'happy', photo: 'point', compare: 'point' };
+function presenterFor(s) { if (!EP.presenter || typeof drawGia === 'undefined') return null; if (s.v.gia === false) return null; return s.v.gia || GIA_POSE[s.v.t] || null; }
+function drawPresenter(pose, t, lt, alpha) {
+  x.save(); x.globalAlpha = alpha; x.translate(W - 250, H); x.scale(-0.95, 0.95);   // mirrored: she stands right and points left at the content
+  drawGia(x, { t, pose: lt < 1.6 && pose === 'wave' ? 'wave' : pose === 'wave' ? 'point' : pose, lt, viseme: giaViseme(window.CUES || [], t), look: 0.5, blinkSeed: 0.7, mirror: true, badge: EP.brand.initial });
+  x.restore();
+}
+
+// Chained "steps" beats: only the newly added item animates.
+BEATS.forEach((b, i) => { if (b.v.t === 'steps') { const p = BEATS[i-1]?.v; b.v.fresh = p && p.t === 'steps' && p.title === b.v.title ? b.v.items.length - p.items.length : b.v.items.length; } });
+const SEG = BEATS.map((b, i) => ({ v: b.v, say: b.say, start: TL.beats[i].start, end: i + 1 < BEATS.length ? TL.beats[i+1].start : TL.total, speak: TL.beats[i].dur }));
+// Chapter index per beat for the progress bar
+const NCH = BEATS.filter(b => b.v.t === 'chapter').length;
+let ch = 0; SEG.forEach(s => { if (s.v.t === 'chapter') ch = s.v.n; if (s.v.outro) ch = 99; s.ch = ch; });
+
+function captions(s, t) {
+  // split the line into ~8-word chunks, timed by character share of the spoken duration
+  const words = s.say.split(' '), chunks = []; for (let i = 0; i < words.length; i += 8) chunks.push(words.slice(i, i + 8).join(' '));
+  const lens = chunks.map(c => c.length + 1), tot = lens.reduce((a, b) => a + b, 0); let acc = 0, k = 0;
+  const lt = t - s.start; if (lt > s.speak + 0.2) return;
+  for (; k < chunks.length; k++) { acc += lens[k] / tot * s.speak; if (lt < acc) break; }
+  const c = chunks[Math.min(k, chunks.length - 1)]; x.font = F(700, 38); const w = x.measureText(c).width + 56;
+  rr(W/2 - w/2, 958, w, 66, 16, 'rgba(6,12,24,0.78)'); txt(c, W/2, 992, F(700, 38), '#FFFFFF', 'center');
+}
+function chrome(s) {
+  x.save(); x.beginPath(); x.arc(92, 72, 22, 0, Math.PI*2); x.fillStyle = C.teal; x.fill();
+  txt(EP.brand.initial, 92, 74, F(800, 26), '#fff', 'center'); txt(EP.brand.name, 128, 74, F(700, 22), C.muted); x.restore();
+  if (NCH && NCH <= 10 && s.ch >= 1 && s.ch <= NCH) for (let i = 1; i <= NCH; i++) { const cx = W - 80 - (NCH - i + 1)*52, on = i <= s.ch;
+    x.beginPath(); x.arc(cx, 72, i === s.ch ? 12 : 9, 0, Math.PI*2); x.fillStyle = i === s.ch ? C.amber : on ? C.teal : 'rgba(143,163,191,0.3)'; x.fill(); }
+}
+function draw(t) {
+  bg(t);
+  let i = SEG.length - 1; while (i > 0 && t < SEG[i].start) i--;
+  const s = SEG[i], lt = t - s.start, d = s.end - s.start, last = i === SEG.length - 1;
+  const fin = cl(lt / 0.35), fout = last ? 1 : cl((d - lt) / 0.35);
+  if (s.v.bg) { x.save(); x.globalAlpha = Math.min(fin, fout); photoBg(s.v.bg, lt, d, i, s.v.t !== 'chapter'); x.restore(); }
+  particles(t);
+  // content slides in from the right, drifts slightly while on screen (camera push), slides out left
+  x.save(); x.globalAlpha = fin * fout;
+  const push = 1 + 0.025 * cl(lt / Math.max(d, 1));
+  const pose = presenterFor(s);
+  x.translate(W/2 + 90 * (1 - eo(lt / 0.5)) - 60 * (1 - fout), H/2); x.scale(push, push);
+  if (pose) { x.translate(-150, -40); x.scale(0.84, 0.84); }   // make room for the presenter on the right
+  x.translate(-W/2, -H/2);
+  (V[s.v.t] || (() => {}))(s.v, lt, d); x.restore();
+  if (pose) drawPresenter(pose, t, lt, Math.min(fin, fout));
+  // light-sweep wipe at the start of each chapter
+  if (s.v.t === 'chapter' && lt < 0.9) { const k = eo(lt / 0.9), wx = -400 + k * (W + 800);
+    const g = x.createLinearGradient(wx - 300, 0, wx + 300, 0); g.addColorStop(0, 'rgba(95,211,217,0)'); g.addColorStop(0.5, 'rgba(95,211,217,0.35)'); g.addColorStop(1, 'rgba(95,211,217,0)');
+    x.fillStyle = g; x.fillRect(0, 0, W, H); }
+  chrome(s); captions(s, t);
+  x.fillStyle = 'rgba(143,163,191,0.18)'; x.fillRect(0, H - 6, W, 6); x.fillStyle = C.teal; x.fillRect(0, H - 6, W * cl(t / TL.total), 6);
+}
+function loop() { draw(performance.now() / 1000); requestAnimationFrame(loop); }
+Promise.all([document.fonts.load(F(800, 40)), imgReady]).then(() => requestAnimationFrame(loop));
+</script></body></html>
