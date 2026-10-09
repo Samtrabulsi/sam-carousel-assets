@@ -1,6 +1,7 @@
 // Tamara as a photo puppet: animates Sam's own reference picture (Pixar-style render) for free, on CPU.
 // v2: a smooth WebGL warp of the whole picture (no cut-out pieces, so no seams):
-//   - hip sway that bends the body from planted feet, knee dip on the beat, breathing chest
+//   - rigid sway around planted feet (no shear, so she never looks stretched), a small hop on the beat, breathing
+//   - 3D turns of body and head from a depth map (Depth Anything V2, make_depth.py): near parts move more than far ones
 //   - head tilt that fades out through the neck, hair ends that swing a moment behind the body
 //   - lips that part while singing (opening tapers into the mouth corners, lower lip/chin stretch smoothly)
 //   - blinks that pull real eyelid skin down over the eye
@@ -15,9 +16,9 @@
   const PAD = [140, 70];
   const VS = 'attribute vec2 a; varying vec2 uv; void main(){ uv = a * 0.5 + 0.5; gl_Position = vec4(a, 0.0, 1.0); }';
   const FS = `precision highp float;
-  uniform sampler2D tex; uniform vec2 size, pad, feet, neck, chest; uniform vec3 sp0, sp1, sp2;
+  uniform sampler2D tex, dep; uniform vec2 size, pad, feet, neck, chest; uniform vec3 sp0, sp1, sp2;
   uniform vec4 eyeA, eyeB; uniform float rotA, rotB;
-  uniform float bend, bob, tilt, breath, hair, mouth, blink, hasMouth;
+  uniform float sway, lift, tilt, breath, hair, mouth, blink, hasMouth, yaw, hyaw, hpitch;
   varying vec2 uv;
   vec4 S(vec2 p) { if (p.x < 0.0 || p.y < 0.0 || p.x > size.x || p.y > size.y) return vec4(0.0); return texture2D(tex, p / size); }
   float splitY(float x) { // smooth curve through the three split points
@@ -41,17 +42,21 @@
   void main() {
     vec2 q = vec2(uv.x * (size.x + 2.0 * pad.x), (1.0 - uv.y) * (size.y + 2.0 * pad.y)) - pad;
     vec2 p = q;
-    float h = clamp((feet.y - p.y) / (feet.y - 120.0), 0.0, 1.0);
-    p.x -= bend * h * h;                                         // body bends from the feet
-    float k = smoothstep(feet.y - 40.0, feet.y - 520.0, p.y);
-    p.y -= bob * 16.0 * k;                                       // knee dip: everything above the knees drops
+    p.y += lift;                                                 // tiny hop (whole body, no squash)
+    vec2 df = p - feet; float sr = -sway, cs0 = cos(sr), sn0 = sin(sr);
+    p = feet + vec2(cs0 * df.x - sn0 * df.y, sn0 * df.x + cs0 * df.y); // rigid sway around the feet: proportions never change
     vec2 dc = p - chest; float wc = exp(-dot(dc, dc) / (2.0 * 170.0 * 170.0));
-    p = chest + dc / (1.0 + breath * 0.022 * wc);                // breathing
+    p = chest + dc / (1.0 + breath * 0.010 * wc);                // breathing
     float wh = smoothstep(520.0, 400.0, p.y);                    // head + top of hair, fading through the neck
     vec2 dn = p - neck; float a = -tilt * wh, ca = cos(a), sa = sin(a);
     p = neck + vec2(ca * dn.x - sa * dn.y, sa * dn.x + ca * dn.y);
+    // 3D turn: parallax from the depth map (near parts like the nose and hands move more than the hair behind)
+    float dz = texture2D(dep, clamp(p / size, 0.0, 1.0)).r - 0.5;
+    float wh2 = smoothstep(520.0, 400.0, p.y);
+    p.x -= (yaw * (1.0 - 0.6 * wh2) + hyaw * wh2) * 22.0 * dz;
+    p.y -= hpitch * wh2 * 14.0 * dz;
     float side = smoothstep(130.0, 230.0, abs(p.x - neck.x));
-    p.x -= hair * 16.0 * smoothstep(430.0, 760.0, p.y) * side;   // hair ends swing
+    p.x -= hair * 10.0 * smoothstep(430.0, 760.0, p.y) * side;   // hair ends swing
     // mouth: lower lip / chin slide down, the gap shows the inside of the mouth
     float sy = splitY(p.x), d = p.y - sy;
     float wx = 1.0 - smoothstep(26.0, 56.0, abs(p.x - sp1.x));
@@ -74,7 +79,7 @@
 
   let gl, prog, cv, U = {};
   const loadImg = src => new Promise(r => { const im = new Image(); im.onload = () => r(im); im.onerror = () => r(null); im.src = src; });
-  window.tamaraPhotoReady = Promise.all(Object.entries(POSES).map(([n, p]) => loadImg(p.src).then(img => [n, img]))).then(list => {
+  window.tamaraPhotoReady = Promise.all(Object.entries(POSES).map(([n, p]) => Promise.all([loadImg(p.src), p.depth ? loadImg(p.depth) : null]).then(([img, dimg]) => [n, img, dimg]))).then(list => {
     list = list.filter(x => x[1]); if (!list.length) return;
     const W = Math.max(...list.map(x => x[1].width)), H = Math.max(...list.map(x => x[1].height));
     cv = document.createElement('canvas'); cv.width = W + 2 * PAD[0]; cv.height = H + 2 * PAD[1];
@@ -84,17 +89,22 @@
     prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog); gl.useProgram(prog);
     const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    'size pad feet neck chest sp0 sp1 sp2 eyeA eyeB rotA rotB bend bob tilt breath hair mouth blink hasMouth'.split(' ').forEach(n => U[n] = gl.getUniformLocation(prog, n));
-    list.forEach(([n, img]) => { const tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
+    'size pad feet neck chest sp0 sp1 sp2 eyeA eyeB rotA rotB sway lift tilt breath hair mouth blink hasMouth yaw hyaw hpitch tex dep'.split(' ').forEach(n => U[n] = gl.getUniformLocation(prog, n));
+    const mkTex = img => { const tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
       [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER].forEach(f => gl.texParameteri(gl.TEXTURE_2D, f, gl.LINEAR));
-      [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(f => gl.texParameteri(gl.TEXTURE_2D, f, gl.CLAMP_TO_EDGE));
-      POSES[n].tex = tx; POSES[n].w = img.width; POSES[n].h = img.height; });
+      [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(f => gl.texParameteri(gl.TEXTURE_2D, f, gl.CLAMP_TO_EDGE)); return tx; };
+    let flat = null;
+    list.forEach(([n, img, dimg]) => { POSES[n].tex = mkTex(img);
+      if (!dimg) { if (!flat) { const f = document.createElement('canvas'); f.width = f.height = 2; const x = f.getContext('2d'); x.fillStyle = '#808080'; x.fillRect(0, 0, 2, 2); flat = mkTex(f); } }
+      POSES[n].dtex = dimg ? mkTex(dimg) : flat; POSES[n].w = img.width; POSES[n].h = img.height; });
+    gl.uniform1i(U.tex, 0); gl.uniform1i(U.dep, 1);
     gl.uniform2f(U.pad, PAD[0], PAD[1]); gl.viewport(0, 0, cv.width, cv.height);
   });
 
   function renderPose(P, m) { // warp one pose picture into the GL canvas
-    gl.bindTexture(gl.TEXTURE_2D, P.tex);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, P.dtex);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, P.tex);
     gl.uniform2f(U.size, P.w, P.h); gl.uniform2f(U.feet, ...P.feet); gl.uniform2f(U.neck, ...P.neck); gl.uniform2f(U.chest, ...P.chest);
     const sp = P.split || [[0, 0], [1, 0], [2, 0]]; sp.forEach((s, i) => gl.uniform3f(U['sp' + i], s[0], s[1], 0));
     gl.uniform1f(U.hasMouth, P.split ? 1 : 0);
@@ -110,14 +120,17 @@
     const t = o.t || 0, bph = (o.beat || 0) * Math.PI, D = o.danceAmt || 0, I = 1 - D;
     const bp = (t + (o.blinkSeed || 0)) % 3.9, blink = bp < 0.18 ? Math.sin(bp / 0.18 * Math.PI) : 0;
     const m = {
-      bend: D * 26 * Math.sin(bph) + I * 7 * Math.sin(t * 0.8),
-      bob: D * Math.pow(Math.abs(Math.sin(bph)), 1.5),
-      tilt: D * 0.035 * Math.sin(bph * 0.5 + 0.6) + I * (0.022 * Math.sin(t * 1.1) + 0.01 * Math.sin(t * 2.3)),
+      sway: D * 0.022 * Math.sin(bph) + I * 0.008 * Math.sin(t * 0.8),            // radians, rigid
+      lift: D * 7 * Math.pow(Math.abs(Math.sin(bph)), 2),                          // px hop on the beat
+      tilt: D * 0.03 * Math.sin(bph * 0.5 + 0.6) + I * (0.02 * Math.sin(t * 1.1) + 0.008 * Math.sin(t * 2.3)),
+      yaw: D * 0.8 * Math.sin(bph * 0.5) + I * 0.5 * Math.sin(t * 0.55),         // body turns left/right (3D)
+      hyaw: D * 1.0 * Math.sin(bph * 0.5 + 0.4) + I * 0.9 * Math.sin(t * 0.7 + 1.0), // head turns a little more
+      hpitch: I * 0.5 * Math.sin(t * 1.3) + D * 0.6 * Math.sin(bph),               // gentle nod
       hair: D * Math.sin(bph - 0.9) + I * 0.35 * Math.sin(t * 0.8 - 0.9),
       breath: 0.5 + 0.5 * Math.sin(t * 1.7), mouth: o.open || 0, blink: Math.min(1, blink * 1.15),
     };
     c.save();
-    c.fillStyle = 'rgba(0,0,0,0.25)'; c.beginPath(); c.ellipse(0, 0, 230 - m.bob * 10, 34, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(0,0,0,0.25)'; c.beginPath(); c.ellipse(0, 0, 230 - m.lift * 2, 34, 0, 0, Math.PI * 2); c.fill();
     const k = o.poseK ?? 1, cur = pick(o.pose), prev = pick(o.prevPose);
     const layers = k < 1 && prev !== cur ? [[prev, 1 - k], [cur, k]] : [[cur, 1]];
     for (const [P, alpha] of layers) {

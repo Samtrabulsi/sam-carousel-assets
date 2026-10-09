@@ -20,5 +20,8 @@ if host == "photo":  # embed the pose cutouts + landmarks (WebGL can't load file
     poses = {k: v for k, v in json.load(open(os.path.join(cdir, "poses.json"))).items() if not k.startswith("_")}
     for name, v in poses.items():
         v["src"] = "data:image/png;base64," + base64.b64encode(open(os.path.join(cdir, f"{name}-cutout.png"), "rb").read()).decode()
+        dp = os.path.join(cdir, f"{name}-depth.png")  # from make_depth.py: 3D turns
+        if os.path.exists(dp):
+            v["depth"] = "data:image/png;base64," + base64.b64encode(open(dp, "rb").read()).decode()
     open(os.path.join(d, "tamara-cutout.js"), "w").write("window.TAMARA_POSES=" + json.dumps(poses) + ";\n")
 print(f"built {d}: {dur:.1f}s, {len(lines)} lines")
