@@ -121,8 +121,10 @@ function draw(t) {
   const mouth = tamaraMouth(WORDS, t);
   if (S.host === 'photo') { // her real picture as a puppet (tamara-photo.js)
     c.save(); c.translate(430, 1035); c.scale(0.59, 0.59);
-    const on = /dance|clap|cheer/.test(p.pose), k = ease((t - p.since) / 0.8); // ease in/out of dancing
-    drawTamaraPhoto(c, { t, beat: beatAt(t), danceAmt: on ? k : 1 - k, open: tamaraOpen(WORDS, t), blinkSeed: 0.4 });
+    const MAP = { wave: 'wave', point: 'point', clap: 'clap', cheer: 'cheer' }; // other poses use the 'sing' picture
+    const prev = poseAt(p.since - 0.05), on = /dance|clap|cheer/.test(p.pose), k = ease((t - p.since) / 0.8);
+    drawTamaraPhoto(c, { t, beat: beatAt(t), pose: MAP[p.pose] || 'sing', prevPose: MAP[prev.pose] || 'sing', poseK: ease((t - p.since) / 0.3),
+      danceAmt: on ? k : 1 - k, open: tamaraOpen(WORDS, t), blinkSeed: 0.4 });
     c.restore();
   } else {
     c.save(); c.translate(430, 1010); c.scale(0.9, 0.9);

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Bundle a song folder for rendering.
-usage: build_song.py <song-dir> "<Title>" <bpm> <first-beat-s> [host=code|photo]
+usage: build_song.py <song-dir> "<Title>" <bpm> <first-beat-s> [host=code|photo] [character-dir]
 Writes data.js (window.SONG) and copies kids-engine.html -> video.html, tamara.js and fonts/.
 The folder must already have words.json (align_lyrics.py), song.mp3 and visuals.js."""
 import json, os, shutil, subprocess, sys
@@ -14,8 +14,11 @@ shutil.copy(os.path.join(T, "kids-engine.html"), os.path.join(d, "video.html"))
 for f in ("tamara.js", "tamara-photo.js"):
     shutil.copy(os.path.join(T, f), os.path.join(d, f))
 shutil.copytree(os.path.join(T, "fonts"), os.path.join(d, "fonts"), dirs_exist_ok=True)
-cut = os.path.join(d, "tamara-cutout.png")
-if host == "photo" and os.path.exists(cut):  # WebGL can't load file:// images, so embed the cutout as a data URL
+if host == "photo":  # embed the pose cutouts + landmarks (WebGL can't load file:// images)
     import base64
-    open(os.path.join(d, "tamara-cutout.js"), "w").write("window.TAMARA_CUTOUT='data:image/png;base64," + base64.b64encode(open(cut, 'rb').read()).decode() + "';\n")
+    cdir = sys.argv[6] if len(sys.argv) > 6 else os.path.join(d, "..", "characters", "tamara")
+    poses = {k: v for k, v in json.load(open(os.path.join(cdir, "poses.json"))).items() if not k.startswith("_")}
+    for name, v in poses.items():
+        v["src"] = "data:image/png;base64," + base64.b64encode(open(os.path.join(cdir, f"{name}-cutout.png"), "rb").read()).decode()
+    open(os.path.join(d, "tamara-cutout.js"), "w").write("window.TAMARA_POSES=" + json.dumps(poses) + ";\n")
 print(f"built {d}: {dur:.1f}s, {len(lines)} lines")

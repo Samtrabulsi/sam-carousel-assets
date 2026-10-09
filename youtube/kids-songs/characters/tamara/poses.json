@@ -1,0 +1,8 @@
+{
+ "_about": "Tamara photo-puppet poses (pictures made by Sam). Landmarks are in each picture's pixels (1024x1536). split = bottom edge of the upper teeth [left corner, middle, right corner]; null when the mouth is already open in the picture (no lip movement). eyes = [x, y, rx, ry, rotation].",
+ "sing":  {"feet": [480, 1487], "neck": [480, 440], "chest": [470, 640], "split": [[432, 351], [486, 372], [538, 366]], "eyes": [[445, 250, 36, 27, 0.12], [567, 282, 35, 26, 0.25]]},
+ "point": {"feet": [478, 1467], "neck": [505, 445], "chest": [470, 600], "split": [[467, 345], [512, 374], [560, 371]], "eyes": [[485, 262, 28, 21, 0.32], [592, 297, 27, 21, 0.32]]},
+ "cheer": {"feet": [460, 1467], "neck": [500, 500], "chest": [470, 650], "split": null, "eyes": [[475, 317, 27, 23, 0.36], [580, 355, 27, 22, 0.36]]},
+ "clap":  {"feet": [493, 1486], "neck": [485, 450], "chest": [480, 640], "split": null, "eyes": [[442, 247, 31, 25, 0.24], [565, 277, 30, 24, 0.24]]},
+ "wave":  {"feet": [460, 1477], "neck": [505, 425], "chest": [470, 580], "split": [[472, 322], [516, 359], [562, 356]], "eyes": [[492, 242, 30, 22, 0.38], [600, 285, 28, 21, 0.38]]}
+}
