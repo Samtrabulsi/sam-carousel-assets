@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- Little Miss Tamara song engine. Deterministic: draw(t) always gives the same frame, so record.mjs can render in parallel chunks.
-     Loads: data.js (window.SONG: {title, bpm, beat0, duration, lines from words.json}), tamara.js, visuals.js (window.VIS, per song). -->
+     Loads: data.js (window.SONG: {title, bpm, beat0, duration, host: 'code'|'photo', lines from words.json}), tamara.js (+ tamara-photo.js when host is 'photo'), visuals.js (window.VIS, per song). -->
 <html><head><meta charset="utf-8">
 <style>
 @font-face { font-family: 'Fredoka'; src: url('fonts/Fredoka.ttf'); font-weight: 300 700; }
@@ -9,6 +9,7 @@ html,body{margin:0;background:#000;overflow:hidden} canvas{display:block}
 <canvas id="c" width="1920" height="1080"></canvas>
 <script src="data.js"></script>
 <script src="tamara.js"></script>
+<script>if ((window.SONG || {}).host === "photo") document.write('<script src="tamara-photo.js"><\/script>');</script>
 <script src="visuals.js"></script>
 <script>
 const c = document.getElementById('c').getContext('2d');
@@ -117,16 +118,23 @@ function draw(t) {
   titleCard(t);
   VIS.draw(c, t, { lineAt, beatAt, ease, FONT, LINES, WORDS, titleOn: t < LINES[0].start - 0.3 });
   const p = poseAt(t);
-  c.save(); c.translate(430, 1010); c.scale(0.9, 0.9);
-  drawTamara(c, { t, pose: p.pose, lt: t - p.since, beat: beatAt(t), mouth: tamaraMouth(WORDS, t), look: 0.5, blinkSeed: 0.4 });
-  c.restore();
+  const mouth = tamaraMouth(WORDS, t);
+  if (S.host === 'photo') { // her real picture as a puppet (tamara-photo.js)
+    c.save(); c.translate(430, 1035); c.scale(0.59, 0.59);
+    drawTamaraPhoto(c, { t, beat: beatAt(t), dance: /dance|clap|cheer/.test(p.pose), mouth, blinkSeed: 0.4 });
+    c.restore();
+  } else {
+    c.save(); c.translate(430, 1010); c.scale(0.9, 0.9);
+    drawTamara(c, { t, pose: p.pose, lt: t - p.since, beat: beatAt(t), mouth, look: 0.5, blinkSeed: 0.4 });
+    c.restore();
+  }
   lyrics(t);
   if (t > 3) logo(1790, 70, 0.42);
   endCard(t);
 }
 window.draw = draw;
 const imgs = VIS.images || []; window.imgReady = Promise.all(imgs.map(src => new Promise(r => { const im = new Image(); im.onload = im.onerror = r; im.src = src; })));
-document.fonts.load(FONT('600 40px')).then(() => {
+Promise.all([document.fonts.load(FONT('600 40px')), window.tamaraPhotoReady]).then(() => {
   const loop = () => { draw(performance.now() / 1000); requestAnimationFrame(loop); };
   requestAnimationFrame(loop);
 });

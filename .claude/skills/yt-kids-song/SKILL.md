@@ -36,6 +36,13 @@ The 2026-10-09 scout showed toddler basics (alphabet, colors, body parts) have 1
      node .claude/skills/yt-kids-song/scripts/stills.cjs <dir>/video.html <outdir> 5 20 40 ...   # look at them
      .claude/skills/yt-produce/scripts/render_chunks.sh <dir> <seconds> <workdir> 8 4 song.mp3 <name>.mp4
      ```
+### Tamara as her real picture (photo puppet, free, default look)
+`templates/tamara-photo.js` animates Sam's own Tamara picture (`tamara-reference.webp`) instead of the code-drawn one: background removed (rembg, CPU), bounce + squash on the beat, sway, a small head tilt, blinks, and a jaw that drops on sung vowels (lower teeth/lip/chin slide down over a dark mouth). Build with host `photo`:
+```bash
+python3 .claude/skills/yt-kids-song/scripts/make_photo_puppet.py tamara-reference.webp <song-dir>   # once per picture
+python3 .claude/skills/yt-kids-song/scripts/build_song.py <song-dir> "<Title>" <bpm> <beat0> photo
+```
+Limits: one picture = one pose (arms stay where they are in the picture). For waving, pointing, cheering etc., Sam makes more pictures of Tamara in the same tool he made this one (same style, plain cream background, full body), and each gets its own cutout + landmarks; the engine can then switch poses per line. Keep head tilt small (the head layer sits on the body layer; big angles show a double hair edge).
    - No photos of real children, no real people.
 5. **Thumbnail** (`yt-thumbnail`, layout `face` with a character cut-out): big topic word + one picture (e.g. 8 moons in a row). Max 3 words.
 6. **Upload** (`yt-publish`): `upload.json` must include `"made_for_kids": true`. Title pattern `The {X} Song | {Learn X} | Kids Learning Songs`. Category 27 (Education).
