@@ -15,6 +15,7 @@ Scout (Mon) ─▶ Idea cards ─▶ [assistant approves 3/channel] ─▶ Write
 |---|---|
 | Skills | `yt-scout`, `yt-script`, `yt-produce`, `yt-thumbnail`, `yt-publish`, `yt-analytics`, plus `background-music`, `cartoon-presenter` |
 | Niche configs | `.claude/skills/yt-automation/niches/<slug>.json` (queries, candidates, format, voice, music, brand, cadence) |
+| Kids songs channel | `niches/kids-songs.json` uses `yt-kids-song` instead of yt-script/yt-produce. The Writer writes lyrics; the Suno song is a **manual assistant step** (no API), so the card waits at Scripted until `song.mp3` + `vocals.wav` are in the folder. Uploads set Made for Kids. |
 | Episode folders | `youtube/<channel-slug>/<YYYY-MM-DD>-<topic-slug>/` in this repo (scripts, sources, thumbnails, results; videos stay out of git except small previews) |
 | Production board | Notion **YouTube Production Pipeline**: https://app.notion.com/p/c81dad5c44f34bd9b9df97beb7da1f11 (data source `collection://e447cd9f-2973-4568-b7e6-1b4aa5175783`) |
 | Assistant checklist | `ASSISTANT.md` in this folder |

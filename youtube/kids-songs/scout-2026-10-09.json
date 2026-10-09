@@ -1,0 +1,559 @@
+{
+ "niche": "Kids learning songs (ages 4-8, school topics)",
+ "date": "2026-10-09",
+ "outliers": [
+  {
+   "id": "Ypz3bsr6SZc",
+   "title": "ABC Phonics Song | A is for Apple | ABC Song for Kids | Alphabet Song | Nursery Rhymes | Baby Song",
+   "channel": "ABC SONG'S ",
+   "channel_id": "UCS-HHArziF_CENmfYivaNBg",
+   "view_count": 282586883,
+   "duration": 239,
+   "query": "learning songs for kids",
+   "subs": 871000,
+   "channel_median": 49500.0,
+   "outlier": 5708.8,
+   "upload_date": null
+  },
+  {
+   "id": "Zu6o23Pu0Do",
+   "title": "Rain, Rain, Go Away Nursery Rhyme With Lyrics - Cartoon Animation Rhymes & Songs for Children",
+   "channel": "ChuChu TV Nursery Rhymes & Kids Songs",
+   "channel_id": "UCBnZ16ahKA2DZ_T5W0FPUXg",
+   "view_count": 2555454577,
+   "duration": 164,
+   "query": "nursery rhymes new",
+   "subs": 98200000,
+   "channel_median": 510500.0,
+   "outlier": 5005.8,
+   "upload_date": null
+  },
+  {
+   "id": "e_04ZrNroTo",
+   "title": "Wheels on the Bus | @CoComelon Nursery Rhymes & Kids Songs",
+   "channel": "Cocomelon - Nursery Rhymes",
+   "channel_id": "UCbCmjCuTUZos6Inko4u57UQ",
+   "view_count": 9553288991,
+   "duration": 229,
+   "query": "nursery rhymes new",
+   "subs": 203000000,
+   "channel_median": 1950000.0,
+   "outlier": 4899.1,
+   "upload_date": null
+  },
+  {
+   "id": "9PhtxqKLvVc",
+   "title": "Imogen Heap - The Happy Song (Official Music Video)",
+   "channel": "Imogen Heap",
+   "channel_id": "UC07ZTiBUTi6qMu74EGZY8DA",
+   "view_count": 152999118,
+   "duration": 158,
+   "query": "science songs for kids",
+   "subs": 611000,
+   "channel_median": 45000,
+   "outlier": 3400.0,
+   "upload_date": null
+  },
+  {
+   "id": "h4eueDYPTIg",
+   "title": "Head, Shoulders, Knees & Toes - Exercise Song For Kids",
+   "channel": "ChuChu TV Nursery Rhymes & Kids Songs",
+   "channel_id": "UCBnZ16ahKA2DZ_T5W0FPUXg",
+   "view_count": 1376248821,
+   "duration": 131,
+   "query": "learning songs for kids",
+   "subs": 98200000,
+   "channel_median": 510500.0,
+   "outlier": 2695.9,
+   "upload_date": null
+  },
+  {
+   "id": "8anZWMbSv5U",
+   "title": "Monster Police \ud83d\udea8 | Kids Songs & Nursery Rhymes with Baby Blue",
+   "channel": "Monster Police Kids Songs",
+   "channel_id": "UCEYy1KBuTts141VQvscsdKw",
+   "view_count": 230928984,
+   "duration": 955,
+   "query": "nursery rhymes new",
+   "subs": 4410000,
+   "channel_median": 88000,
+   "outlier": 2624.2,
+   "upload_date": null
+  },
+  {
+   "id": "GPn5Nl61PC8",
+   "title": "Fruits Song | Learn Fruits for Kids | Nursery Rhymes & Songs for Babies",
+   "channel": "Kids TV - Nursery Rhymes And Baby Songs",
+   "channel_id": "UC7Pq3Ko42YpkCB_Q4E981jw",
+   "view_count": 59816393,
+   "duration": 3674,
+   "query": "educational songs for toddlers",
+   "subs": 31000000,
+   "channel_median": 25000.0,
+   "outlier": 2392.7,
+   "upload_date": null
+  },
+  {
+   "id": "kpy6QEAuLJw",
+   "title": "ABC Song | Learn ABC Alphabet for Children | EP85 | Kids Songs & Nursery Rhymes | LiaChaCha",
+   "channel": "LiaChaCha - Nursery Rhymes & Baby Songs",
+   "channel_id": "UC1DY-gFnouXe065NMlLdvbA",
+   "view_count": 265977940,
+   "duration": 227,
+   "query": "educational songs for toddlers",
+   "subs": 10900000,
+   "channel_median": 310000.0,
+   "outlier": 858.0,
+   "upload_date": null
+  },
+  {
+   "id": "vkRDOcma9Qk",
+   "title": "ABCs, Colors, 123s, Growing-up + More | Nursery Rhymes for Babies by LittleBabyBum",
+   "channel": "Little Baby Bum - Nursery Rhymes & Kids Songs",
+   "channel_id": "UCKAqou7V9FAWXpZd9xtOg3Q",
+   "view_count": 111912536,
+   "duration": 3710,
+   "query": "learning songs for kids",
+   "subs": 41600000,
+   "channel_median": 132500.0,
+   "outlier": 844.6,
+   "upload_date": null
+  },
+  {
+   "id": "ygcN65SlLFg",
+   "title": "Hickory Dickory Dock | CoComelon Nursery Rhymes & Kids Songs",
+   "channel": "Cocomelon - Nursery Rhymes",
+   "channel_id": "UCbCmjCuTUZos6Inko4u57UQ",
+   "view_count": 1364371992,
+   "duration": 203,
+   "query": "nursery rhymes new",
+   "subs": 203000000,
+   "channel_median": 1950000.0,
+   "outlier": 699.7,
+   "upload_date": null
+  },
+  {
+   "id": "mQrlgH97v94",
+   "title": "The Planet Song - 8 Planets of the Solar System Song for Kids | KidsLearningTube",
+   "channel": "KLT",
+   "channel_id": "UC7EFWpvc1wYuUwrtZ_BLi9A",
+   "view_count": 229448319,
+   "duration": 189,
+   "query": "science songs for kids",
+   "subs": 2740000,
+   "channel_median": 368000.0,
+   "outlier": 623.5,
+   "upload_date": null
+  },
+  {
+   "id": "6FVLPV4HmBo",
+   "title": "Old MacdDonald Had A Farm + More Kidsberry Nursery Rhymes & Baby Songs",
+   "channel": "Kidsberry - Nursery Rhymes \u266b ",
+   "channel_id": "UCx7bx9ViRETF04UE3dCxu5w",
+   "view_count": 63810393,
+   "duration": 7297,
+   "query": "nursery rhymes new",
+   "subs": 2620000,
+   "channel_median": 162000.0,
+   "outlier": 393.9,
+   "upload_date": null
+  },
+  {
+   "id": "eBVqcTEC3zQ",
+   "title": "One Little Finger featuring @NoodleAndPals | Kids Song | Super Simple Songs",
+   "channel": "Super Simple Songs - Kids Songs",
+   "channel_id": "UCLsooMJoIpl_7ux2jvdPB-Q",
+   "view_count": 1114129456,
+   "duration": 145,
+   "query": "learning songs for kids",
+   "subs": 47100000,
+   "channel_median": 2950000.0,
+   "outlier": 377.7,
+   "upload_date": null
+  },
+  {
+   "id": "frN3nvhIHUk",
+   "title": "Do You Like Broccoli Ice Cream? | Food Song for Kids! | Super Simple Songs",
+   "channel": "Super Simple Songs - Kids Songs",
+   "channel_id": "UCLsooMJoIpl_7ux2jvdPB-Q",
+   "view_count": 1112584926,
+   "duration": 163,
+   "query": "learning songs for kids",
+   "subs": 47100000,
+   "channel_median": 2950000.0,
+   "outlier": 377.1,
+   "upload_date": null
+  },
+  {
+   "id": "Xjzzu4ZwCe8",
+   "title": "If You Are Happy + More Nursery Rhymes & Baby Songs - Kidsberry",
+   "channel": "Kidsberry - Nursery Rhymes \u266b ",
+   "channel_id": "UCx7bx9ViRETF04UE3dCxu5w",
+   "view_count": 33868377,
+   "duration": 5422,
+   "query": "educational songs for toddlers",
+   "subs": 2620000,
+   "channel_median": 162000.0,
+   "outlier": 209.1,
+   "upload_date": null
+  },
+  {
+   "id": "-xkhJSO9XTM",
+   "title": "Five Little Ducks (Learn New Colors) | Lalafun Nursery Rhymes & Kids Songs",
+   "channel": "Lalafun - Nursery Rhymes",
+   "channel_id": "UC5mNk1y0O1awxC8DucC8r0w",
+   "view_count": 90143817,
+   "duration": 172,
+   "query": "nursery rhymes new",
+   "subs": 14500000,
+   "channel_median": 438000.0,
+   "outlier": 205.8,
+   "upload_date": null
+  },
+  {
+   "id": "9mmF8zOlh_g",
+   "title": "BINGO | Nursery Rhymes For Kids | Super Simple Songs",
+   "channel": "Super Simple Songs - Kids Songs",
+   "channel_id": "UCLsooMJoIpl_7ux2jvdPB-Q",
+   "view_count": 586759774,
+   "duration": 166,
+   "query": "learning songs for kids",
+   "subs": 47100000,
+   "channel_median": 2950000.0,
+   "outlier": 198.9,
+   "upload_date": null
+  },
+  {
+   "id": "rupgNaa5q4I",
+   "title": "Dubi Dubi Dum Dum & More Kids Rhymes | Wheels on the Bus, Old McDonald, ABC Song #dudidudidamdam",
+   "channel": "Kiwi Kids - Nursery Rhymes & Kids Songs",
+   "channel_id": "UCTlr3ZGLjduPKLEhE5dhD5A",
+   "view_count": 27224834,
+   "duration": 603,
+   "query": "nursery rhymes new",
+   "subs": 56500,
+   "channel_median": 139500.0,
+   "outlier": 195.2,
+   "upload_date": null
+  },
+  {
+   "id": "34MUgVZodn4",
+   "title": "Let's Pop The Alphabet Balloon + ABC Song + More Nursery Rhymes & Kids Songs - Hogi Pinkfong",
+   "channel": "Hogi! Pinkfong - Learn & Play",
+   "channel_id": "UCOVY28BaODA4pvyz_9jM5OA",
+   "view_count": 49254929,
+   "duration": 3768,
+   "query": "learning songs for kids",
+   "subs": 16600000,
+   "channel_median": 285500.0,
+   "outlier": 172.5,
+   "upload_date": null
+  },
+  {
+   "id": "OzKY5YHnOTg",
+   "title": "Who Took The Cookie? | Nursery Rhyme | Super Simple Songs",
+   "channel": "Super Simple Songs - Kids Songs",
+   "channel_id": "UCLsooMJoIpl_7ux2jvdPB-Q",
+   "view_count": 390503325,
+   "duration": 123,
+   "query": "learning songs for kids",
+   "subs": 47100000,
+   "channel_median": 2950000.0,
+   "outlier": 132.4,
+   "upload_date": null
+  }
+ ],
+ "phrases": {
+  "learning songs for kids": "learning songs for kids",
+  "educational songs for kids": "learning songs for kids",
+  "learning music for kids": "learning songs for kids",
+  "educational songs for toddlers": "educational songs for toddlers",
+  "educational songs for toddlers playlist": "educational songs for toddlers",
+  "educational songs for toddlers lyrics": "educational songs for toddlers",
+  "learning songs for toddlers": "educational songs for toddlers",
+  "educational music for toddlers": "educational songs for toddlers",
+  "learning songs for toddlers 3 years old": "educational songs for toddlers",
+  "learning songs for toddlers 2 years old": "educational songs for toddlers",
+  "learning songs for toddlers 4 year old": "educational songs for toddlers",
+  "learning songs for toddlers 1 year old": "educational songs for toddlers",
+  "teaching songs for toddlers": "educational songs for toddlers",
+  "nursery rhymes newborn": "nursery rhymes new",
+  "nursery rhymes new": "nursery rhymes new",
+  "nursery rhymes new 2025": "nursery rhymes new",
+  "nursery rhymes new version": "nursery rhymes new",
+  "nursery rhymes new channel": "nursery rhymes new",
+  "nursery rhymes newborn babies": "nursery rhymes new",
+  "nursery rhymes new 2024": "nursery rhymes new",
+  "nursery rhymes new song": "nursery rhymes new",
+  "nursery rhymes new zealand": "nursery rhymes new",
+  "nursery rhymes new year": "nursery rhymes new",
+  "nursery rhymes series 2": "nursery rhymes new",
+  "nursery rhymes series": "nursery rhymes new",
+  "science songs for kids": "science songs for kids",
+  "science songs for preschoolers": "science songs for kids",
+  "science songs for toddlers": "science songs for kids",
+  "counting song for kids": "counting song for kids"
+ },
+ "candidates": [
+  {
+   "topic": "phases of the moon",
+   "query": "phases of the moon song for kids",
+   "top_views": 5812825,
+   "videos_100k_plus": 3,
+   "autocomplete": [
+    "phases of the moon",
+    "phases of the moon for kids",
+    "phases of the moon song",
+    "phases of the moon rap"
+   ],
+   "opportunity": 7.5
+  },
+  {
+   "topic": "nouns and verbs",
+   "query": "nouns and verbs song for kids",
+   "top_views": 4583316,
+   "videos_100k_plus": 4,
+   "autocomplete": [
+    "nouns and verbs",
+    "nouns and verbs 1st grade",
+    "nouns and verbs kindergarten",
+    "nouns and verbs song"
+   ],
+   "opportunity": 6.0
+  },
+  {
+   "topic": "states of matter",
+   "query": "states of matter song for kids",
+   "top_views": 2025642,
+   "videos_100k_plus": 5,
+   "autocomplete": [
+    "states of matter",
+    "states of matter for kids",
+    "states of matter song",
+    "states of matter 2nd grade"
+   ],
+   "opportunity": 5.0
+  },
+  {
+   "topic": "life cycle of a butterfly",
+   "query": "life cycle of a butterfly song for kids",
+   "top_views": 2663188,
+   "videos_100k_plus": 6,
+   "autocomplete": [
+    "life cycle of a butterfly",
+    "life cycle of a butterfly for kids",
+    "life cycle of a butterfly song",
+    "life cycle of a butterfly for kindergarten"
+   ],
+   "opportunity": 4.3
+  },
+  {
+   "topic": "life cycle of a frog",
+   "query": "life cycle of a frog song for kids",
+   "top_views": 27528099,
+   "videos_100k_plus": 7,
+   "autocomplete": [
+    "life cycle of a frog",
+    "life cycle of a frog for kids",
+    "life cycle of a frog for kindergarten",
+    "life cycle of a frog song"
+   ],
+   "opportunity": 3.8
+  },
+  {
+   "topic": "water cycle",
+   "query": "water cycle song for kids",
+   "top_views": 20585843,
+   "videos_100k_plus": 7,
+   "autocomplete": [
+    "water cycle",
+    "water cycle song",
+    "water cycle for kids",
+    "water cycle song for kids"
+   ],
+   "opportunity": 3.8
+  },
+  {
+   "topic": "skip counting by 3",
+   "query": "skip counting by 3 song for kids",
+   "top_views": 8156874,
+   "videos_100k_plus": 7,
+   "autocomplete": [
+    "skip counting by 3",
+    "skip counting by 3 song",
+    "skip counting by 3 jingle bells",
+    "skip counting by 3 numberock"
+   ],
+   "opportunity": 3.8
+  },
+  {
+   "topic": "parts of a plant",
+   "query": "parts of a plant song for kids",
+   "top_views": 3384802,
+   "videos_100k_plus": 7,
+   "autocomplete": [
+    "parts of a plant",
+    "parts of a plant for kids",
+    "parts of a plant song",
+    "parts of a plant for kindergarten"
+   ],
+   "opportunity": 3.8
+  },
+  {
+   "topic": "place value",
+   "query": "place value song for kids",
+   "top_views": 17256820,
+   "videos_100k_plus": 7,
+   "autocomplete": [
+    "place value song",
+    "place value",
+    "place value grade 2",
+    "place value for kids"
+   ],
+   "opportunity": 3.8
+  },
+  {
+   "topic": "continents",
+   "query": "continents song for kids",
+   "top_views": 101606397,
+   "videos_100k_plus": 8,
+   "autocomplete": [
+    "continents song",
+    "continents",
+    "continents and oceans",
+    "continents for kids"
+   ],
+   "opportunity": 3.3
+  },
+  {
+   "topic": "rhyming words",
+   "query": "rhyming words song for kids",
+   "top_views": 11050007,
+   "videos_100k_plus": 8,
+   "autocomplete": [
+    "rhyming words for kindergarten",
+    "rhyming words",
+    "rhyming words for preschoolers",
+    "rhyming words song"
+   ],
+   "opportunity": 3.3
+  },
+  {
+   "topic": "five senses",
+   "query": "five senses song for kids",
+   "top_views": 271285041,
+   "videos_100k_plus": 8,
+   "autocomplete": [
+    "five senses",
+    "five senses song",
+    "five senses for kindergarten",
+    "five senses for kids"
+   ],
+   "opportunity": 3.3
+  },
+  {
+   "topic": "money coins",
+   "query": "money coins song for kids",
+   "top_views": 63777822,
+   "videos_100k_plus": 9,
+   "autocomplete": [
+    "money coins",
+    "money coins song",
+    "money coins and bills",
+    "money coins for 2nd grade"
+   ],
+   "opportunity": 3.0
+  },
+  {
+   "topic": "vowels",
+   "query": "vowels song for kids",
+   "top_views": 30299789,
+   "videos_100k_plus": 9,
+   "autocomplete": [
+    "vowels",
+    "vowels song",
+    "vowels for kindergarten",
+    "vowels and consonants"
+   ],
+   "opportunity": 3.0
+  },
+  {
+   "topic": "volcano",
+   "query": "volcano song for kids",
+   "top_views": 384017049,
+   "videos_100k_plus": 9,
+   "autocomplete": [
+    "volcano eruption",
+    "volcano",
+    "volcano live stream",
+    "volcano live"
+   ],
+   "opportunity": 3.0
+  },
+  {
+   "topic": "skip counting by 5",
+   "query": "skip counting by 5 song for kids",
+   "top_views": 24997068,
+   "videos_100k_plus": 10,
+   "autocomplete": [
+    "skip counting by 5",
+    "skip counting by 5 song",
+    "skip counting by 5 jack hartmann",
+    "skip counting by 5 to 100"
+   ],
+   "opportunity": 2.7
+  },
+  {
+   "topic": "solar system",
+   "query": "solar system song for kids",
+   "top_views": 229448319,
+   "videos_100k_plus": 10,
+   "autocomplete": [
+    "solar system",
+    "solar system song",
+    "solar system for kids",
+    "solar system for toddlers"
+   ],
+   "opportunity": 2.7
+  },
+  {
+   "topic": "food chain",
+   "query": "food chain song for kids",
+   "top_views": 602015,
+   "videos_100k_plus": 5,
+   "autocomplete": [
+    "food chain",
+    "food chain for kids",
+    "food chain and food web",
+    "food chain adventure time"
+   ],
+   "opportunity": 2.7
+  },
+  {
+   "topic": "telling time",
+   "query": "telling time song for kids",
+   "top_views": 15140561,
+   "videos_100k_plus": 10,
+   "autocomplete": [
+    "telling time for kids",
+    "telling time",
+    "telling time song",
+    "telling time to the hour"
+   ],
+   "opportunity": 2.7
+  },
+  {
+   "topic": "weather",
+   "query": "weather song for kids",
+   "top_views": 130156336,
+   "videos_100k_plus": 10,
+   "autocomplete": [
+    "weather",
+    "weather channel live",
+    "weather channel",
+    "weather live"
+   ],
+   "opportunity": 2.7
+  }
+ ]
+}

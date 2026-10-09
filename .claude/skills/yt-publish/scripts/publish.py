@@ -29,7 +29,7 @@ if a.schedule_existing:
     sys.path.insert(0, os.path.dirname(__file__))
     from ytapi import youtube
     res = json.load(open(os.path.join(ep, "upload-result.json")))
-    status = {"privacyStatus": "private" if a.publish_at else a.privacy, "selfDeclaredMadeForKids": False}
+    status = {"privacyStatus": "private" if a.publish_at else a.privacy, "selfDeclaredMadeForKids": bool(meta.get("made_for_kids", False))}
     if a.publish_at:
         status["publishAt"] = a.publish_at
     if a.dry_run:
@@ -44,7 +44,10 @@ def ts(sec):
 
 
 # chapters: YouTube needs the first at 00:00, >=3 chapters, each >=10 s
-beats = json.load(open(os.path.join(ep, "script.json"))); tl = json.load(open(os.path.join(ep, "timeline.json")))["beats"]
+# song videos (yt-kids-song) have no script.json/timeline.json, so no chapters
+has_tl = os.path.exists(os.path.join(ep, "script.json")) and os.path.exists(os.path.join(ep, "timeline.json"))
+beats = json.load(open(os.path.join(ep, "script.json"))) if has_tl else []
+tl = json.load(open(os.path.join(ep, "timeline.json")))["beats"] if has_tl else []
 chap = [("00:00", meta.get("intro_chapter", "Intro"))]
 for b, t in zip(beats, tl):
     if b["v"].get("t") == "chapter":
@@ -61,7 +64,7 @@ if os.path.exists(src):
         desc += "\n\nSources\n" + "\n".join(dict.fromkeys(l.rstrip(").,") for l in links))
 body = {
     "snippet": {"title": meta["title"][:100], "description": desc[:5000], "tags": meta.get("tags", [])[:30], "categoryId": str(meta.get("category", "27"))},
-    "status": {"privacyStatus": "private" if a.publish_at else a.privacy, "selfDeclaredMadeForKids": False,
+    "status": {"privacyStatus": "private" if a.publish_at else a.privacy, "selfDeclaredMadeForKids": bool(meta.get("made_for_kids", False)),
                "containsSyntheticMedia": bool(meta.get("synthetic", False))},
 }
 if a.publish_at:
