@@ -58,6 +58,7 @@ Check this list first. If the tool is here, give the recorded verdict in a few l
 | MuAPI (muapi.ai, Vadoo, Bangalore) | 2026-10-10 | Skip | 765-model reseller API, prepaid credits; white-label studio $49/$149/$499/mo + per-generation cost, your own Stripe. No independent reviews; unofficial Midjourney access; "spicy" models. |
 | Claude SEO (AgriciDaniel/claude-seo) | 2026-10-11 | Installed (project plugin) | 26 seo-* skills + 19 agents + schema hook; MIT. Live fetches blocked by cloud proxy, use saved HTML (see `claude-seo-cloud`). |
 | Metricool MCP (metricool/mcp-metricool) | 2026-10-11 | Already connected | Same as the Metricool connector on Sam's account: scheduling, analytics, best times, review flow. |
+| "Opus 5.5 Motion Lab" article (@flxrnc on X) | 2026-10-10 | Folded into skill | Guide, not a tool: directed motion prompts (numbers instead of adjectives), ban list, easing/spring/beat numbers, render contract, frame-numbered review loop, Web Audio sound. Added as `code-motion-video/motion-direction.md` + `scripts/contact-sheet.mjs`. Its 3D pieces used a desktop GPU; cloud has none. |
 
 ## Guardrails
 

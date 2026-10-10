@@ -5,18 +5,12 @@
 //
 //   node record.mjs page.html out.mp4 [--w 1080] [--h 1920] [--fps 30] [--sec 15] [--audio track.mp3] [--from 0]
 // --from S starts the clock at S seconds, so long videos can be rendered as parallel chunks and concatenated.
-import { spawn, execSync } from 'node:child_process';
-import { createRequire } from 'node:module';
+import { spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import path from 'node:path';
+import { clock, loadChromium } from './lib/clock.mjs';
 
-// Use a local playwright if installed, else the global one.
-const require = createRequire(import.meta.url);
-let chromium;
-try { ({ chromium } = require('playwright')); } catch {
-  const root = execSync('npm root -g').toString().trim();
-  ({ chromium } = require(path.join(root, 'playwright')));
-}
+const chromium = loadChromium();
 
 const [, , input, output, ...rest] = process.argv;
 if (!input || !output) {
@@ -31,34 +25,6 @@ for (let i = 0; i < rest.length; i += 2) {
 }
 const frames = Math.round(opt.fps * opt.sec);
 const step = 1000 / opt.fps;
-
-// Installed before any page script runs.
-const clock = () => {
-  let now = 0;
-  const start = Date.now();
-  let rafQ = [];
-  let timers = [];
-  let tid = 1;
-  window.requestAnimationFrame = (cb) => { rafQ.push(cb); return rafQ.length; };
-  window.cancelAnimationFrame = () => {};
-  performance.now = () => now;
-  Date.now = () => start + now;
-  window.setTimeout = (cb, ms = 0, ...a) => { const id = tid++; timers.push({ id, at: now + ms, cb, a }); return id; };
-  window.setInterval = (cb, ms = 0, ...a) => { const id = tid++; timers.push({ id, at: now + ms, cb, a, every: Math.max(ms, 1) }); return id; };
-  window.clearTimeout = window.clearInterval = (id) => { timers = timers.filter((t) => t.id !== id); };
-  window.__advance = (ms) => {
-    now += ms;
-    for (;;) {
-      const due = timers.filter((t) => t.at <= now).sort((x, y) => x.at - y.at)[0];
-      if (!due) break;
-      if (due.every) due.at += due.every; else timers = timers.filter((t) => t !== due);
-      try { due.cb(...due.a); } catch (e) { console.error(e); }
-    }
-    const q = rafQ; rafQ = [];
-    for (const cb of q) { try { cb(now); } catch (e) { console.error(e); } }
-    for (const an of document.getAnimations()) { an.pause(); an.currentTime = now; }
-  };
-};
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: opt.w, height: opt.h } });
