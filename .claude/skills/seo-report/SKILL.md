@@ -53,6 +53,7 @@ Read `summary.md` fully. Verify anything surprising before writing it (open the 
   "plan": [{"when": "Week 1", "action": "…", "result": "…"}],
   "targets": [{"value": "100+", "label": "Google clicks / month (from 4)"}],
   "content_gap": ["topic", "…"],
+  "keywords": {"seed or theme": [{"keyword": "…", "intent": "commercial|local|question|info"}]},
   "callouts": {"search": "", "queries": "", "competitors": "", "rankings": "", "speed": "",
                "technical": "", "onpage": "", "ai": "", "authority": "", "security": "", "plan": ""},
   "contact": "samtrabulsi.com · @samtrabulsi"
@@ -64,6 +65,7 @@ Writing rules:
 - Exactly 3 `short` cards and up to 5 `priorities`, ordered by business impact (security and confidentiality first).
 - Competitor callout: where they beat the site and the one move that closes the gap.
 - `content_gap`: replace the auto list (it's raw word pairs) with 6-12 real topics/pages the competitors have and the site doesn't.
+- `keywords` (optional): up to 4 curated lists that replace the raw autocomplete tables; drop off-topic ideas.
 - Values are HTML: `<b>`, `<i>` are fine; escape `&` and `<` in plain text.
 - Never invent numbers. If a section's data is missing, leave its key out.
 

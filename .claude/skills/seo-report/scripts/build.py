@@ -111,7 +111,7 @@ def main():
 
     # ------------------------------------------------ cover
     name, _, tld = site.partition(".")
-    fs = 64 if len(site) <= 18 else (50 if len(site) <= 26 else 38)
+    fs = 64 if len(site) <= 14 else (52 if len(site) <= 19 else (42 if len(site) <= 25 else 34))
     tiles = [(overall, "Overall score /100")]
     if G.get("available"):
         tiles.append((G["t28"].get("clicks", 0), "Google clicks · last 28 days"))
@@ -336,6 +336,7 @@ def main():
     # ------------------------------------------------ technical
     rb = P_["robots"]; fct = P_.get("facts", {})
     ck = [("ok" if P_["https_redirect"] else "bad", "http → https redirect"),
+          ("bad" if P_.get("home_redirect") else "ok", ("Homepage redirects to " + esc(short(path(P_["home_redirect"]), 28))) if P_.get("home_redirect") else "Homepage loads without redirects"),
           ("ok" if P_["one_host"] else "bad", "www and non-www merged" if P_["one_host"] else "www and non-www not merged"),
           ("ok" if rb["exists"] else "bad", "robots.txt present" + (", sitemap declared" if rb["sitemaps"] else "")),
           ("ok" if P_["sitemap"]["urls"] else "bad", f'Sitemap: {P_["sitemap"]["urls"]} URLs' if P_["sitemap"]["urls"] else "No XML sitemap found"),
@@ -361,16 +362,23 @@ def main():
     good = [c for c in P_["crawl"] if c.get("status") == 200 and "title" in c and c["requested"] not in S["junk"] and c["requested"] not in S.get("empty", [])]
     def issue(c):
         if not c["desc"]: return '<b class="bad-t">No meta description</b>'
-        if c["words"] < 300: return '<b class="bad-t">Thin page</b>'
+        if c.get("unique_words", c["words"]) < 300: return '<b class="bad-t">Thin page</b>'
         if c["h1_count"] != 1: return f'{c["h1_count"]} H1 headings'
         if c["title_len"] > 65: return "Title too long"
         if c["title_len"] < 15: return "Title too short"
         return '<b class="ok-t">Good</b>'
-    kp = [[esc(short(path(c["url"]), 30)), esc(short(c["title"], 52)), str(c["words"]), issue(c)] for c in good[:10]]
+    seen_p = set(); uniq = []
+    for c in good:
+        k = urllib.parse.urlparse(c["requested"]).path.rstrip("/")
+        if k not in seen_p:
+            seen_p.add(k); uniq.append(c)
+    good = uniq
+    kp = [[esc(short(urllib.parse.urlparse(c["requested"]).path or "/", 30)), esc(short(c["title"], 52)), str(c.get("unique_words", c["words"])), issue(c)] for c in good[:10]]
     alt_pct = round(S["imgs_no_alt"] / S["imgs"] * 100) if S["imgs"] else 0
     page("On-page SEO &amp; content", "TITLES, HEADINGS, CONTENT", kpis([(S["no_desc"], "pages without a meta description"), (S["multi_h1"], "pages with 2+ H1 headings"),
          (S["thin"], "pages under 300 words"), (f"{alt_pct}%", f'images without alt text ({S["imgs_no_alt"]} of {S["imgs"]})')])
-         + "<h3>Key pages</h3>" + table(["Page", "Current title", "Words", "Issue"], kp, "sm")
+         + "<h3>Key pages</h3>" + table(["Page", "Current title", "Own words", "Issue"], kp, "sm")
+         + (f'<p class="m">“Own words” excludes the ~{S["boilerplate_words"]} words of menu and footer repeated on every page.</p>' if S.get("boilerplate_words") else "")
          + (f'<p class="m">Blog: {P_["sitemap"]["posts"]} posts, latest {P_["sitemap"]["latest_post"]}. Average {S["avg_words"]} words per page across {S["pages"]} pages crawled.</p>' if P_["sitemap"]["posts"] else "")
          + callout(CO.get("onpage")))
 
@@ -402,11 +410,11 @@ def main():
     if P_["social"]: facts.append("Social profiles linked from the site: " + ", ".join(P_["social"]))
     else: facts.append("<b>No social profiles linked</b> from the homepage")
     kwh = ""
-    seeds = list(D.get("keyword_ideas", {}).items())[:4]
+    seeds = list((N.get("keywords") or D.get("keyword_ideas", {})).items())[:4]
     if seeds:
         blocks = []
         for q, rows_ in seeds:
-            sel = [r for r in rows_ if r["intent"] in ("commercial", "local", "question")][:7] or rows_[:7]
+            sel = rows_[:7] if N.get("keywords") else ([r for r in rows_ if r["intent"] in ("commercial", "local", "question")][:7] or rows_[:7])
             blocks.append(f'<div><table class="t sm"><thead><tr><th>{ar(q)}</th><th>Intent</th></tr></thead><tbody>'
                           + "".join(f'<tr><td>{ar(r["keyword"])}</td><td class="m">{r["intent"]}</td></tr>' for r in sel) + "</tbody></table></div>")
         kwh = '<h2>Keyword ideas from Google, YouTube &amp; Bing autocomplete</h2><div class="two eq">' + "".join(blocks) + "</div>" \
@@ -423,7 +431,7 @@ def main():
     sk.append(("ok" if fct.get("dmarc") else "bad", f'DMARC ({fct.get("dmarc")})' if fct.get("dmarc") else "No DMARC (email spoofable)"))
     if fct.get("email_host"): sk.append(("ok" if fct["email_host"] != "none" else "warn", f'Email: {fct["email_host"]}'))
     tr = [("ok" if t in P_["tracking"] else "bad", t) for t in ("Google Analytics 4", "Google Tag Manager", "Meta Pixel", "TikTok Pixel", "LinkedIn Insight", "Microsoft Clarity")]
-    cv = [("ok" if t in P_["conversion"] else "bad", t) for t in ("WhatsApp", "Booking", "Form", "Phone link", "Live chat", "Newsletter")]
+    cv = [("ok" if t in P_["conversion"] else "bad", t) for t in ("WhatsApp", "Booking", "Form", "Phone link", "Email link", "Live chat", "Telegram", "Online shop", "Newsletter")]
     spam_box = callout("<b>Security incident:</b> " + esc("; ".join(P_["spam"][:3])) + ". Clean the site, update everything, rotate all passwords, then request a review in Search Console.", "red") if P_.get("spam") else ""
     page("Security, trust &amp; tracking", "SAFETY + CONVERSION CHECKS", f'''{spam_box}{checks(sk)}
 <h3>Tracking (can you measure and retarget visitors?)</h3>{checks(tr)}
@@ -489,7 +497,7 @@ CSS = f'''@page{{size:A4;margin:0}}*{{box-sizing:border-box}}body{{margin:0;font
 .cover{{background:linear-gradient(160deg,{C["bg"]} 0%,{C["warm"]} 100%);color:{C["cream"]};display:flex;flex-direction:column;justify-content:space-between;padding:18mm}}
 .kick{{font-size:9.5px;letter-spacing:3px;font-weight:700;color:{C["copper"]}}}.lt{{color:{C["copper"]}}}
 .ctop,.cfoot{{display:flex;justify-content:space-between;font-size:10px;color:#b9aca4}}.cfoot div:last-child{{max-width:60%;text-align:right}}
-.ctitle{{font-weight:900;letter-spacing:-2px;margin:10px 0 8px;word-break:break-all}}.ctitle span{{color:{C["copper"]}}}.csub{{font-size:17px;color:#d9ccc4;max-width:80%;line-height:1.45}}
+.ctitle{{font-weight:900;letter-spacing:-2px;margin:10px 0 8px;white-space:nowrap}}.ctitle span{{color:{C["copper"]}}}.csub{{font-size:17px;color:#d9ccc4;max-width:80%;line-height:1.45}}
 .cgrid{{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}}.cgrid div{{border:1px solid #3a2e28;border-radius:12px;padding:14px}}.cgrid b{{display:block;font-size:34px;font-weight:900;color:{C["cream"]}}}.cgrid b small{{font-size:16px;color:#b9aca4}}.cgrid span{{font-size:10px;color:#b9aca4}}
 .ph{{display:flex;justify-content:space-between;align-items:center}}.brandmark{{font-size:8.5px;letter-spacing:2.5px;color:{C["mute"]}}}
 h1{{font-size:27px;font-weight:900;letter-spacing:-.5px;margin:6px 0 12px}}h2{{font-size:15px;margin:14px 0 8px}}h3{{font-size:12.5px;margin:12px 0 6px;color:{C["ink"]}}}

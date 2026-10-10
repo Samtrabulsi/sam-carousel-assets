@@ -57,8 +57,9 @@ TRACK = [("Google Analytics 4", r"googletagmanager\.com/gtag/js\?id=G-|gtag\(['\
          ("TikTok Pixel", r"analytics\.tiktok\.com"), ("LinkedIn Insight", r"snap\.licdn\.com"),
          ("Microsoft Clarity", r"clarity\.ms"), ("Hotjar", r"static\.hotjar\.com"), ("Google Ads", r"['\"]AW-\d{6,}")]
 CONVERT = [("WhatsApp", r"wa\.me/|api\.whatsapp\.com|whatsapp://"), ("Phone link", r"href=[\"']tel:"),
-           ("Email link", r"href=[\"']mailto:"), ("Booking", r"calendly\.com|cal\.com/|acuityscheduling|tidycal|setmore|simplybook|zcal\.co"),
-           ("Live chat", r"tawk\.to|tidio|crisp\.chat|intercom|livechatinc|manychat|drift\.com"), ("Form", r"<form\b"),
+           ("Email link", r"href=[\"']mailto:"), ("Booking", r"calendly\.com|cal\.com/|acuityscheduling|tidycal|setmore|simplybook|zcal\.co|book-a-call|/booking/|/book-now"),
+           ("Live chat", r"tawk\.to|tidio|crisp\.chat|intercom|livechatinc|manychat|drift\.com|salesiq|zopim|chatwoot"),
+           ("Telegram", r"t\.me/[A-Za-z0-9_]{4,}"), ("Online shop", r"add-to-cart|woocommerce-cart|/cart/|cdn\.shopify|snipcart"), ("Form", r"<form\b"),
            ("Newsletter", r"mailchimp|klaviyo|convertkit|mailerlite|brevo|sendinblue|beehiiv"),
            ("Google Maps link", r"google\.[a-z.]+/maps|maps\.app\.goo\.gl|goo\.gl/maps")]
 SOCIAL = [("Instagram", r"instagram\.com/[A-Za-z0-9_.]+"), ("Facebook", r"facebook\.com/[A-Za-z0-9_.\-]+"),
@@ -70,7 +71,9 @@ SEC_HEADERS = [("strict-transport-security", "HSTS"), ("content-security-policy"
                ("x-frame-options", "X-Frame-Options"), ("x-content-type-options", "X-Content-Type-Options"),
                ("referrer-policy", "Referrer-Policy"), ("permissions-policy", "Permissions-Policy")]
 JUNK = re.compile(r"(^|[/\-_])(test|testing|demo|sample|hello-world|copy|old|draft|trashed|lorem|untitled|new-page|"
-                  r"temp|tmp|staging|dummy|elementor-\d+|home-?\d|homepage-new|new-website|coming-soon)([/\-_.]|$)|__trashed|-2/?$", re.I)
+                  r"temp|tmp|staging|dummy|elementor-\d+|home-?\d|homepage-new|new-website|coming-soon|thank-?you(-[\w-]+)?|thanks|pending|"
+                  r"login|profile|my-account|account-request|checkout|cart|recording)([/\-_.]|$)|__trashed|-2/?$", re.I)
+SHORT_OK = re.compile(r"contact|about|privacy|terms|policy|cookie|faq|imprint|legal|اتصل|تواصل|سياسة|شروط", re.I)  # fine when short
 WEIGHTS = {"visibility": 18, "authority": 15, "speed": 12, "onpage": 12, "technical": 12, "ai": 12, "reach": 11, "security": 8}
 LABELS = {"visibility": "Search visibility", "authority": "Authority (backlinks)", "speed": "Page speed (mobile)",
           "onpage": "On-page SEO", "technical": "Technical & indexing", "ai": "AI-search visibility",
@@ -83,6 +86,7 @@ def log(*a):
 
 def get(url, timeout=25, tries=1):
     """GET with redirects. Returns dict(status, url, headers, body, ms, error)."""
+    url = urllib.parse.quote(url, safe=":/?&=%#+@,;~!$'()*[]")   # Arabic/Unicode paths -> percent-encoded
     for i in range(tries):
         t = time.time()
         try:
@@ -265,7 +269,7 @@ def sitemap_urls(base, declared, cap=3000):
             m = re.search(r"<loc>\s*([^<\s]+)\s*</loc>", blk)
             if m:
                 lm = re.search(r"<lastmod>\s*([^<\s]+)", blk)
-                kind = "post" if re.search(r"post-sitemap|posts?[-_]|/blog", sm + m.group(1), re.I) else "page"
+                kind = "post" if re.search(r"post-sitemap|posts-post-|/blog/|/\d{4}/\d{2}/", sm + m.group(1), re.I) else "page"
                 urls[htmlmod.unescape(m.group(1))] = {"lastmod": lm.group(1)[:10] if lm else "", "kind": kind}
         if not declared and urls:
             break
@@ -377,7 +381,8 @@ def profile(site, max_pages):
     sm, sm_files = sitemap_urls(fbase, rb["sitemaps"])
     pages = [u for u, m in sm.items() if m["kind"] == "page"]
     posts = sorted((u for u, m in sm.items() if m["kind"] == "post"), key=lambda u: sm[u]["lastmod"], reverse=True)
-    order = [final] + [u for u in pages if u.rstrip("/") != final.rstrip("/")] + posts
+    norm = lambda u: urllib.parse.urlparse(u).path.rstrip("/")
+    order = [final] + [u for u in pages if norm(u) != norm(final)] + posts
     pdfs = sorted({u for u in list(sm) + [urllib.parse.urljoin(final, l) for l in hp.get("links", [])]
                    if re.search(r"\.(pdf|docx?|xlsx?|pptx?)(\?|$)", u, re.I) and host(u) == dom})
     crawled = crawl(order, max_pages)
@@ -391,7 +396,9 @@ def profile(site, max_pages):
         sname = server.split("/")[0]
         tech.append({"litespeed": "LiteSpeed", "cloudflare": "Cloudflare", "nginx": "nginx", "apache": "Apache"}.get(sname.lower(), sname))
     gen = hp.get("generator", "").split(";")[0].strip()
+    home_hops = urllib.parse.urlparse(final)
     p = {
+        "home_redirect": final if (home_hops.query or home_hops.path not in ("", "/")) else "",
         "domain": dom, "url": final, "status": home["status"], "ms": home["ms"], "error": home["error"],
         "https_redirect": variants.get(f"http://{dom}/", "").startswith("https"),
         "one_host": len(finals) == 1, "variants": variants,
@@ -499,18 +506,23 @@ def clamp(x):
 def onpage_stats(p):
     pages = [c for c in p["crawl"] if c.get("status") == 200 and "title" in c]
     n = max(1, len(pages))
+    # shared menu/footer text inflates word counts: measure content above the lightest page
+    ws = sorted(c["words"] for c in pages)
+    base = ws[0] if len(ws) >= 5 and ws[0] > 150 else 0
+    for c in pages:
+        c["unique_words"] = c["words"] - base
     titles = collections.Counter(c["title"].strip().lower() for c in pages if c["title"])
     imgs = sum(c["imgs"] for c in pages)
     s = {"pages": len(pages), "no_desc": sum(1 for c in pages if not c["desc"]),
          "multi_h1": sum(1 for c in pages if c["h1_count"] > 1), "no_h1": sum(1 for c in pages if c["h1_count"] == 0),
-         "thin": sum(1 for c in pages if c["words"] < 300), "title_bad": sum(1 for c in pages if not c["title"] or c["title_len"] > 65 or c["title_len"] < 15),
+         "thin": sum(1 for c in pages if c["unique_words"] < 300), "boilerplate_words": base, "title_bad": sum(1 for c in pages if not c["title"] or c["title_len"] > 65 or c["title_len"] < 15),
          "dup_titles": sum(v for v in titles.values() if v > 1), "imgs": imgs, "imgs_no_alt": sum(c["imgs_no_alt"] for c in pages),
-         "avg_words": round(sum(c["words"] for c in pages) / n), "no_canonical": sum(1 for c in pages if not c["canonical"]),
+         "avg_words": round(sum(c["unique_words"] for c in pages) / n), "no_canonical": sum(1 for c in pages if not c["canonical"]),
          "noindex": sum(1 for c in pages if c["noindex"]), "arabic_pages": sum(1 for c in pages if c["arabic"] >= 0.3),
          "errors": sum(1 for c in p["crawl"] if c.get("status", 0) >= 400 or c.get("status") == 0),
          "redirected": sum(1 for c in p["crawl"] if c.get("redirected")),
          "junk": [c["requested"] for c in p["crawl"] if JUNK.search(urllib.parse.urlparse(c["requested"]).path)],
-         "empty": [c["requested"] for c in pages[1:] if c["words"] < 60],
+         "empty": [c["requested"] for c in pages[1:] if c["unique_words"] < 60 and not SHORT_OK.search(urllib.parse.urlparse(c["requested"]).path)],
          "schema_types": sorted({t for c in pages for t in c.get("schema", [])})}
     return s
 
@@ -583,6 +595,14 @@ def findings(t):
             "Delete, merge or noindex; keep internal tools out of the sitemap")
     if s["errors"]:
         add(2, "technical", f"{s['errors']} broken pages (4xx/5xx) in the sitemap", "Fix or remove from sitemap")
+    if p.get("home_redirect"):
+        more = f" (and {s['redirected']} of {len(p['crawl'])} crawled pages redirect the same way)" if s["redirected"] > 3 else ""
+        add(2, "technical", f"The homepage redirects every visit to {p['home_redirect']}{more}", "Serve pages directly at their real address (remove the redirect rule / cache-busting parameter)")
+    f0 = p.get("facts", {})
+    if f0.get("expires"):
+        days = (dt.date.fromisoformat(f0["expires"]) - dt.date.today()).days
+        if days < 45:
+            add(3, "security", f"Domain registration expires in {days} days ({f0['expires']})", "Confirm auto-renew with the registrar today")
     if not p["https_redirect"]:
         add(3, "technical", "http:// doesn't redirect to https://", "Force HTTPS with a 301")
     if not p["one_host"]:
@@ -592,7 +612,7 @@ def findings(t):
     if s["multi_h1"]:
         add(1, "onpage", f"{s['multi_h1']} pages have more than one H1", "One H1 per page")
     if s["pages"] and s["thin"] / s["pages"] > 0.25:
-        add(2, "onpage", f"{s['thin']} of {s['pages']} pages are under 300 words", "Expand service pages to 800+ words or noindex thin ones")
+        add(2, "onpage", f"{s['thin']} of {s['pages']} pages have under 300 words of their own content", "Expand service pages to 800+ words or noindex thin ones")
     if s["imgs"] and s["imgs_no_alt"] / s["imgs"] > 0.3:
         add(1, "onpage", f"{s['imgs_no_alt']} of {s['imgs']} images have no alt text", "Add descriptive alt text")
     if geo.get("score") is not None and geo["score"] < 70:
@@ -626,7 +646,7 @@ def findings(t):
         add(2, "tracking", "No Google Analytics 4 / Tag Manager detected", "Install GA4 (via GTM) and link Search Console")
     if "Meta Pixel" not in p["tracking"]:
         add(1, "tracking", "No Meta Pixel (can't retarget visitors on Instagram/Facebook)", "Install Meta Pixel + Conversions API")
-    if not any(x in p["conversion"] for x in ("WhatsApp", "Booking", "Form")):
+    if not any(x in p["conversion"] for x in ("WhatsApp", "Booking", "Form", "Live chat", "Telegram", "Online shop")):
         add(2, "tracking", "No WhatsApp, booking or form found on the homepage", "Add a clear WhatsApp/booking call to action")
     if p["sitemap"]["latest_post"] and p["sitemap"]["latest_post"] < str(dt.date.today() - dt.timedelta(days=180)):
         add(1, "onpage", f"Blog last updated {p['sitemap']['latest_post']}", "Publish 2 articles a month on service topics")
