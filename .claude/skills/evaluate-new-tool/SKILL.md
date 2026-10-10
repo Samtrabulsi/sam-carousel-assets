@@ -43,6 +43,7 @@ Check this list first. If the tool is here, give the recorded verdict in a few l
 | awesome-opus5-5-videos (yihui-dev) | 2026-10 | Saved as skill | `code-motion-video` |
 | instagram-agent-skill (Jakeschincariol) | 2026-10 | Installed | 13 `ig-*` skills; English-only scorers |
 | REA, Reverse Engineer Anything (morluto/rea) | 2026-10-08 | Known, not needed | Developer reverse-engineering MCP (binaries, apps, websites; needs Node 22+, often Ghidra/Hopper). No use for content, social, ads or video. Only possible use: understanding a feature on another website for a client build, and only to rebuild the idea, never to copy code or get around licences/logins. Re-evaluate only if Sam takes on that kind of dev work. |
+| Open Generative AI (Anil-matcha/Open-Generative-AI; forks like "Open-Higgsfield-AI") | 2026-10-10 | Skip | MIT front-end for 600+ image/video models, but cloud generations bill per use through MuAPI (prepaid credits); the app is the funnel (MuAPI white-label from $49/mo). Truly free only with local models: images via bundled sd.cpp, video via Wan2GP on an NVIDIA/AMD GPU (480p, slow). Markets "no content filters"; desktop app not Apple-notarized. Same models are already in Runway. Forks shown in Reels are stale copies; check upstream. |
 
 ## Guardrails
 
