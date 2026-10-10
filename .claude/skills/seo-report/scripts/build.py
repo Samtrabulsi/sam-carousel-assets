@@ -139,24 +139,24 @@ def main():
     # ------------------------------------------------ executive summary
     def detail(k):
         if k == "visibility":
-            return f'{G["t28"].get("clicks", 0)} clicks / 28 days' if G.get("available") else "needs Search Console access"
+            return f'{G["t28"].get("clicks", 0)} clicks / 28 days' 
         if k == "authority":
             if T.get("opr") not in (None, ""): return f'{T["opr"]}/10 Open PageRank'
-            return f'{B["ref_domains"]} linking sites (Bing)' if B.get("available") else "not measured (add OPR key)"
+            return f'{B["ref_domains"]} linking sites (Bing)' if B.get("available") else ""
         if k == "speed":
-            return f"mobile {ms} · desktop {ds}" if ms is not None else "PageSpeed unavailable"
+            return f"mobile {ms} · desktop {ds}" if ms is not None else ""
         if k == "onpage":
             return f'{S["no_desc"]} no description · {S["thin"]} thin pages'
         if k == "technical":
             return f'{len(set(S["junk"]) | set(S.get("empty", [])))} junk/empty pages · {S["errors"]} errors'
         if k == "ai":
-            return f'ChatGPT {plat.get("chatgpt", "–")} · Google AI {plat.get("google_ai", "–")}' if plat else "audit unavailable"
+            return f'ChatGPT {plat.get("chatgpt", "–")} · Google AI {plat.get("google_ai", "–")}' if plat else ""
         if k == "reach":
             return ("Arabic pages ✓" if T["reach"]["arabic"] else "no Arabic pages") + (" · local schema ✓" if T["reach"]["local_schema"] else " · no local schema")
         if k == "security":
             miss = sum(1 for v in P_["security_headers"].values() if not v)
             return "SPAM FOUND" if P_.get("spam") else f"clean · {miss} headers missing"
-    rows = "".join(f'<tr><td>{LABELS[k]}</td><td>{bar(SC.get(k), 120)}</td><td class="r"><b style="color:{col(SC.get(k))}">{SC.get(k) if SC.get(k) is not None else "–"}</b></td><td class="m">{esc(detail(k))}</td></tr>' for k in WEIGHTS)
+    rows = "".join(f'<tr><td>{LABELS[k]}</td><td>{bar(SC.get(k), 120)}</td><td class="r"><b style="color:{col(SC.get(k))}">{SC.get(k) if SC.get(k) is not None else "–"}</b></td><td class="m">{esc(detail(k))}</td></tr>' for k in WEIGHTS if SC.get(k) is not None)
     short3 = N.get("short") or [{"title": LABELS.get(f["area"], f["area"].title()), "body": esc(f["issue"]) + ". " + esc(f["fix"]) + "."} for f in F[:3]]
     prios = N.get("priorities") or [{"action": esc(f["fix"]), "why": esc(f["issue"]), "effort": EFFORT.get(f["area"], "")} for f in F[:5]]
     page("Executive summary", "OVERVIEW", f'''
@@ -166,6 +166,19 @@ def main():
 <div class="cards">{"".join(f'<div class="card"><div class="n">{i+1}</div><b>{c["title"]}</b><p>{c["body"]}</p></div>' for i, c in enumerate(short3))}</div>
 <h2>Top {len(prios)} priorities</h2>
 {table(["#", "Action", "Why it matters", "Effort"], [[str(i+1), p["action"], p["why"], p.get("effort", "")] for i, p in enumerate(prios)])}''')
+
+    # ------------------------------------------------ first impression (screenshots)
+    img = lambda name: f"img/{name}" if os.path.exists(os.path.join(a.dir, "img", name)) else None
+    dsk, mbl = img(f"{site}-desktop.jpg"), img(f"{site}-mobile.jpg")
+    if dsk or mbl:
+        strip = [(c, img(f"{c}-desktop.jpg")) for c in comps if img(f"{c}-desktop.jpg")]
+        body = '<div class="shots">' + (f'<figure class="dsk"><img src="{dsk}"><figcaption>Desktop · first screen</figcaption></figure>' if dsk else "") \
+               + (f'<figure class="mob"><img src="{mbl}"><figcaption>Mobile · first screen</figcaption></figure>' if mbl else "") + "</div>"
+        body += callout(CO.get("first_impression"))
+        if strip:
+            body += "<h3>Competitors' first screens</h3><div class=\"cshots\">" + "".join(
+                f'<figure><img src="{u}"><figcaption>{esc(c)}</figcaption></figure>' for c, u in strip[:3]) + "</div>"
+        page("First impression", "WHAT A NEW VISITOR SEES", body)
 
     # ------------------------------------------------ search console
     if G.get("available"):
@@ -248,6 +261,7 @@ def main():
             ("Schema types", lambda x: len(x["onpage"]["schema_types"]), True),
             ("FAQ schema", lambda x: "✓" if "FAQPage" in x["onpage"]["schema_types"] else "–", None),
             ("Arabic pages", lambda x: x["onpage"]["arabic_pages"], True),
+            ("Traffic rank (Tranco, lower = more visits)", lambda x: x["profile"]["tranco"]["rank"] or "not in list", False),
             ("Domain age (years)", lambda x: x["profile"]["facts"].get("age_years"), True),
             ("Security headers /6", lambda x: sum(x["profile"]["security_headers"].values()), True),
             ("llms.txt", lambda x: "✓" if x["profile"]["llms_txt"] else "–", None),
@@ -259,11 +273,12 @@ def main():
         for label, f, higher in metrics:
             vals = [v(s, f) for s in allS]
             best = None
-            if higher and any(isinstance(x, (int, float)) for x in vals):
-                best = max(x for x in vals if isinstance(x, (int, float)))
+            nums = [x for x in vals if isinstance(x, (int, float)) and not isinstance(x, bool)]
+            if higher is not None and nums:
+                best = max(nums) if higher else min(nums)
             cells = []
             for i, x in enumerate(vals):
-                txt = "–" if x is None else esc(str(x))
+                txt = "–" if x is None else (f"{x:,}" if isinstance(x, int) and x >= 10000 else esc(str(x)))
                 cells.append(f'<b class="best">{txt}</b>' if best is not None and x == best and vals.count(best) < len(vals) else txt)
             rows.append([label] + cells)
             tv = vals[0]
@@ -395,32 +410,70 @@ def main():
 <h3>What to fix for AI answers</h3>{table(["Recommendation"], recs, "sm")}
 {callout(CO.get("ai"))}''')
 
+    # ------------------------------------------------ social media & brand
+    spath = os.path.join(a.dir, "social.json")
+    SO = json.load(open(spath)) if os.path.exists(spath) else {}
+    if SO.get("accounts"):
+        accs = sorted(SO["accounts"], key=lambda x: -(x.get("followers") or 0))
+        fmax = max([x.get("followers") or 0 for x in accs] or [1]) or 1
+        fmt = lambda n: "–" if n in (None, "") else (f"{n/1e6:.2f}M" if n >= 1e6 else (f"{n/1e3:.1f}K" if n >= 1e3 else str(n)))
+        total = sum(x.get("followers") or 0 for x in accs)
+        rows_s = "".join(f'<tr><td><b>{esc(x["platform"])}</b><br><span class="m">{esc(x.get("handle", ""))}</span></td>'
+                         f'<td style="width:34%"><div class="hb"><span style="width:{(x.get("followers") or 0)/fmax*100:.0f}%"></span></div></td>'
+                         f'<td class="r"><b>{fmt(x.get("followers"))}</b></td><td class="r">{fmt(x.get("posts"))}</td><td class="m">{x.get("note", "")}</td></tr>' for x in accs)
+        av = SO.get("avatar")
+        head_ = (f'<div class="sohead">' + (f'<img src="{esc(av)}">' if av else "") +
+                 f'<div><b>{esc(SO.get("name", ""))}</b><span>{esc(SO.get("tagline", ""))}</span></div>'
+                 f'<div class="tot"><b>{fmt(total)}</b><span>followers across {len(accs)} platforms</span></div></div>')
+        tops = SO.get("top_content", [])[:6]
+        top_html = ("<h3>" + esc(SO.get("top_title", "Best-performing content")) + '</h3><div class="thumbs">' + "".join(
+            f'<figure><img src="{esc(t["image"])}"><figcaption><b>{esc(t.get("metric", ""))}</b> {esc(t.get("caption", ""))}</figcaption></figure>' for t in tops) + "</div>") if tops else ""
+        page("Social media &amp; brand presence", "WHERE THE AUDIENCE ACTUALLY IS", head_
+             + '<table class="t sm"><thead><tr><th>Platform</th><th></th><th class="r">Followers</th><th class="r">Posts</th><th>Notes</th></tr></thead><tbody>' + rows_s + "</tbody></table>"
+             + top_html + (("<h3>Brand consistency checks</h3>" + checks([(c[0], c[1]) for c in SO["brand_checks"]])) if SO.get("brand_checks") else "")
+             + callout(SO.get("summary")))
+    if SO.get("improvements"):
+        page("Where the brand can grow", "BRAND OPPORTUNITIES", table(["Area", "What we found", "What to do"],
+             [[f'<b>{i["area"]}</b>', i["issue"], i["fix"]] for i in SO["improvements"]]) + callout(SO.get("growth_callout"), "dark"))
+
     # ------------------------------------------------ authority & keywords
+    tr_ = P_.get("tranco") or {}
     if T.get("opr") not in (None, ""):
-        big, bl = T["opr"], "Open PageRank (0-10)"
+        big, bl = f'{T["opr"]}<small>/10</small>', "Open PageRank authority (how much the web links to and trusts the domain)"
     elif B.get("available"):
         big, bl = B["ref_domains"], f'websites linking to {esc(site)} in Bing\'s index'
+    elif tr_.get("rank"):
+        big, bl = f'#{tr_["rank"]:,}', "global traffic rank (Tranco)"
     else:
-        big, bl = "?", "authority not measured: add a free OPR_API_KEY"
+        big, bl = None, ""
     auth_txt = CO.get("authority") or ("<b>Authority is earned through links.</b> Other websites linking to you tell Google you're trusted. "
-        "Quick wins: link the site from every social profile and Google Business Profile, add a credit link on client sites you built, "
-        "list in local business directories, and publish guest articles and podcast appearances.")
+        "Quick wins: link the site from every social profile and Google Business Profile, list it in relevant directories, "
+        "and turn press mentions and podcast appearances into links.")
     facts = []
+    if tr_.get("rank"):
+        move = tr_["rank"] - (tr_.get("rank_30d_ago") or tr_["rank"])
+        trend = f' ({"down" if move > 0 else "up"} from #{tr_["rank_30d_ago"]:,} on {tr_["since"]})' if abs(move) > tr_["rank"] * 0.05 else ""
+        facts.append(f'Global traffic rank (Tranco): <b>#{tr_["rank"]:,}</b>{trend}')
     if fct.get("age_years") is not None: facts.append(f'Domain age: <b>{fct["age_years"]} years</b> (registered {fct.get("registered", "")})')
     if P_["social"]: facts.append("Social profiles linked from the site: " + ", ".join(P_["social"]))
-    else: facts.append("<b>No social profiles linked</b> from the homepage")
+    ments = D.get("mentions") or []
+    mention_html = ""
+    if ments:
+        mention_html = "<h3>Where the brand is mentioned online</h3>" + table(["Website", "Links to your site?"],
+            [[esc(m["host"]), '<b class="ok-t">Yes</b>' if m["links_back"] else '<b class="bad-t">No: ask for a link</b>'] for m in ments[:7]], "sm")
     kwh = ""
     seeds = list((N.get("keywords") or D.get("keyword_ideas", {})).items())[:4]
     if seeds:
         blocks = []
         for q, rows_ in seeds:
-            sel = rows_[:7] if N.get("keywords") else ([r for r in rows_ if r["intent"] in ("commercial", "local", "question")][:7] or rows_[:7])
+            sel = rows_[:6] if N.get("keywords") else ([r for r in rows_ if r["intent"] in ("commercial", "local", "question")][:7] or rows_[:7])
             blocks.append(f'<div><table class="t sm"><thead><tr><th>{ar(q)}</th><th>Intent</th></tr></thead><tbody>'
                           + "".join(f'<tr><td>{ar(r["keyword"])}</td><td class="m">{r["intent"]}</td></tr>' for r in sel) + "</tbody></table></div>")
         kwh = '<h2>Keyword ideas from Google, YouTube &amp; Bing autocomplete</h2><div class="two eq">' + "".join(blocks) + "</div>" \
               + '<p class="m">Autocomplete shows what people actually type, not exact search volumes.</p>'
     page("Authority &amp; keyword opportunities", "BACKLINKS + WHAT PEOPLE SEARCH", f'''
-<div class="two"><div class="bigzero"><b>{big}</b><span>{bl}</span></div><div>{callout(auth_txt)}<p>{"<br>".join(facts)}</p></div></div>{kwh}''')
+{f'<div class="two"><div class="bigzero"><b style="font-size:{64 if len(re.sub("<[^>]+>|/10", "", str(big))) <= 3 else 44}px">{big}</b><span>{bl}</span></div><div>{callout(auth_txt)}<p>{"<br>".join(facts)}</p></div></div>' if big is not None else callout(auth_txt) + "<p>" + "<br>".join(facts) + "</p>"}
+{mention_html}{kwh}''')
 
     # ------------------------------------------------ security, trust & tracking
     sh = P_["security_headers"]
@@ -520,6 +573,13 @@ p{{font-size:10.5px;line-height:1.5;margin:6px 0}}.m{{color:{C["mute"]};font-siz
 .ok::before{{content:"✓ ";color:#3f7d5a;font-weight:900}}.bad::before{{content:"✕ ";color:#b5432f;font-weight:900}}.warn::before{{content:"! ";color:#c9922e;font-weight:900}}
 .chips{{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 10px}}.chips span{{font-size:9px;background:#fff;border:1px solid {C["line"]};border-radius:20px;padding:4px 9px}}
 .bigzero{{text-align:center;background:{C["warm"]};color:{C["cream"]};border-radius:14px;padding:18px}}.bigzero b{{font-size:64px;font-weight:900;color:{C["copper"]};display:block;line-height:1}}.bigzero span{{font-size:10px}}
+.shots{{display:flex;gap:14px;align-items:flex-start;margin:6px 0 4px}}.shots figure{{margin:0}}.shots img{{display:block;border-radius:10px;border:1px solid {C["line"]};box-shadow:0 4px 14px rgba(0,0,0,.08)}}
+.shots .dsk img{{width:128mm}}.shots .mob img{{width:46mm}}figcaption{{font-size:8.5px;color:{C["mute"]};margin-top:4px}}
+.cshots{{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}}.cshots figure{{margin:0}}.cshots img{{width:100%;border-radius:8px;border:1px solid {C["line"]}}}
+.sohead{{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid {C["line"]};border-radius:14px;padding:12px 14px;margin:4px 0 10px}}.sohead img{{width:58px;height:58px;border-radius:50%;object-fit:cover}}
+.sohead b{{display:block;font-size:14px}}.sohead span{{font-size:9.5px;color:{C["mute"]}}}.sohead .tot{{margin-left:auto;text-align:right}}.sohead .tot b{{font-size:26px;font-weight:900;color:{C["copper"]}}}
+.thumbs{{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}}.thumbs figure{{margin:0}}.thumbs img{{width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:8px}}.thumbs figcaption{{font-size:7.5px;line-height:1.3}}
+.bigzero b small{{font-size:22px;color:{C["cream"]}}}
 .ar{{font-family:Tajawal,Arial;direction:rtl;unicode-bidi:embed;font-size:11px}}
 .endcard{{position:absolute;left:15mm;right:15mm;bottom:22mm;background:linear-gradient(160deg,{C["bg"]},{C["warm"]});border-radius:16px;padding:22px;text-align:center}}.et{{font-size:24px;font-weight:900;color:{C["cream"]};margin:8px 0}}.et span{{color:{C["copper"]}}}'''
 

@@ -422,7 +422,72 @@ def profile(site, max_pages):
     except Exception as e:
         p["spam"] = None; log("  spam scan failed", e)
     p["facts"] = domain_facts(dom)
+    p["tranco"] = tranco(dom)
+    p["social_profiles"] = social_profiles(body)
+    p["social_counts"] = public_counts(p["social_profiles"])
     return p
+
+
+# ---------------------------------------------------------------- popularity, mentions, social
+def tranco(dom):
+    """Tranco top-sites rank (lower = more traffic) today and ~30 days ago."""
+    d = jget(f"https://tranco-list.eu/api/ranks/domain/{dom}", 20) or {}
+    r = d.get("ranks") or []
+    if not r:
+        return {"rank": None}
+    r = sorted(r, key=lambda x: x["date"])
+    return {"rank": r[-1]["rank"], "rank_30d_ago": r[0]["rank"], "since": r[0]["date"]}
+
+
+SOCIAL_URL = re.compile(r"https?://(?:www\.|m\.)?(instagram\.com/[A-Za-z0-9_.]+|facebook\.com/[A-Za-z0-9_.\-]+|tiktok\.com/@[A-Za-z0-9_.]+|"
+                        r"youtube\.com/(?:@|c/|channel/|user/)[A-Za-z0-9_\-]+|t\.me/[A-Za-z0-9_]{4,}|(?:x|twitter)\.com/[A-Za-z0-9_]+|"
+                        r"linkedin\.com/(?:in|company)/[A-Za-z0-9_\-%]+|snapchat\.com/add/[A-Za-z0-9_.\-]+|threads\.net/@[A-Za-z0-9_.]+)", re.I)
+SKIP_SOCIAL = re.compile(r"/(sharer|share|intent|plugins|dialog|tr|embed|watch|hashtag|p|reel|explore)\b|facebook\.com/(?:tr|groups)$", re.I)
+
+
+def social_profiles(body):
+    out = {}
+    for m in SOCIAL_URL.finditer(body):
+        u = "https://" + m.group(1).rstrip("/")
+        if SKIP_SOCIAL.search(u):
+            continue
+        plat = next(n for k, n in [("instagram", "Instagram"), ("facebook", "Facebook"), ("tiktok", "TikTok"), ("youtube", "YouTube"),
+                                   ("t.me", "Telegram"), ("twitter", "X"), ("x.com", "X"), ("linkedin", "LinkedIn"),
+                                   ("snapchat", "Snapchat"), ("threads", "Threads")] if k in u.lower())
+        out.setdefault(plat, [])
+        if u.lower() not in [x.lower() for x in out[plat]]:
+            out[plat].append(u)
+    return out
+
+
+def public_counts(profiles):
+    """Follower counts that public pages expose without login (Telegram, TikTok). Others are added via vidIQ in social.json."""
+    out = {}
+    for u in profiles.get("Telegram", [])[:1]:
+        r = get(u, 20)
+        m = re.search(r'tgme_page_extra">([\d\s,]+)\s*(subscribers|members)', r["body"])
+        if m:
+            out["Telegram"] = {"url": u, "followers": int(re.sub(r"\D", "", m.group(1)))}
+    for u in profiles.get("TikTok", [])[:1]:
+        r = get(u, 20)
+        f = re.search(r'"followerCount":(\d+)', r["body"]); h = re.search(r'"heartCount":(\d+)', r["body"]); v = re.search(r'"videoCount":(\d+)', r["body"])
+        if f:
+            out["TikTok"] = {"url": u, "followers": int(f.group(1)), "likes": int(h.group(1)) if h else None, "posts": int(v.group(1)) if v else None}
+    return out
+
+
+def mentions(dom, query, country):
+    """Third-party pages that come up for the brand name, and whether each links back to the site."""
+    res = serp(query, country) or []
+    out, seen = [], set()
+    for u in res:
+        h = host(u)
+        if h == dom or h.endswith("." + dom) or h in seen or re.search(r"(facebook|instagram|youtube|tiktok|linktr\.ee|twitter|x\.com|t\.me|linkedin|wikipedia)\.", h + "."):
+            continue
+        seen.add(h)
+        r = get(u, 20)
+        out.append({"url": u, "host": h, "links_back": dom in r["body"]})
+    return out
 
 
 # ---------------------------------------------------------------- rankings (DuckDuckGo, Bing-powered)
@@ -560,7 +625,7 @@ def score_site(p, speed, geo, opr, country, gsc=None, bing=None):
     reach += (10 if "Google Maps link" in p["conversion"] else 0) + (15 if any(t in blob for t in terms) else 0) + (10 if p["home"].get("lang") else 0)
     sc["reach"] = clamp(reach)
     if opr.get(p["domain"]) not in (None, ""):
-        sc["authority"] = clamp(float(opr[p["domain"]]) * 10)
+        sc["authority"] = clamp(float(opr[p["domain"]]) * 25)      # OPR 0-10 is log-scale; 4+ is strong for an SMB site
     elif bing and bing.get("available"):
         sc["authority"] = clamp(25 * math.log10(1 + bing["ref_domains"]) * 2)
     if gsc and gsc.get("available"):
@@ -695,7 +760,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("site"); ap.add_argument("--out", required=True)
     ap.add_argument("--competitor", action="append", default=[]); ap.add_argument("--auto-competitors", type=int, default=3)
-    ap.add_argument("--kw", action="append", default=[]); ap.add_argument("--country", default="lb")
+    ap.add_argument("--kw", action="append", default=[]); ap.add_argument("--brand", help="person/brand name to search for press mentions"); ap.add_argument("--country", default="lb")
     ap.add_argument("--max-pages", type=int, default=60); ap.add_argument("--comp-pages", type=int, default=15)
     ap.add_argument("--no-gsc", action="store_true"); ap.add_argument("--no-geo", action="store_true"); ap.add_argument("--no-speed", action="store_true")
     a = ap.parse_args()
@@ -743,6 +808,8 @@ def main():
         fut_gsc = ex.submit(gsc_data, dom) if not a.no_gsc else None
         fut_bing = ex.submit(bing_links, dom)
         fut_ranks = ex.submit(do_ranks) if ranks is None else None
+        fut_shots = ex.submit(subprocess.run, ["node", os.path.join(HERE, "shots.mjs"), os.path.join(a.out, "img")] + sites,
+                              capture_output=True, text=True, timeout=300)
         profs = {s: f.result() for s, f in fut_prof.items()}
         speeds = {s: f.result() for s, f in fut_speed.items()}
         geos = {s: f.result() for s, f in fut_geo.items()}
@@ -751,7 +818,13 @@ def main():
         bing = fut_bing.result()
         if fut_ranks:
             ranks = fut_ranks.result()
-    opr = seodata.opr(sites) if os.environ.get("OPR_API_KEY") else {}
+        try:
+            log("· screenshots:", fut_shots.result().stdout.count("ok "), "saved")
+        except Exception as e:
+            log("  screenshots failed:", e)
+    data["mentions"] = mentions(dom, a.brand or dom.split(".")[0], a.country)   # after rankings: DuckDuckGo throttles parallel queries
+    log(f"· mentions: {len(data['mentions'])} third-party pages")
+    opr = seodata.opr(sites) if seodata.opr_key() else {}
 
     out_sites = {}
     for s in sites:
@@ -800,7 +873,9 @@ def summary(d):
     L.append(f"sitemap {p['sitemap']} | public docs {p['public_docs'][:5]}")
     L.append(f"tech {p['tech']} | tracking {p['tracking']} | conversion {p['conversion']} | social {p['social']}")
     L.append(f"security headers {p['security_headers']} | version leak {p['version_leak']} ({p['server']} {p['powered_by']} {p['generator']}) | spam {p['spam']}")
-    L.append(f"facts {p['facts']}")
+    L.append(f"facts {p['facts']} | tranco {p.get('tranco')}")
+    L.append(f"social links on site: {p.get('social_profiles')} | public counts: {p.get('social_counts')}")
+    L.append("mentions: " + "; ".join(f"{m['host']} ({'links' if m['links_back'] else 'NO link'})" for m in d.get("mentions", [])))
     L.append("home: title '" + p["home"].get("title", "") + "' | desc '" + p["home"].get("desc", "")[:160] + "' | H1 " + str(p["home"].get("h1")))
     L.append("junk urls: " + ", ".join(s["junk"][:12]))
     L.append("key pages: " + "; ".join(f"{urllib.parse.urlparse(c['requested']).path} [{c.get('words', 0)}w, '{c.get('title', '')[:60]}']" for c in p["crawl"][:14]))

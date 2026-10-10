@@ -237,8 +237,12 @@ def cmd_ranks(a):
 
 
 # ---------------------------------------------------------------- backlinks
+def opr_key():
+    return os.environ.get("OPR_API_KEY") or os.environ.get("ORP_API_KEY")   # accept the common typo
+
+
 def opr(domains):
-    key = os.environ.get("OPR_API_KEY")
+    key = opr_key()
     if not key or not domains:
         return {}
     out = {}
@@ -290,7 +294,7 @@ def cmd_backlinks(a):
             print("  NEW ", s)
         for s in list(old - new)[:10]:
             print("  LOST", s)
-    if not os.environ.get("OPR_API_KEY"):
+    if not opr_key():
         need("OPR_API_KEY", "optional: adds a 0-10 authority score per referring domain")
     print(f"saved -> {d}")
 
