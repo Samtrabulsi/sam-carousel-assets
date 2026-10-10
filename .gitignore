@@ -46,3 +46,8 @@ publisher/.render_cache/
 *service_account*.json
 client_secrets*.json
 .env
+
+# Lead data (repo is public): never commit
+leads/
+gmb-leads/
+*leads*.csv

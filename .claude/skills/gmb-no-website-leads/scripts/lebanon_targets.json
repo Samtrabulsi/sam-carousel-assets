@@ -1,0 +1,40 @@
+{
+  "country": "Lebanon",
+  "radius_m": 6000,
+  "zoom": 14,
+  "cities": {
+    "Beirut": "33.8938,35.5018",
+    "Achrafieh": "33.8886,35.5214",
+    "Hamra": "33.8960,35.4830",
+    "Jdeideh": "33.8930,35.5600",
+    "Dbayeh": "33.9370,35.5930",
+    "Jounieh": "33.9808,35.6178",
+    "Kaslik": "33.9750,35.6100",
+    "Byblos": "34.1230,35.6519",
+    "Batroun": "34.2550,35.6580",
+    "Tripoli": "34.4367,35.8497",
+    "Zgharta": "34.3970,35.8930",
+    "Halba": "34.5420,36.0790",
+    "Baabda": "33.8339,35.5444",
+    "Hazmieh": "33.8580,35.5440",
+    "Aley": "33.8100,35.6000",
+    "Broummana": "33.8790,35.6370",
+    "Saida": "33.5631,35.3689",
+    "Tyre": "33.2705,35.2038",
+    "Nabatieh": "33.3772,35.4836",
+    "Zahle": "33.8463,35.9020",
+    "Chtaura": "33.8160,35.8510",
+    "Baalbek": "34.0058,36.2181"
+  },
+  "categories": [
+    "dentist", "dental clinic", "doctor", "medical clinic", "physiotherapist", "dermatologist",
+    "beauty salon", "hair salon", "barber shop", "nail salon", "spa", "gym",
+    "restaurant", "cafe", "bakery", "pastry shop", "catering",
+    "real estate agency", "lawyer", "accountant", "insurance agency",
+    "car repair", "car rental", "car dealer",
+    "hotel", "guest house", "travel agency",
+    "furniture store", "clothing store", "jewelry store", "florist", "optician",
+    "photographer", "event planner", "wedding venue", "interior designer",
+    "contractor", "veterinarian"
+  ]
+}
