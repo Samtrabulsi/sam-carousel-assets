@@ -150,8 +150,10 @@ def gsc_token():
     raw = os.environ.get("GSC_SA_JSON")
     b64 = os.environ.get("GSC_SA_JSON_B64")
     if not raw and b64:
+        raw = b64
+    if raw and not raw.lstrip().startswith("{"):   # accept base64 under either variable name
         import base64
-        raw = base64.b64decode("".join(b64.split())).decode("utf-8")
+        raw = base64.b64decode("".join(raw.split())).decode("utf-8")
     path = os.environ.get("GSC_CREDENTIALS_PATH") or os.path.expanduser("~/.config/gsc/service_account.json")
     if not raw and not os.path.exists(path):
         need("GSC_SA_JSON_B64", "rank tracking reads your real Google positions from Search Console "
