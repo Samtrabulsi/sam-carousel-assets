@@ -21,7 +21,7 @@ Snapshots go to `~/seo-data/<domain>/` (and `~/seo-data/keywords/`). That folder
 |---|---|---|
 | `keywords` | **Yes** (Google, YouTube and Bing autocomplete, EN/AR, by country) | none |
 | `speed` | Rarely (shared keyless quota is usually used up) | `PSI_API_KEY`: Google Cloud API key with **PageSpeed Insights API** + **Chrome UX Report API** enabled (25k requests/day free) |
-| `ranks` | No | `GSC_SA_JSON` (service-account JSON content) or `GSC_CREDENTIALS_PATH`; add the service-account email as a user on each Search Console property. Same credential as `gsc-mcp`. |
+| `ranks` | No | `GSC_SA_JSON_B64` (the JSON file base64-encoded on one line; Mac: `base64 -i key.json \| pbcopy`), or `GSC_SA_JSON` / `GSC_CREDENTIALS_PATH`; add the service-account email as a user on each Search Console property. Same credential as `gsc-mcp`. |
 | `backlinks` | No | `BING_WMT_API_KEY` (Bing Webmaster Tools > Settings > API access; the site must be verified there, and Bing can import it from Search Console). Optional `OPR_API_KEY` (openpagerank.com, free) adds a 0-10 authority per referring domain. |
 
 Keys live in the cloud environment settings (environment menu > Edit > secrets / environment variables); a new session picks them up. Never ask Sam to paste keys into chat, and never write them to the repo.

@@ -9,6 +9,7 @@
 Free sources and the environment variables they read (all optional; missing keys are reported):
   PSI_API_KEY             Google Cloud API key with PageSpeed Insights API + Chrome UX Report API enabled
   GSC_CREDENTIALS_PATH    service-account JSON added as a user on the Search Console property
+  GSC_SA_JSON_B64         (recommended for env settings) the JSON file base64-encoded on one line
   GSC_SA_JSON             (alternative) the service-account JSON content itself
   BING_WMT_API_KEY        Bing Webmaster Tools API key (site must be verified in Bing WMT)
   OPR_API_KEY             Open PageRank API key (domain authority for referring domains)
@@ -147,9 +148,14 @@ def cmd_keywords(a):
 # ---------------------------------------------------------------- ranks (Search Console)
 def gsc_token():
     raw = os.environ.get("GSC_SA_JSON")
-    path = os.environ.get("GSC_CREDENTIALS_PATH")
-    if not raw and not (path and os.path.exists(path)):
-        need("GSC_CREDENTIALS_PATH or GSC_SA_JSON", "rank tracking reads your real Google positions from Search Console")
+    b64 = os.environ.get("GSC_SA_JSON_B64")
+    if not raw and b64:
+        import base64
+        raw = base64.b64decode("".join(b64.split())).decode("utf-8")
+    path = os.environ.get("GSC_CREDENTIALS_PATH") or os.path.expanduser("~/.config/gsc/service_account.json")
+    if not raw and not os.path.exists(path):
+        need("GSC_SA_JSON_B64", "rank tracking reads your real Google positions from Search Console "
+             "(on a Mac: base64 -i key.json | pbcopy, then paste as the value)")
         return None
     lib = os.path.expanduser("~/.cache/seodata-pylib")
     sys.path.insert(0, lib)
