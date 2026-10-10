@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Tajawal:wght@500;700;800&display=block" rel="stylesheet">
+<style>html,body{margin:0;background:#0b0b0b;overflow:hidden}canvas{display:block}</style>
+</head><body><canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// Brand Victory: "Lost" 10s ad. Pure draw(t) from a single clock.
+const W=1080,H=1920,DUR=10;
+const C={bg:'#0b0b0b',warm:'#1c1410',cream:'#f5ede8',copper:'#c17a5a',grey:'#57504c',dim:'#8a817c'};
+const cv=document.getElementById('c'),x=cv.getContext('2d');
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const r=rng(7);
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const ease=v=>{v=clamp(v);return v<.5?4*v*v*v:1-Math.pow(-2*v+2,3)/2};
+const seg=(t,a,b)=>ease((t-a)/(b-a));
+const HERO={x:540,y:1080};
+// crowd
+const crowd=[];
+for(let i=0;i<150;i++){
+  const y=560+r()*1000, dir=r()<.5?-1:1;
+  crowd.push({x0:r()*W,y,dir,v:60+r()*90,ph:r()*6.28,s:.75+r()*.45,sh:.35+r()*.4});
+}
+crowd.sort((a,b)=>a.y-b.y);
+function person(px,py,s,fill,alpha,stroke){
+  x.save();x.globalAlpha=alpha;x.translate(px,py);x.scale(s,s);
+  x.fillStyle=fill;
+  x.beginPath();x.arc(0,-62,15,0,7);x.fill();
+  x.beginPath();x.roundRect(-17,-42,34,58,16);x.fill();
+  x.beginPath();x.roundRect(-14,10,11,34,6);x.roundRect(3,10,11,34,6);x.fill();
+  if(stroke){x.lineWidth=4;x.strokeStyle=stroke;x.beginPath();x.arc(0,-62,15,0,7);x.stroke();x.beginPath();x.roundRect(-17,-42,34,58,16);x.stroke();}
+  x.restore();
+}
+function text(str,y,size,weight,color,alpha,font='Inter',dy=0){
+  if(alpha<=0)return;
+  x.save();x.globalAlpha=alpha;x.fillStyle=color;x.textAlign='center';x.textBaseline='middle';
+  x.font=`${weight} ${size}px ${font}`;x.direction=font==='Tajawal'?'rtl':'ltr';x.fillText(str,W/2,y+dy);x.restore();
+}
+function line(t,a,b,en,ar,y,size,col){ // a caption block that fades/rises in and out
+  const i=seg(t,a,a+.45), o=1-seg(t,b-.35,b), al=Math.min(i,o);
+  text(en,y,size,800,col||C.cream,al,'Inter',(1-i)*30);
+  text(ar,y+size*1.25,Math.round(size*.82),700,C.dim,al,'Tajawal',(1-i)*30);
+}
+function draw(t){
+  // background
+  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,C.bg);g.addColorStop(1,C.warm);
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  const stopHero=seg(t,1.8,2.6);            // hero stops while others rush
+  const settle=seg(t,5.2,7.2);              // crowd slows and turns to hero
+  const outro=seg(t,7.4,8.4);               // dim everything for end card
+  // hero glow
+  const glow=seg(t,5.4,7.6)*(1-outro*.35);
+  if(glow>0){const rg=x.createRadialGradient(HERO.x,HERO.y-30,10,HERO.x,HERO.y-30,420);
+    rg.addColorStop(0,`rgba(193,122,90,${.42*glow})`);rg.addColorStop(1,'rgba(193,122,90,0)');x.fillStyle=rg;x.fillRect(0,0,W,H);}
+  // copper path from hero upward
+  const path=seg(t,5.0,6.6);
+  if(path>0&&outro<1){x.save();x.globalAlpha=1-outro;x.strokeStyle=C.copper;x.lineWidth=6;x.setLineDash([2,22]);x.lineCap='round';
+    x.beginPath();x.moveTo(HERO.x,HERO.y-110);x.lineTo(HERO.x,HERO.y-110-(HERO.y-640)*path);x.stroke();x.restore();}
+  // crowd
+  for(const p of crowd){
+    const speed=1-settle;                  // integrate approx: distance = v*t until settle, then frozen
+    const tt=t<5.2?t:5.2+(t-5.2)*(1-settle*.9);
+    let px=((p.x0+p.dir*p.v*tt)%(W+120)+W+120)%(W+120)-60;
+    let py=p.y+Math.sin(tt*3+p.ph)*4;
+    // part a lane above the hero for the path, ring around hero at the end
+    const dx=px-HERO.x, dy=py-HERO.y;
+    if(dy<0&&Math.abs(dx)<170){px+=Math.sign(dx||1)*(170-Math.abs(dx))*path;}
+    const d=Math.hypot(dx,dy);
+    if(d<190){const k=(190-d)/190*settle;px+=dx/(d||1)*70*k;py+=dy/(d||1)*70*k;}
+    const a=(p.sh+.25*speed)*(1-outro*.75);
+    const lean=Math.sin(tt*9+p.ph)*2*speed;
+    person(px+lean,py,p.s,C.grey,a);
+  }
+  // hero: moves with the crowd at first, then stops (copper)
+  const hx=HERO.x+(1-stopHero)*Math.sin(t*2)*40, hy=HERO.y;
+  const heroCol=stopHero>.5?C.copper:C.grey;
+  person(hx,hy,1.25,heroCol,1-outro*.15,stopHero>.5?C.cream:null);
+  const q=Math.min(seg(t,2.2,2.6),1-seg(t,4.8,5.2));   // the lost moment
+  if(q>0){x.save();x.globalAlpha=q;x.fillStyle=C.copper;x.font='900 64px Inter';x.textAlign='center';
+    x.fillText('?',hx+Math.sin(t*3)*6,hy-150-(1-q)*20);x.restore();}
+  // captions
+  line(t,0.3,2.7,'Lost in the crowd?','ضايع بين الزحمة؟',300,78);
+  line(t,2.9,5.1,'Same skills. Same offer.','نفس الخبرة. نفس العرض.',300,70);
+  text('Same silence.',300+70*2.3,70,800,C.copper,Math.min(seg(t,3.5,3.95),1-seg(t,4.75,5.1)),'Inter',(1-seg(t,3.5,3.95))*30);
+  line(t,5.3,7.5,'Positioning shows the way.','التموضع بيدلّك عالطريق.',300,66);
+  // end card
+  const e=seg(t,7.7,8.4);
+  if(e>0){
+    x.save();x.globalAlpha=e*.82;x.fillStyle=C.bg;x.fillRect(0,0,W,H);x.restore();
+    text('BRAND  VICTORY',640,30,700,C.copper,e,'Inter',(1-e)*20);
+    text('The expert who',800,92,900,C.cream,e,'Inter',(1-e)*30);
+    text('positions sells.',912,92,900,C.copper,seg(t,7.95,8.6),'Inter',(1-seg(t,7.95,8.6))*30);
+    text('الخبير اللي بيتموضع، بيبيع.',1040,54,800,C.cream,seg(t,8.2,8.8),'Tajawal');
+    const cta=seg(t,8.6,9.2);
+    if(cta>0){x.save();x.globalAlpha=cta;x.fillStyle=C.cream;x.beginPath();x.roundRect(W/2-250,1190,500,96,48);x.fill();x.restore();
+      text('samtrabulsi.com',1238,40,800,C.bg,cta,'Inter');}
+    text('@samtrabulsi',1760,30,500,C.dim,e,'Inter');
+  }
+  // progress bar like the carousels
+  x.fillStyle='rgba(245,237,232,.15)';x.fillRect(340,1840,400,4);
+  x.fillStyle=C.copper;x.fillRect(340,1840,400*clamp(t/DUR),4);
+}
+function frame(){draw(performance.now()/1000%DUR);requestAnimationFrame(frame)}
+document.fonts.ready.then(()=>requestAnimationFrame(frame));
+</script></body></html>
