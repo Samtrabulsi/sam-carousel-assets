@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(*)",
       "Read(*)",
@@ -35,7 +34,23 @@
       "mcp__Zoom_for_Claude",
       "mcp__claude-code-remote"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "bypassPermissions"
   },
-  "mcpServersApproved": ["canva", "notion", "figma"]
+  "extraKnownMarketplaces": {
+    "agricidaniel-claude-seo": {
+      "source": {
+        "source": "github",
+        "repo": "AgriciDaniel/claude-seo"
+      }
+    }
+  },
+  "mcpServersApproved": [
+    "canva",
+    "notion",
+    "figma"
+  ],
+  "enabledPlugins": {
+    "claude-seo@agricidaniel-claude-seo": true
+  }
 }

@@ -56,6 +56,8 @@ Check this list first. If the tool is here, give the recorded verdict in a few l
 | OpenSEO (every-app/open-seo) | 2026-10-10 | Installed, needs account | `openseo` setup + 12 `openseo-*` skills. DataForSEO pay-per-use; hosted adds 28%. |
 | MiniMax H3 / Hailuo 3.0 | 2026-10-10 | Use via Runway | Open weights since 2026-08-03 (33B, community license, application needed in US/EU/UK/KR, 768p locally, no 2K module); impractical to self-host. In Runway as `hailuo-3` / `h3-max`. |
 | MuAPI (muapi.ai, Vadoo, Bangalore) | 2026-10-10 | Skip | 765-model reseller API, prepaid credits; white-label studio $49/$149/$499/mo + per-generation cost, your own Stripe. No independent reviews; unofficial Midjourney access; "spicy" models. |
+| Claude SEO (AgriciDaniel/claude-seo) | 2026-10-11 | Installed (project plugin) | 26 seo-* skills + 19 agents + schema hook; MIT. Live fetches blocked by cloud proxy, use saved HTML (see `claude-seo-cloud`). |
+| Metricool MCP (metricool/mcp-metricool) | 2026-10-11 | Already connected | Same as the Metricool connector on Sam's account: scheduling, analytics, best times, review flow. |
 
 ## Guardrails
 
