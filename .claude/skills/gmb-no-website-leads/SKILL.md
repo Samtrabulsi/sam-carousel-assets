@@ -1,6 +1,6 @@
 ---
 name: gmb-no-website-leads
-description: Build lead lists of Google Business Profile (GMB / Google Maps) businesses that have NO website (or only a Facebook/Instagram link), by city and category, with name, phone, address, rating, reviews and a Maps link. Lebanon targets included (22 cities x 38 categories). Use when Sam asks for businesses without websites, GMB/Google Maps leads, "scrape Google Maps", website-sale prospects, or leads in a city/country.
+description: Build Google Business Profile (GMB / Google Maps) business lists by city and category: every business found (all_businesses.csv) plus the subset with NO website or only a Facebook/Instagram link (leads_no_website.csv), with name, phone, address, rating, reviews and a Maps link. Lebanon targets included (22 cities x 38 categories). Use when Sam asks for all businesses in a city/country, businesses without websites, GMB/Google Maps leads, "scrape Google Maps", website-sale prospects, or leads in a city/country.
 ---
 
 # GMB "no website" leads
@@ -17,7 +17,7 @@ python3 -I $S/run_leads.py --limit 50                                        # n
 python3 -I $S/run_leads.py --merge-only                                      # rebuild the merged CSV
 ```
 - **Resumable:** finished city/category pairs are recorded in `<out>/done.txt` and skipped next time. A full Lebanon pass is about 836 searches (several hours); run it in the background (`run_in_background`) and report progress.
-- **Output:** `<out>/leads_no_website.csv`, deduped and sorted by review count. Counts a listing as "no website" when the website field is empty or is only Facebook, Instagram, Linktree, WhatsApp, TikTok or business.site (the "Social link" column).
+- **Output:** `<out>/all_businesses.csv` (every unique business, with a `Has real website` column) and `<out>/leads_no_website.csv` (the subset), deduped and sorted by review count. Counts a listing as "no website" when the website field is empty or is only Facebook, Instagram, Linktree, WhatsApp, TikTok or business.site (the "Social link" column).
 - **Other countries:** copy `lebanon_targets.json`, change `country`, the `cities` (name to "lat,lng") and `categories`.
 
 ## How it works (lessons from 2026-10-10)

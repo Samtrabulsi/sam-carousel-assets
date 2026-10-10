@@ -6,7 +6,8 @@
 
 Resumable: finished (city, category) pairs are recorded in <out>/done.txt and skipped.
 Writes <out>/raw/<city>__<category>.csv per search, then merges to
-<out>/leads_no_website.csv (deduped by place link/cid, sorted by reviews).
+<out>/all_businesses.csv (every unique listing) and <out>/leads_no_website.csv (subset),
+deduped and sorted by reviews.
 """
 import argparse, csv, json, os, re, subprocess, sys, time
 from urllib.parse import quote_plus
@@ -52,7 +53,8 @@ def num(v):
 
 
 def merge(out, cfg):
-    seen, leads, total = set(), [], 0
+    """Write all_businesses.csv (every unique listing) and leads_no_website.csv (subset)."""
+    seen, rows_all, total = set(), [], 0
     for name in sorted(os.listdir(os.path.join(out, "raw"))):
         if not name.endswith(".csv"):
             continue
@@ -67,24 +69,30 @@ def merge(out, cfg):
                 continue
             seen.add(key)
             site = (r.get("website") or "").strip()
-            if site and not SOCIAL.search(site):
-                continue
-            leads.append({
+            rows_all.append({
                 "Business": r["title"], "Category": r.get("category", ""), "Searched": cat.replace("-", " "),
                 "City": city.replace("-", " ").title(), "Rating": r.get("review_rating", "")[:3],
                 "Reviews": int(num(r.get("review_count"))), "Phone": r.get("phone", ""),
-                "Social link": site, "Address": r.get("address", ""), "Status": r.get("status", ""),
+                "Website": site,
+                "Has real website": "yes" if site and not SOCIAL.search(site) else "no",
+                "Address": r.get("address", ""), "Status": r.get("status", ""),
                 "Google Maps link": r.get("link") or "https://www.google.com/maps/search/?api=1&query="
                 + quote_plus(f'{r["title"]} {r.get("address", "")}'),
             })
-    leads.sort(key=lambda d: (-d["Reviews"], -num(d["Rating"])))
-    path = os.path.join(out, "leads_no_website.csv")
-    with open(path, "w", newline="", encoding="utf-8-sig") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(leads[0].keys()) if leads else ["Business"])
-        w.writeheader()
-        w.writerows(leads)
-    print(f"merged: {total} listings, {len(seen)} unique, {len(leads)} without a website -> {path}")
-    return path
+    rows_all.sort(key=lambda d: (-d["Reviews"], -num(d["Rating"])))
+    fields = list(rows_all[0].keys()) if rows_all else ["Business"]
+    paths = {}
+    for fname, rows in (("all_businesses.csv", rows_all),
+                        ("leads_no_website.csv", [d for d in rows_all if d["Has real website"] == "no"])):
+        paths[fname] = os.path.join(out, fname)
+        with open(paths[fname], "w", newline="", encoding="utf-8-sig") as fh:
+            w = csv.DictWriter(fh, fieldnames=fields)
+            w.writeheader()
+            w.writerows(rows)
+    n_no = sum(1 for d in rows_all if d["Has real website"] == "no")
+    print(f"merged: {total} listings, {len(rows_all)} unique businesses, {n_no} without a real website "
+          f"-> {paths['all_businesses.csv']} + leads_no_website.csv")
+    return paths
 
 
 def main():
