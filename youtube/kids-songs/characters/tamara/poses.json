@@ -1,8 +1,545 @@
 {
  "_about": "Tamara photo-puppet poses (pictures made by Sam). Landmarks are in each picture's pixels (1024x1536). split = bottom edge of the upper teeth [left corner, middle, right corner]; null when the mouth is already open in the picture (no lip movement). eyes = [x, y, rx, ry, rotation].",
- "sing":  {"feet": [480, 1487], "neck": [480, 440], "chest": [470, 640], "split": [[432, 351], [486, 372], [538, 366]], "eyes": [[445, 250, 36, 27, 0.12], [567, 282, 35, 26, 0.25]]},
- "point": {"feet": [478, 1467], "neck": [505, 445], "chest": [470, 600], "split": [[467, 345], [512, 374], [560, 371]], "eyes": [[485, 262, 28, 21, 0.32], [592, 297, 27, 21, 0.32]]},
- "cheer": {"feet": [460, 1467], "neck": [500, 500], "chest": [470, 650], "split": null, "eyes": [[475, 317, 27, 23, 0.36], [580, 355, 27, 22, 0.36]]},
- "clap":  {"feet": [493, 1486], "neck": [485, 450], "chest": [480, 640], "split": null, "eyes": [[442, 247, 31, 25, 0.24], [565, 277, 30, 24, 0.24]]},
- "wave":  {"feet": [460, 1477], "neck": [505, 425], "chest": [470, 580], "split": [[472, 322], [516, 359], [562, 356]], "eyes": [[492, 242, 30, 22, 0.38], [600, 285, 28, 21, 0.38]]}
+ "sing": {
+  "feet": [
+   480,
+   1487
+  ],
+  "neck": [
+   480,
+   440
+  ],
+  "chest": [
+   470,
+   640
+  ],
+  "split": [
+   [
+    432,
+    351
+   ],
+   [
+    486,
+    372
+   ],
+   [
+    538,
+    366
+   ]
+  ],
+  "eyes": [
+   [
+    445,
+    250,
+    36,
+    27,
+    0.12
+   ],
+   [
+    567,
+    282,
+    35,
+    26,
+    0.25
+   ]
+  ]
+ },
+ "point": {
+  "feet": [
+   478,
+   1467
+  ],
+  "neck": [
+   505,
+   445
+  ],
+  "chest": [
+   470,
+   600
+  ],
+  "split": [
+   [
+    467,
+    345
+   ],
+   [
+    512,
+    374
+   ],
+   [
+    560,
+    371
+   ]
+  ],
+  "eyes": [
+   [
+    485,
+    262,
+    28,
+    21,
+    0.32
+   ],
+   [
+    592,
+    297,
+    27,
+    21,
+    0.32
+   ]
+  ]
+ },
+ "cheer": {
+  "feet": [
+   460,
+   1467
+  ],
+  "neck": [
+   500,
+   500
+  ],
+  "chest": [
+   470,
+   650
+  ],
+  "split": null,
+  "eyes": [
+   [
+    475,
+    317,
+    27,
+    23,
+    0.36
+   ],
+   [
+    580,
+    355,
+    27,
+    22,
+    0.36
+   ]
+  ]
+ },
+ "clap": {
+  "feet": [
+   493,
+   1486
+  ],
+  "neck": [
+   485,
+   450
+  ],
+  "chest": [
+   480,
+   640
+  ],
+  "split": null,
+  "eyes": [
+   [
+    442,
+    247,
+    31,
+    25,
+    0.24
+   ],
+   [
+    565,
+    277,
+    30,
+    24,
+    0.24
+   ]
+  ]
+ },
+ "wave": {
+  "feet": [
+   460,
+   1477
+  ],
+  "neck": [
+   505,
+   425
+  ],
+  "chest": [
+   470,
+   580
+  ],
+  "split": [
+   [
+    472,
+    322
+   ],
+   [
+    516,
+    359
+   ],
+   [
+    562,
+    356
+   ]
+  ],
+  "eyes": [
+   [
+    492,
+    242,
+    30,
+    22,
+    0.38
+   ],
+   [
+    600,
+    285,
+    28,
+    21,
+    0.38
+   ]
+  ]
+ },
+ "sing2": {
+  "feet": [
+   492,
+   1486
+  ],
+  "neck": [
+   472,
+   445
+  ],
+  "chest": [
+   472,
+   634
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": false,
+  "variants": {
+   "mid": "sing2-mid",
+   "open": "sing2-open",
+   "eyes": "sing2-eyes"
+  },
+  "mouthMask": [
+   482,
+   392,
+   95,
+   78
+  ],
+  "eyeMasks": [
+   [
+    445,
+    250,
+    56,
+    42
+   ],
+   [
+    562,
+    280,
+    54,
+    40
+   ]
+  ]
+ },
+ "sleep": {
+  "feet": [
+   528,
+   1491
+  ],
+  "neck": [
+   518,
+   443
+  ],
+  "chest": [
+   518,
+   633
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "thumbs": {
+  "feet": [
+   469,
+   1497
+  ],
+  "neck": [
+   494,
+   451
+  ],
+  "chest": [
+   494,
+   641
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "book": {
+  "feet": [
+   520,
+   1491
+  ],
+  "neck": [
+   478,
+   444
+  ],
+  "chest": [
+   478,
+   635
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "count": {
+  "feet": [
+   527,
+   1500
+  ],
+  "neck": [
+   469,
+   450
+  ],
+  "chest": [
+   469,
+   641
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "shrug": {
+  "feet": [
+   498,
+   1493
+  ],
+  "neck": [
+   474,
+   443
+  ],
+  "chest": [
+   474,
+   634
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "jump": {
+  "feet": [
+   546,
+   1474
+  ],
+  "neck": [
+   436,
+   449
+  ],
+  "chest": [
+   436,
+   635
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "hello": {
+  "feet": [
+   510,
+   1502
+  ],
+  "neck": [
+   492,
+   448
+  ],
+  "chest": [
+   492,
+   640
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "pointL": {
+  "feet": [
+   723,
+   1496
+  ],
+  "neck": [
+   664,
+   460
+  ],
+  "chest": [
+   664,
+   648
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "think": {
+  "feet": [
+   525,
+   1499
+  ],
+  "neck": [
+   495,
+   452
+  ],
+  "chest": [
+   495,
+   643
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "pointR": {
+  "feet": [
+   384,
+   1496
+  ],
+  "neck": [
+   365,
+   449
+  ],
+  "chest": [
+   365,
+   640
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "dance1": {
+  "feet": [
+   557,
+   1492
+  ],
+  "neck": [
+   546,
+   442
+  ],
+  "chest": [
+   546,
+   633
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "dance2": {
+  "feet": [
+   564,
+   1494
+  ],
+  "neck": [
+   585,
+   442
+  ],
+  "chest": [
+   585,
+   633
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "dance3": {
+  "feet": [
+   516,
+   1507
+  ],
+  "neck": [
+   569,
+   443
+  ],
+  "chest": [
+   569,
+   637
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "dance4": {
+  "feet": [
+   637,
+   1508
+  ],
+  "neck": [
+   555,
+   458
+  ],
+  "chest": [
+   555,
+   649
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "dance5": {
+  "feet": [
+   599,
+   1479
+  ],
+  "neck": [
+   581,
+   440
+  ],
+  "chest": [
+   581,
+   629
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "dance6": {
+  "feet": [
+   571,
+   1490
+  ],
+  "neck": [
+   600,
+   426
+  ],
+  "chest": [
+   600,
+   620
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "dance7": {
+  "feet": [
+   547,
+   1490
+  ],
+  "neck": [
+   622,
+   444
+  ],
+  "chest": [
+   622,
+   634
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ },
+ "dance8": {
+  "feet": [
+   589,
+   1489
+  ],
+  "neck": [
+   585,
+   437
+  ],
+  "chest": [
+   585,
+   628
+  ],
+  "split": null,
+  "eyes": null,
+  "auto": true
+ }
 }

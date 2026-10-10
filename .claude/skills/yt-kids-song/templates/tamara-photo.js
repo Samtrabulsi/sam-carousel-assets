@@ -5,7 +5,8 @@
 //   - head tilt that fades out through the neck, hair ends that swing a moment behind the body
 //   - lips that part while singing (opening tapers into the mouth corners, lower lip/chin stretch smoothly)
 //   - blinks that pull real eyelid skin down over the eye
-//   - several pose pictures (sing, point, cheer, clap, wave), cross-faded when the pose changes
+//   - many pose pictures (poses.json), cross-faded when the pose changes; a pose with `variants` (same picture with
+//     a half-open mouth, open mouth and closed eyes) gets real lip sync and real blinks by blending those faces in
 // Pose pictures + landmarks live in youtube/kids-songs/characters/tamara/ (poses.json). build_song.py embeds the
 // cutouts as tamara-cutout.js (window.TAMARA_POSES with data URLs), because WebGL refuses file:// textures.
 //
@@ -16,7 +17,7 @@
   const PAD = [140, 70];
   const VS = 'attribute vec2 a; varying vec2 uv; void main(){ uv = a * 0.5 + 0.5; gl_Position = vec4(a, 0.0, 1.0); }';
   const FS = `precision highp float;
-  uniform sampler2D tex, dep; uniform vec2 size, pad, feet, neck, chest; uniform vec3 sp0, sp1, sp2;
+  uniform sampler2D tex, dep, texMid, texOpen, texEyes; uniform vec4 mouthM, eyeM1, eyeM2; uniform float hasVar; uniform vec2 size, pad, feet, neck, chest; uniform vec3 sp0, sp1, sp2;
   uniform vec4 eyeA, eyeB; uniform float rotA, rotB;
   uniform float sway, lift, tilt, breath, hair, mouth, blink, hasMouth, yaw, hyaw, hpitch;
   varying vec2 uv;
@@ -72,6 +73,15 @@
       float soft = smoothstep(0.0, 1.5, -gap) * smoothstep(0.0, 0.4, wx);
       col = mix(col, vec4(inner, 1.0), soft);
     }
+    if (hasVar > 0.5) { // real mouth + eyes from Sam's matching pictures (same pose, different face)
+      vec2 uq = clamp(src / size, 0.0, 1.0);
+      float wm = 1.0 - smoothstep(0.7, 1.0, length((src - mouthM.xy) / mouthM.zw));
+      vec4 vmid = texture2D(texMid, uq), vop = texture2D(texOpen, uq);
+      vec4 v = mouth < 0.5 ? mix(col, vmid, mouth * 2.0) : mix(vmid, vop, mouth * 2.0 - 1.0);
+      col = mix(col, v, wm);
+      float we = max(1.0 - smoothstep(0.65, 1.0, length((src - eyeM1.xy) / eyeM1.zw)), 1.0 - smoothstep(0.65, 1.0, length((src - eyeM2.xy) / eyeM2.zw)));
+      col = mix(col, texture2D(texEyes, uq), we * smoothstep(0.15, 0.7, blink));
+    }
     col = eyelid(p, eyeA, rotA, col);
     col = eyelid(p, eyeB, rotB, col);
     gl_FragColor = col;
@@ -79,7 +89,7 @@
 
   let gl, prog, cv, U = {};
   const loadImg = src => new Promise(r => { const im = new Image(); im.onload = () => r(im); im.onerror = () => r(null); im.src = src; });
-  window.tamaraPhotoReady = Promise.all(Object.entries(POSES).map(([n, p]) => Promise.all([loadImg(p.src), p.depth ? loadImg(p.depth) : null]).then(([img, dimg]) => [n, img, dimg]))).then(list => {
+  window.tamaraPhotoReady = Promise.all(Object.entries(POSES).map(([n, p]) => Promise.all([loadImg(p.src), p.depth ? loadImg(p.depth) : null, ...['mid', 'open', 'eyes'].map(k => p.variants && p.variants[k] ? loadImg(p.variants[k]) : null)]).then(([img, dimg, vm, vo, ve]) => [n, img, dimg, vm, vo, ve]))).then(list => {
     list = list.filter(x => x[1]); if (!list.length) return;
     const W = Math.max(...list.map(x => x[1].width)), H = Math.max(...list.map(x => x[1].height));
     cv = document.createElement('canvas'); cv.width = W + 2 * PAD[0]; cv.height = H + 2 * PAD[1];
@@ -89,34 +99,39 @@
     prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog); gl.useProgram(prog);
     const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    'size pad feet neck chest sp0 sp1 sp2 eyeA eyeB rotA rotB sway lift tilt breath hair mouth blink hasMouth yaw hyaw hpitch tex dep'.split(' ').forEach(n => U[n] = gl.getUniformLocation(prog, n));
+    'size pad feet neck chest sp0 sp1 sp2 eyeA eyeB rotA rotB sway lift tilt breath hair mouth blink hasMouth yaw hyaw hpitch tex dep texMid texOpen texEyes mouthM eyeM1 eyeM2 hasVar'.split(' ').forEach(n => U[n] = gl.getUniformLocation(prog, n));
     const mkTex = img => { const tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
       [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER].forEach(f => gl.texParameteri(gl.TEXTURE_2D, f, gl.LINEAR));
       [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(f => gl.texParameteri(gl.TEXTURE_2D, f, gl.CLAMP_TO_EDGE)); return tx; };
     let flat = null;
-    list.forEach(([n, img, dimg]) => { POSES[n].tex = mkTex(img);
+    list.forEach(([n, img, dimg, vm, vo, ve]) => { POSES[n].tex = mkTex(img);
+      if (vm && vo && ve) POSES[n].vtex = [mkTex(vm), mkTex(vo), mkTex(ve)];
       if (!dimg) { if (!flat) { const f = document.createElement('canvas'); f.width = f.height = 2; const x = f.getContext('2d'); x.fillStyle = '#808080'; x.fillRect(0, 0, 2, 2); flat = mkTex(f); } }
       POSES[n].dtex = dimg ? mkTex(dimg) : flat; POSES[n].w = img.width; POSES[n].h = img.height; });
-    gl.uniform1i(U.tex, 0); gl.uniform1i(U.dep, 1);
+    gl.uniform1i(U.tex, 0); gl.uniform1i(U.dep, 1); gl.uniform1i(U.texMid, 2); gl.uniform1i(U.texOpen, 3); gl.uniform1i(U.texEyes, 4);
     gl.uniform2f(U.pad, PAD[0], PAD[1]); gl.viewport(0, 0, cv.width, cv.height);
   });
 
   function renderPose(P, m) { // warp one pose picture into the GL canvas
+    if (P.vtex) P.vtex.forEach((tx, i) => { gl.activeTexture(gl.TEXTURE2 + i); gl.bindTexture(gl.TEXTURE_2D, tx); });
+    gl.uniform1f(U.hasVar, P.vtex ? 1 : 0);
+    if (P.vtex) { gl.uniform4f(U.mouthM, ...P.mouthMask); gl.uniform4f(U.eyeM1, ...P.eyeMasks[0]); gl.uniform4f(U.eyeM2, ...P.eyeMasks[1]); }
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, P.dtex);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, P.tex);
     gl.uniform2f(U.size, P.w, P.h); gl.uniform2f(U.feet, ...P.feet); gl.uniform2f(U.neck, ...P.neck); gl.uniform2f(U.chest, ...P.chest);
     const sp = P.split || [[0, 0], [1, 0], [2, 0]]; sp.forEach((s, i) => gl.uniform3f(U['sp' + i], s[0], s[1], 0));
     gl.uniform1f(U.hasMouth, P.split ? 1 : 0);
-    gl.uniform4f(U.eyeA, ...P.eyes[0].slice(0, 4)); gl.uniform1f(U.rotA, P.eyes[0][4]);
-    gl.uniform4f(U.eyeB, ...P.eyes[1].slice(0, 4)); gl.uniform1f(U.rotB, P.eyes[1][4]);
+    const E = P.eyes || [[-9999, -9999, 1, 1, 0], [-9999, -9999, 1, 1, 0]]; // no drawn eyelids (no landmarks, or real blink pictures)
+    gl.uniform4f(U.eyeA, ...E[0].slice(0, 4)); gl.uniform1f(U.rotA, E[0][4]);
+    gl.uniform4f(U.eyeB, ...E[1].slice(0, 4)); gl.uniform1f(U.rotB, E[1][4]);
     Object.entries(m).forEach(([k, v]) => gl.uniform1f(U[k], v));
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
   window.drawTamaraPhoto = function (c, o) {
     if (!cv) return;
-    const pick = n => POSES[n] && POSES[n].tex ? POSES[n] : POSES.sing;
+    const pick = n => POSES[n] && POSES[n].tex ? POSES[n] : (POSES.sing2 && POSES.sing2.tex ? POSES.sing2 : POSES.sing);
     const t = o.t || 0, bph = (o.beat || 0) * Math.PI, D = o.danceAmt || 0, I = 1 - D;
     const bp = (t + (o.blinkSeed || 0)) % 3.9, blink = bp < 0.18 ? Math.sin(bp / 0.18 * Math.PI) : 0;
     const m = {

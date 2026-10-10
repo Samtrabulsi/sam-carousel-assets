@@ -111,6 +111,19 @@ function poseAt(t) {
   return { pose: i % 2 ? 'sing' : 'open', since: l.start - 0.25 };
 }
 
+// photo puppet choreography: real pose names from characters/<name>/poses.json
+const DANCE = ['dance1', 'dance2', 'dance5', 'dance3', 'dance6', 'jump', 'dance4', 'dance7', 'dance8'];
+function photoPoseAt(t) {
+  const l = lineAt(t), custom = VIS.photoPose && VIS.photoPose(t, l); if (custom) return custom;
+  if (t < LINES[0].start - 0.3) return t < 2.6 ? { pose: 'book', since: 0 } : { pose: 'hello', since: 2.6 };
+  if (t > S.duration - 7) return t < S.duration - 3.5 ? { pose: 'hello', since: S.duration - 7 } : { pose: 'sleep', since: S.duration - 3.5 };
+  if (!l || /Chorus/i.test(l.section)) { // dance flipbook: a new move every 2 beats
+    const n = Math.floor(beatAt(t) / 2), since = (S.beat0 || 0) + n * 2 * 60 / S.bpm;
+    return { pose: DANCE[n % DANCE.length], since, fade: 0.18, dance: true };
+  }
+  return { pose: 'sing2', since: l.start - 0.25 };
+}
+
 // ---------- frame ----------
 function draw(t) {
   sky(t);
@@ -121,10 +134,10 @@ function draw(t) {
   const mouth = tamaraMouth(WORDS, t);
   if (S.host === 'photo') { // her real picture as a puppet (tamara-photo.js)
     c.save(); c.translate(430, 1035); c.scale(0.59, 0.59);
-    const MAP = { wave: 'wave', point: 'point', clap: 'clap', cheer: 'cheer' }; // other poses use the 'sing' picture
-    const prev = poseAt(p.since - 0.05), on = /dance|clap|cheer/.test(p.pose), k = ease((t - p.since) / 0.8);
-    drawTamaraPhoto(c, { t, beat: beatAt(t), pose: MAP[p.pose] || 'sing', prevPose: MAP[prev.pose] || 'sing', poseK: ease((t - p.since) / 0.3),
-      danceAmt: on ? k : 1 - k, open: tamaraOpen(WORDS, t), blinkSeed: 0.4 });
+    const q = photoPoseAt(t), prev = photoPoseAt(q.since - 0.02), k = ease((t - q.since) / 0.6);
+    const on = !!q.dance, was = !!prev.dance;
+    drawTamaraPhoto(c, { t, beat: beatAt(t), pose: q.pose, prevPose: prev.pose, poseK: ease((t - q.since) / (q.fade || 0.3)),
+      danceAmt: on === was ? (on ? 1 : 0) : (on ? k : 1 - k), open: q.pose === 'sing2' ? tamaraOpen(WORDS, t) : 0, blinkSeed: 0.4 });
     c.restore();
   } else {
     c.save(); c.translate(430, 1010); c.scale(0.9, 0.9);

@@ -43,6 +43,12 @@ python3 .claude/skills/yt-kids-song/scripts/make_photo_puppet.py tamara-referenc
 python3 .claude/skills/yt-kids-song/scripts/build_song.py <song-dir> "<Title>" <bpm> <beat0> photo
 ```
 Poses: `youtube/kids-songs/characters/tamara/` holds Sam's pictures (sing, point, cheer, clap, wave), their cutouts and `poses.json` landmarks; the engine maps each line's pose to a picture and cross-fades in 0.3 s. To add a pose: Sam makes another picture in the same tool (same style, plain cream background, full body), run `make_photo_puppet.py` for the cutout and `make_depth.py` for the depth map, read the landmarks off a gridded face crop, add them to `poses.json` (`split: null` if the mouth is already open), and map it in the engine's `MAP`. Landmarks (feet, neck, chest, `split` = bottom edge of the upper teeth, eyes) are per picture; check mouth close-ups with stills before a render. `build_song.py` embeds the cutout as `tamara-cutout.js` because WebGL refuses file:// textures.
+**Tamara's pose library** (`characters/tamara/`, 19 poses + face variants, all Sam's pictures):
+- `sing2` + `sing2-mid` / `sing2-open` / `sing2-eyes`: the same picture with a half-open mouth, open mouth and closed eyes. Default pose for sung lines: real lip sync (mouth area blended between the three by the sung words) and real blinks.
+- gestures: `book`, `hello`, `point` (up), `pointL`, `pointR`, `shrug`, `think`, `count`, `thumbs`, `cheer`, `clap`, `wave`, `sleep`
+- dance flipbook: `dance1`–`dance8` (from Sam's dance sheet) + `jump`; in choruses and instrumental gaps the engine switches to the next move every 2 beats.
+- Choreography: `photoPoseAt()` in the engine (intro book → hello, sung lines sing2, choruses dance, ending hello → sleep) plus the song's `VIS.photoPose(t, line)` for gestures on matching lyrics (e.g. pointR at the moon on each phase name, then back to sing2).
+- New pose: `add_pose.py <character-dir> <name> <picture>` (cutout, depth map, estimated landmarks). For lip sync/blinks on a new base pose, Sam makes the same picture with mouth half-open, open, and eyes closed; add `variants`, `mouthMask`, `eyeMasks` to poses.json.
    - No photos of real children, no real people.
 5. **Thumbnail** (`yt-thumbnail`, layout `face` with a character cut-out): big topic word + one picture (e.g. 8 moons in a row). Max 3 words.
 6. **Upload** (`yt-publish`): `upload.json` must include `"made_for_kids": true`. Title pattern `The {X} Song | {Learn X} | Kids Learning Songs`. Category 27 (Education).

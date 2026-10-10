@@ -149,6 +149,22 @@
         c.save(); c.font = FONT('700 170px'); c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#2B2768'; c.fillText(String(whole) + (half ? '½' : ''), MX, MY + 50); c.restore();
         label(c, FONT, 'One full cycle!', MX, MY + 275, 58, '#FFD43B'); c.restore(); }
     },
+    photoPose(t, l) { // gestures for the photo puppet (other lines: sing2 with lip sync, choruses: dance flipbook)
+      if (!l) return null;
+      const at = (pose, d) => (t < l.start - 0.25 + d ? { pose, since: l.start - 0.25 } : { pose: 'sing2', since: l.start - 0.25 + d });
+      if (/^Look up/.test(l.text)) return at('point', 2.2);
+      if (/^The moon can't/.test(l.text)) return at('shrug', 2.4);
+      if (/^The sun shines/.test(l.text)) return at('point', 2.0);
+      if (/^(New moon|Waxing crescent|First quarter|Waxing gibbous|Full moon|Waning gibbous|Third quarter|Waning crescent),/.test(l.text) && !/Bridge/.test(l.section)) return at('pointR', 1.8);
+      if (/^Waxing means/.test(l.text)) return { pose: 'cheer', since: l.start - 0.25 };
+      if (/^Waning means/.test(l.text)) return at('think', 2.5);
+      if (/^Can you say/.test(l.text)) return { pose: 'cheer', since: l.start - 0.25 };
+      if (/^New moon, crescent|^Gibbous, quarter/.test(l.text)) return { pose: 'count', since: l.start - 0.25 };
+      if (/^Twenty-nine/.test(l.text)) return at('think', 2.6);
+      if (/^Then it starts/.test(l.text)) return at('thumbs', 2.4);
+      if (/Outro/i.test(l.section)) return { pose: 'hello', since: l.start - 0.25 };
+      return null;
+    },
     pose(t, l) {
       if (!l) return null;
       if (/^(New moon|Waxing crescent|First quarter|Waxing gibbous|Full moon|Waning gibbous|Third quarter|Waning crescent),/.test(l.text) && !/Bridge/.test(l.section)) return { pose: 'point', since: l.start - 0.25 };
