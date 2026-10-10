@@ -54,7 +54,7 @@
     // 3D turn: parallax from the depth map (near parts like the nose and hands move more than the hair behind)
     float dz = texture2D(dep, clamp(p / size, 0.0, 1.0)).r - 0.5;
     float wh2 = smoothstep(520.0, 400.0, p.y);
-    p.x -= (yaw * (1.0 - 0.6 * wh2) + hyaw * wh2) * 22.0 * dz;
+    p.x -= (yaw * (1.0 - 0.6 * wh2) + hyaw * wh2) * 13.0 * dz; // kept small + smooth depth: big shifts tear thin near parts (fingers)
     p.y -= hpitch * wh2 * 14.0 * dz;
     float side = smoothstep(130.0, 230.0, abs(p.x - neck.x));
     p.x -= hair * 10.0 * smoothstep(430.0, 760.0, p.y) * side;   // hair ends swing

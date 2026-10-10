@@ -18,5 +18,5 @@ d = sess.run(None, {sess.get_inputs()[0].name: x})[0][0]
 alpha = np.asarray(im.split()[3].resize((w, h))) > 128
 lo, hi = np.percentile(d[alpha], 2), np.percentile(d[alpha], 98)
 d = np.clip((d - lo) / (hi - lo), 0, 1); d[~alpha] = np.percentile(d[alpha], 5)  # fill the background with a far value so edges move smoothly
-Image.fromarray((d * 255).astype(np.uint8)).resize((W, H), Image.BICUBIC).filter(ImageFilter.GaussianBlur(5)).save(out)
+Image.fromarray((d * 255).astype(np.uint8)).resize((W, H), Image.BICUBIC).filter(ImageFilter.GaussianBlur(14)).save(out)
 print("depth", out)
