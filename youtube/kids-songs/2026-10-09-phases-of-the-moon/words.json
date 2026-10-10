@@ -1,0 +1,2383 @@
+{
+ "matched": 201,
+ "total": 214,
+ "lines": [
+  {
+   "section": "Intro",
+   "text": "Look up, look up, at the sky tonight!",
+   "words": [
+    {
+     "w": "Look",
+     "start": 4.82,
+     "end": 4.82
+    },
+    {
+     "w": "up,",
+     "start": 4.82,
+     "end": 5.2
+    },
+    {
+     "w": "look",
+     "start": 5.78,
+     "end": 5.88
+    },
+    {
+     "w": "up,",
+     "start": 5.88,
+     "end": 6.36
+    },
+    {
+     "w": "at",
+     "start": 6.62,
+     "end": 6.7
+    },
+    {
+     "w": "the",
+     "start": 6.7,
+     "end": 6.98
+    },
+    {
+     "w": "sky",
+     "start": 6.98,
+     "end": 7.64
+    },
+    {
+     "w": "tonight!",
+     "start": 7.64,
+     "end": 8.5
+    }
+   ],
+   "start": 4.82,
+   "end": 8.5
+  },
+  {
+   "section": "Intro",
+   "text": "The moon is changing, shining bright!",
+   "words": [
+    {
+     "w": "The",
+     "start": 9.06,
+     "end": 9.18
+    },
+    {
+     "w": "moon",
+     "start": 9.18,
+     "end": 9.66
+    },
+    {
+     "w": "is",
+     "start": 9.66,
+     "end": 10.24
+    },
+    {
+     "w": "changing,",
+     "start": 10.24,
+     "end": 11.2
+    },
+    {
+     "w": "shining",
+     "start": 12.38,
+     "end": 13.12
+    },
+    {
+     "w": "bright!",
+     "start": 13.12,
+     "end": 13.94
+    }
+   ],
+   "start": 9.06,
+   "end": 13.94
+  },
+  {
+   "section": "Verse 1",
+   "text": "The moon can't make its own light,",
+   "words": [
+    {
+     "w": "The",
+     "start": 16.96,
+     "end": 17.94
+    },
+    {
+     "w": "moon",
+     "start": 17.94,
+     "end": 18.36
+    },
+    {
+     "w": "can't",
+     "start": 18.36,
+     "end": 19.2
+    },
+    {
+     "w": "make",
+     "start": 19.2,
+     "end": 19.34
+    },
+    {
+     "w": "its",
+     "start": 19.34,
+     "end": 19.66
+    },
+    {
+     "w": "own",
+     "start": 19.66,
+     "end": 20.02
+    },
+    {
+     "w": "light,",
+     "start": 20.02,
+     "end": 20.6
+    }
+   ],
+   "start": 16.96,
+   "end": 20.6
+  },
+  {
+   "section": "Verse 1",
+   "text": "The sun shines on it, big and bright!",
+   "words": [
+    {
+     "w": "The",
+     "start": 21.92,
+     "end": 22.24
+    },
+    {
+     "w": "sun",
+     "start": 22.24,
+     "end": 22.56
+    },
+    {
+     "w": "shines",
+     "start": 22.56,
+     "end": 22.88
+    },
+    {
+     "w": "on",
+     "start": 22.88,
+     "end": 23.22
+    },
+    {
+     "w": "it,",
+     "start": 23.22,
+     "end": 23.46
+    },
+    {
+     "w": "big",
+     "start": 23.52,
+     "end": 23.8
+    },
+    {
+     "w": "and",
+     "start": 23.8,
+     "end": 24.38
+    },
+    {
+     "w": "bright!",
+     "start": 24.38,
+     "end": 24.88
+    }
+   ],
+   "start": 21.92,
+   "end": 24.88
+  },
+  {
+   "section": "Verse 1",
+   "text": "As the moon goes round and round,",
+   "words": [
+    {
+     "w": "As",
+     "start": 25.84,
+     "end": 26.4
+    },
+    {
+     "w": "the",
+     "start": 26.4,
+     "end": 26.66
+    },
+    {
+     "w": "moon",
+     "start": 26.66,
+     "end": 27.1
+    },
+    {
+     "w": "goes",
+     "start": 27.1,
+     "end": 27.7
+    },
+    {
+     "w": "round",
+     "start": 27.7,
+     "end": 28.2
+    },
+    {
+     "w": "and",
+     "start": 28.2,
+     "end": 28.4
+    },
+    {
+     "w": "round,",
+     "start": 28.4,
+     "end": 29.22
+    }
+   ],
+   "start": 25.84,
+   "end": 29.22
+  },
+  {
+   "section": "Verse 1",
+   "text": "We see new shapes from the ground!",
+   "words": [
+    {
+     "w": "We",
+     "start": 29.64,
+     "end": 30.4
+    },
+    {
+     "w": "see",
+     "start": 30.4,
+     "end": 30.76
+    },
+    {
+     "w": "new",
+     "start": 30.76,
+     "end": 31.0
+    },
+    {
+     "w": "shapes",
+     "start": 31.0,
+     "end": 31.52
+    },
+    {
+     "w": "from",
+     "start": 31.52,
+     "end": 32.44
+    },
+    {
+     "w": "the",
+     "start": 32.44,
+     "end": 33.2
+    },
+    {
+     "w": "ground!",
+     "start": 33.2,
+     "end": 33.84
+    }
+   ],
+   "start": 29.64,
+   "end": 33.84
+  },
+  {
+   "section": "Chorus",
+   "text": "Phases, phases, phases of the moon!",
+   "words": [
+    {
+     "w": "Phases,",
+     "start": 35.66,
+     "end": 35.84
+    },
+    {
+     "w": "phases,",
+     "start": 36.2,
+     "end": 36.3
+    },
+    {
+     "w": "phases",
+     "start": 36.62,
+     "end": 36.92
+    },
+    {
+     "w": "of",
+     "start": 36.92,
+     "end": 37.32
+    },
+    {
+     "w": "the",
+     "start": 37.32,
+     "end": 37.6
+    },
+    {
+     "w": "moon!",
+     "start": 37.6,
+     "end": 37.96
+    }
+   ],
+   "start": 35.66,
+   "end": 37.96
+  },
+  {
+   "section": "Chorus",
+   "text": "It grows and it shrinks like a big balloon!",
+   "words": [
+    {
+     "w": "It",
+     "start": 38.94,
+     "end": 39.74
+    },
+    {
+     "w": "grows",
+     "start": 39.74,
+     "end": 40.16
+    },
+    {
+     "w": "and",
+     "start": 40.16,
+     "end": 40.58
+    },
+    {
+     "w": "it",
+     "start": 40.58,
+     "end": 40.7
+    },
+    {
+     "w": "shrinks",
+     "start": 40.7,
+     "end": 41.1
+    },
+    {
+     "w": "like",
+     "start": 41.1,
+     "end": 41.34
+    },
+    {
+     "w": "a",
+     "start": 41.34,
+     "end": 41.48
+    },
+    {
+     "w": "big",
+     "start": 41.48,
+     "end": 41.62
+    },
+    {
+     "w": "balloon!",
+     "start": 41.62,
+     "end": 42.3
+    }
+   ],
+   "start": 38.94,
+   "end": 42.3
+  },
+  {
+   "section": "Chorus",
+   "text": "Eight shapes every month, so bright,",
+   "words": [
+    {
+     "w": "Eight",
+     "start": 44.06,
+     "end": 44.36
+    },
+    {
+     "w": "shapes",
+     "start": 44.36,
+     "end": 44.68
+    },
+    {
+     "w": "every",
+     "start": 44.68,
+     "end": 45.18
+    },
+    {
+     "w": "month,",
+     "start": 45.18,
+     "end": 45.54
+    },
+    {
+     "w": "so",
+     "start": 45.68,
+     "end": 46.16
+    },
+    {
+     "w": "bright,",
+     "start": 46.16,
+     "end": 47.26
+    }
+   ],
+   "start": 44.06,
+   "end": 47.26
+  },
+  {
+   "section": "Chorus",
+   "text": "Phases of the moon at night!",
+   "words": [
+    {
+     "w": "Phases",
+     "start": 48.46,
+     "end": 48.94
+    },
+    {
+     "w": "of",
+     "start": 48.94,
+     "end": 49.32
+    },
+    {
+     "w": "the",
+     "start": 49.32,
+     "end": 49.6
+    },
+    {
+     "w": "moon",
+     "start": 49.6,
+     "end": 50.24
+    },
+    {
+     "w": "at",
+     "start": 50.24,
+     "end": 50.62
+    },
+    {
+     "w": "night!",
+     "start": 50.62,
+     "end": 52.18
+    }
+   ],
+   "start": 48.46,
+   "end": 52.18
+  },
+  {
+   "section": "Verse 2",
+   "text": "New moon, dark, it hides from me,",
+   "words": [
+    {
+     "w": "New",
+     "start": 52.28,
+     "end": 53.2
+    },
+    {
+     "w": "moon,",
+     "start": 53.2,
+     "end": 53.76
+    },
+    {
+     "w": "dark,",
+     "start": 54.02,
+     "end": 54.34
+    },
+    {
+     "w": "it",
+     "start": 54.92,
+     "end": 55.0
+    },
+    {
+     "w": "hides",
+     "start": 55.0,
+     "end": 55.4
+    },
+    {
+     "w": "from",
+     "start": 55.4,
+     "end": 55.84
+    },
+    {
+     "w": "me,",
+     "start": 55.84,
+     "end": 56.88
+    }
+   ],
+   "start": 52.28,
+   "end": 56.88
+  },
+  {
+   "section": "Verse 2",
+   "text": "Waxing crescent, a smile I see!",
+   "words": [
+    {
+     "w": "Waxing",
+     "start": 57.32,
+     "end": 58.12
+    },
+    {
+     "w": "crescent,",
+     "start": 58.12,
+     "end": 58.8
+    },
+    {
+     "w": "a",
+     "start": 59.24,
+     "end": 59.32
+    },
+    {
+     "w": "smile",
+     "start": 59.32,
+     "end": 59.76
+    },
+    {
+     "w": "I",
+     "start": 59.76,
+     "end": 60.16
+    },
+    {
+     "w": "see!",
+     "start": 60.16,
+     "end": 60.84
+    }
+   ],
+   "start": 57.32,
+   "end": 60.84
+  },
+  {
+   "section": "Verse 2",
+   "text": "First quarter, half is bright,",
+   "words": [
+    {
+     "w": "First",
+     "start": 62.0,
+     "end": 62.54
+    },
+    {
+     "w": "quarter,",
+     "start": 62.54,
+     "end": 63.18
+    },
+    {
+     "w": "half",
+     "start": 63.78,
+     "end": 64.0
+    },
+    {
+     "w": "is",
+     "start": 64.0,
+     "end": 64.46
+    },
+    {
+     "w": "bright,",
+     "start": 64.46,
+     "end": 64.96
+    }
+   ],
+   "start": 62.0,
+   "end": 64.96
+  },
+  {
+   "section": "Verse 2",
+   "text": "Waxing gibbous, almost full tonight!",
+   "words": [
+    {
+     "w": "Waxing",
+     "start": 65.58,
+     "end": 65.98
+    },
+    {
+     "w": "gibbous,",
+     "start": 65.98,
+     "end": 66.42
+    },
+    {
+     "w": "almost",
+     "start": 66.58,
+     "end": 66.94
+    },
+    {
+     "w": "full",
+     "start": 66.94,
+     "end": 67.44
+    },
+    {
+     "w": "tonight!",
+     "start": 67.44,
+     "end": 68.4
+    }
+   ],
+   "start": 65.58,
+   "end": 68.4
+  },
+  {
+   "section": "Verse 2",
+   "text": "Waxing means it's growing, growing, growing!",
+   "words": [
+    {
+     "w": "Waxing",
+     "start": 69.38,
+     "end": 69.82
+    },
+    {
+     "w": "means",
+     "start": 69.82,
+     "end": 70.06
+    },
+    {
+     "w": "it's",
+     "start": 70.06,
+     "end": 70.36
+    },
+    {
+     "w": "growing,",
+     "start": 70.36,
+     "end": 71.02
+    },
+    {
+     "w": "growing,",
+     "start": 71.44,
+     "end": 72.2
+    },
+    {
+     "w": "growing!",
+     "start": 72.62,
+     "end": 73.82
+    }
+   ],
+   "start": 69.38,
+   "end": 73.82
+  },
+  {
+   "section": "Chorus",
+   "text": "Phases, phases, phases of the moon!",
+   "words": [
+    {
+     "w": "Phases,",
+     "start": 74.75,
+     "end": 75.1
+    },
+    {
+     "w": "phases,",
+     "start": 75.46,
+     "end": 75.6
+    },
+    {
+     "w": "phases",
+     "start": 75.86,
+     "end": 76.16
+    },
+    {
+     "w": "of",
+     "start": 76.16,
+     "end": 76.6
+    },
+    {
+     "w": "the",
+     "start": 76.6,
+     "end": 76.86
+    },
+    {
+     "w": "moon!",
+     "start": 76.86,
+     "end": 77.24
+    }
+   ],
+   "start": 74.75,
+   "end": 77.24
+  },
+  {
+   "section": "Chorus",
+   "text": "It grows and it shrinks like a big balloon!",
+   "words": [
+    {
+     "w": "It",
+     "start": 78.3,
+     "end": 79.0
+    },
+    {
+     "w": "grows",
+     "start": 79.0,
+     "end": 79.44
+    },
+    {
+     "w": "and",
+     "start": 79.44,
+     "end": 79.82
+    },
+    {
+     "w": "it",
+     "start": 79.82,
+     "end": 79.98
+    },
+    {
+     "w": "shrinks",
+     "start": 79.98,
+     "end": 80.34
+    },
+    {
+     "w": "like",
+     "start": 80.34,
+     "end": 80.58
+    },
+    {
+     "w": "a",
+     "start": 80.58,
+     "end": 80.74
+    },
+    {
+     "w": "big",
+     "start": 80.74,
+     "end": 80.92
+    },
+    {
+     "w": "balloon!",
+     "start": 80.92,
+     "end": 81.58
+    }
+   ],
+   "start": 78.3,
+   "end": 81.58
+  },
+  {
+   "section": "Chorus",
+   "text": "Eight shapes every month, so bright,",
+   "words": [
+    {
+     "w": "Eight",
+     "start": 83.36,
+     "end": 83.62
+    },
+    {
+     "w": "shapes",
+     "start": 83.62,
+     "end": 83.94
+    },
+    {
+     "w": "every",
+     "start": 83.94,
+     "end": 84.44
+    },
+    {
+     "w": "month,",
+     "start": 84.44,
+     "end": 84.8
+    },
+    {
+     "w": "so",
+     "start": 84.84,
+     "end": 85.42
+    },
+    {
+     "w": "bright,",
+     "start": 85.42,
+     "end": 86.78
+    }
+   ],
+   "start": 83.36,
+   "end": 86.78
+  },
+  {
+   "section": "Chorus",
+   "text": "Phases of the moon at night!",
+   "words": [
+    {
+     "w": "Phases",
+     "start": 87.8,
+     "end": 88.18
+    },
+    {
+     "w": "of",
+     "start": 88.18,
+     "end": 88.58
+    },
+    {
+     "w": "the",
+     "start": 88.58,
+     "end": 88.82
+    },
+    {
+     "w": "moon",
+     "start": 88.82,
+     "end": 89.38
+    },
+    {
+     "w": "at",
+     "start": 89.38,
+     "end": 89.92
+    },
+    {
+     "w": "night!",
+     "start": 89.92,
+     "end": 90.54
+    }
+   ],
+   "start": 87.8,
+   "end": 90.54
+  },
+  {
+   "section": "Verse 3",
+   "text": "Full moon, a big round ball,",
+   "words": [
+    {
+     "w": "Full",
+     "start": 92.28,
+     "end": 92.68
+    },
+    {
+     "w": "moon,",
+     "start": 92.68,
+     "end": 93.04
+    },
+    {
+     "w": "a",
+     "start": 93.22,
+     "end": 93.28
+    },
+    {
+     "w": "big",
+     "start": 93.28,
+     "end": 93.46
+    },
+    {
+     "w": "round",
+     "start": 93.46,
+     "end": 93.74
+    },
+    {
+     "w": "ball,",
+     "start": 93.74,
+     "end": 94.18
+    }
+   ],
+   "start": 92.28,
+   "end": 94.18
+  },
+  {
+   "section": "Verse 3",
+   "text": "Waning gibbous, getting small,",
+   "words": [
+    {
+     "w": "Waning",
+     "start": 94.74,
+     "end": 94.84
+    },
+    {
+     "w": "gibbous,",
+     "start": 94.84,
+     "end": 95.32
+    },
+    {
+     "w": "getting",
+     "start": 95.42,
+     "end": 95.64
+    },
+    {
+     "w": "small,",
+     "start": 95.64,
+     "end": 96.32
+    }
+   ],
+   "start": 94.74,
+   "end": 96.32
+  },
+  {
+   "section": "Verse 3",
+   "text": "Third quarter, half once more,",
+   "words": [
+    {
+     "w": "Third",
+     "start": 96.82,
+     "end": 97.02
+    },
+    {
+     "w": "quarter,",
+     "start": 97.02,
+     "end": 97.32
+    },
+    {
+     "w": "half",
+     "start": 97.5,
+     "end": 97.74
+    },
+    {
+     "w": "once",
+     "start": 97.74,
+     "end": 98.08
+    },
+    {
+     "w": "more,",
+     "start": 98.08,
+     "end": 98.5
+    }
+   ],
+   "start": 96.82,
+   "end": 98.5
+  },
+  {
+   "section": "Verse 3",
+   "text": "Waning crescent, then dark like before!",
+   "words": [
+    {
+     "w": "Waning",
+     "start": 98.78,
+     "end": 99.0
+    },
+    {
+     "w": "crescent,",
+     "start": 99.0,
+     "end": 99.44
+    },
+    {
+     "w": "then",
+     "start": 99.54,
+     "end": 99.74
+    },
+    {
+     "w": "dark",
+     "start": 99.74,
+     "end": 100.04
+    },
+    {
+     "w": "like",
+     "start": 100.04,
+     "end": 100.18
+    },
+    {
+     "w": "before!",
+     "start": 100.18,
+     "end": 100.64
+    }
+   ],
+   "start": 98.78,
+   "end": 100.64
+  },
+  {
+   "section": "Verse 3",
+   "text": "Waning means it's shrinking, shrinking, shrinking!",
+   "words": [
+    {
+     "w": "Waning",
+     "start": 100.92,
+     "end": 101.24
+    },
+    {
+     "w": "means",
+     "start": 101.24,
+     "end": 101.72
+    },
+    {
+     "w": "it's",
+     "start": 101.72,
+     "end": 102.0
+    },
+    {
+     "w": "shrinking,",
+     "start": 102.0,
+     "end": 102.26
+    },
+    {
+     "w": "shrinking,",
+     "start": 102.38,
+     "end": 102.92
+    },
+    {
+     "w": "shrinking!",
+     "start": 102.92,
+     "end": 103.9
+    }
+   ],
+   "start": 100.92,
+   "end": 103.9
+  },
+  {
+   "section": "Bridge",
+   "text": "Can you say them with me? Let's go!",
+   "words": [
+    {
+     "w": "Can",
+     "start": 104.18,
+     "end": 104.92
+    },
+    {
+     "w": "you",
+     "start": 104.92,
+     "end": 105.18
+    },
+    {
+     "w": "say",
+     "start": 105.18,
+     "end": 105.5
+    },
+    {
+     "w": "them",
+     "start": 105.5,
+     "end": 105.9
+    },
+    {
+     "w": "with",
+     "start": 105.9,
+     "end": 106.24
+    },
+    {
+     "w": "me?",
+     "start": 106.24,
+     "end": 106.66
+    },
+    {
+     "w": "Let's",
+     "start": 106.92,
+     "end": 107.4
+    },
+    {
+     "w": "go!",
+     "start": 107.4,
+     "end": 107.78
+    }
+   ],
+   "start": 104.18,
+   "end": 107.78
+  },
+  {
+   "section": "Bridge",
+   "text": "New moon, crescent, quarter, gibbous, full!",
+   "words": [
+    {
+     "w": "New",
+     "start": 109.4,
+     "end": 109.4
+    },
+    {
+     "w": "moon,",
+     "start": 109.4,
+     "end": 110.02
+    },
+    {
+     "w": "crescent,",
+     "start": 110.28,
+     "end": 110.54
+    },
+    {
+     "w": "quarter,",
+     "start": 110.54,
+     "end": 111.14
+    },
+    {
+     "w": "gibbous,",
+     "start": 111.36,
+     "end": 111.74
+    },
+    {
+     "w": "full!",
+     "start": 111.74,
+     "end": 112.1
+    }
+   ],
+   "start": 109.4,
+   "end": 112.1
+  },
+  {
+   "section": "Bridge",
+   "text": "Gibbous, quarter, crescent, new!",
+   "words": [
+    {
+     "w": "Gibbous,",
+     "start": 113.62,
+     "end": 114.44
+    },
+    {
+     "w": "quarter,",
+     "start": 114.66,
+     "end": 114.88
+    },
+    {
+     "w": "crescent,",
+     "start": 114.88,
+     "end": 115.56
+    },
+    {
+     "w": "new!",
+     "start": 115.96,
+     "end": 116.48
+    }
+   ],
+   "start": 113.62,
+   "end": 116.48
+  },
+  {
+   "section": "Bridge",
+   "text": "Twenty-nine and a half days,",
+   "words": [
+    {
+     "w": "Twenty-nine",
+     "start": 116.5,
+     "end": 117.51
+    },
+    {
+     "w": "and",
+     "start": 118.72,
+     "end": 119.7
+    },
+    {
+     "w": "a",
+     "start": 119.7,
+     "end": 119.92
+    },
+    {
+     "w": "half",
+     "start": 119.92,
+     "end": 120.32
+    },
+    {
+     "w": "days,",
+     "start": 120.32,
+     "end": 121.16
+    }
+   ],
+   "start": 116.5,
+   "end": 121.16
+  },
+  {
+   "section": "Bridge",
+   "text": "Then it starts all over for you!",
+   "words": [
+    {
+     "w": "Then",
+     "start": 121.18,
+     "end": 121.71
+    },
+    {
+     "w": "it",
+     "start": 122.34,
+     "end": 122.5
+    },
+    {
+     "w": "starts",
+     "start": 122.5,
+     "end": 123.0
+    },
+    {
+     "w": "all",
+     "start": 123.0,
+     "end": 123.58
+    },
+    {
+     "w": "over",
+     "start": 123.58,
+     "end": 124.3
+    },
+    {
+     "w": "for",
+     "start": 124.3,
+     "end": 124.8
+    },
+    {
+     "w": "you!",
+     "start": 124.8,
+     "end": 126.22
+    }
+   ],
+   "start": 121.18,
+   "end": 126.22
+  },
+  {
+   "section": "Final Chorus",
+   "text": "Phases, phases, phases of the moon!",
+   "words": [
+    {
+     "w": "Phases,",
+     "start": 127.3,
+     "end": 127.46
+    },
+    {
+     "w": "phases,",
+     "start": 127.82,
+     "end": 127.94
+    },
+    {
+     "w": "phases",
+     "start": 128.24,
+     "end": 128.46
+    },
+    {
+     "w": "of",
+     "start": 128.46,
+     "end": 128.96
+    },
+    {
+     "w": "the",
+     "start": 128.96,
+     "end": 129.2
+    },
+    {
+     "w": "moon!",
+     "start": 129.2,
+     "end": 129.6
+    }
+   ],
+   "start": 127.3,
+   "end": 129.6
+  },
+  {
+   "section": "Final Chorus",
+   "text": "It grows and it shrinks like a big balloon!",
+   "words": [
+    {
+     "w": "It",
+     "start": 130.52,
+     "end": 131.36
+    },
+    {
+     "w": "grows",
+     "start": 131.36,
+     "end": 131.74
+    },
+    {
+     "w": "and",
+     "start": 131.74,
+     "end": 132.18
+    },
+    {
+     "w": "it",
+     "start": 132.18,
+     "end": 132.28
+    },
+    {
+     "w": "shrinks",
+     "start": 132.28,
+     "end": 132.68
+    },
+    {
+     "w": "like",
+     "start": 132.68,
+     "end": 132.94
+    },
+    {
+     "w": "a",
+     "start": 132.94,
+     "end": 133.08
+    },
+    {
+     "w": "big",
+     "start": 133.08,
+     "end": 133.26
+    },
+    {
+     "w": "balloon!",
+     "start": 133.26,
+     "end": 133.92
+    }
+   ],
+   "start": 130.52,
+   "end": 133.92
+  },
+  {
+   "section": "Final Chorus",
+   "text": "Eight shapes every month, so bright,",
+   "words": [
+    {
+     "w": "Eight",
+     "start": 135.9,
+     "end": 136.4
+    },
+    {
+     "w": "shapes",
+     "start": 136.48,
+     "end": 136.98
+    },
+    {
+     "w": "every",
+     "start": 137.07,
+     "end": 137.56
+    },
+    {
+     "w": "month,",
+     "start": 137.65,
+     "end": 138.15
+    },
+    {
+     "w": "so",
+     "start": 138.23,
+     "end": 138.73
+    },
+    {
+     "w": "bright,",
+     "start": 138.82,
+     "end": 139.31
+    }
+   ],
+   "start": 135.9,
+   "end": 139.4,
+   "estimated": true
+  },
+  {
+   "section": "Final Chorus",
+   "text": "Phases of the moon at night!",
+   "words": [
+    {
+     "w": "Phases",
+     "start": 140.4,
+     "end": 140.83
+    },
+    {
+     "w": "of",
+     "start": 140.9,
+     "end": 141.33
+    },
+    {
+     "w": "the",
+     "start": 141.4,
+     "end": 141.83
+    },
+    {
+     "w": "moon",
+     "start": 141.9,
+     "end": 142.33
+    },
+    {
+     "w": "at",
+     "start": 142.4,
+     "end": 142.83
+    },
+    {
+     "w": "night!",
+     "start": 142.9,
+     "end": 143.33
+    }
+   ],
+   "start": 140.4,
+   "end": 143.4,
+   "estimated": true
+  },
+  {
+   "section": "Outro",
+   "text": "See you tomorrow, moon!",
+   "words": [
+    {
+     "w": "See",
+     "start": 145.6,
+     "end": 146.19
+    },
+    {
+     "w": "you",
+     "start": 146.3,
+     "end": 146.9
+    },
+    {
+     "w": "tomorrow,",
+     "start": 147.0,
+     "end": 147.59
+    },
+    {
+     "w": "moon!",
+     "start": 147.7,
+     "end": 148.3
+    }
+   ],
+   "start": 145.6,
+   "end": 148.4,
+   "estimated": true
+  }
+ ],
+ "heard": [
+  [
+   "moon",
+   3.84,
+   4.82
+  ],
+  [
+   "look",
+   4.82,
+   4.82
+  ],
+  [
+   "up",
+   4.82,
+   5.2
+  ],
+  [
+   "look",
+   5.78,
+   5.88
+  ],
+  [
+   "up",
+   5.88,
+   6.36
+  ],
+  [
+   "at",
+   6.62,
+   6.7
+  ],
+  [
+   "the",
+   6.7,
+   6.98
+  ],
+  [
+   "sky",
+   6.98,
+   7.64
+  ],
+  [
+   "tonight",
+   7.64,
+   8.5
+  ],
+  [
+   "the",
+   9.06,
+   9.18
+  ],
+  [
+   "moon",
+   9.18,
+   9.66
+  ],
+  [
+   "is",
+   9.66,
+   10.24
+  ],
+  [
+   "changing",
+   10.24,
+   11.2
+  ],
+  [
+   "shining",
+   12.38,
+   13.12
+  ],
+  [
+   "bright",
+   13.12,
+   13.94
+  ],
+  [
+   "the",
+   16.96,
+   17.94
+  ],
+  [
+   "moon",
+   17.94,
+   18.36
+  ],
+  [
+   "cant",
+   18.36,
+   19.2
+  ],
+  [
+   "make",
+   19.2,
+   19.34
+  ],
+  [
+   "its",
+   19.34,
+   19.66
+  ],
+  [
+   "own",
+   19.66,
+   20.02
+  ],
+  [
+   "light",
+   20.02,
+   20.6
+  ],
+  [
+   "the",
+   21.92,
+   22.24
+  ],
+  [
+   "sun",
+   22.24,
+   22.56
+  ],
+  [
+   "shines",
+   22.56,
+   22.88
+  ],
+  [
+   "on",
+   22.88,
+   23.22
+  ],
+  [
+   "it",
+   23.22,
+   23.46
+  ],
+  [
+   "big",
+   23.52,
+   23.8
+  ],
+  [
+   "and",
+   23.8,
+   24.38
+  ],
+  [
+   "bright",
+   24.38,
+   24.88
+  ],
+  [
+   "as",
+   25.84,
+   26.4
+  ],
+  [
+   "the",
+   26.4,
+   26.66
+  ],
+  [
+   "moon",
+   26.66,
+   27.1
+  ],
+  [
+   "goes",
+   27.1,
+   27.7
+  ],
+  [
+   "round",
+   27.7,
+   28.2
+  ],
+  [
+   "and",
+   28.2,
+   28.4
+  ],
+  [
+   "round",
+   28.4,
+   29.22
+  ],
+  [
+   "we",
+   29.64,
+   30.4
+  ],
+  [
+   "see",
+   30.4,
+   30.76
+  ],
+  [
+   "new",
+   30.76,
+   31.0
+  ],
+  [
+   "shapes",
+   31.0,
+   31.52
+  ],
+  [
+   "from",
+   31.52,
+   32.44
+  ],
+  [
+   "the",
+   32.44,
+   33.2
+  ],
+  [
+   "ground",
+   33.2,
+   33.84
+  ],
+  [
+   "phases",
+   35.66,
+   35.84
+  ],
+  [
+   "phases",
+   36.2,
+   36.3
+  ],
+  [
+   "phases",
+   36.62,
+   36.92
+  ],
+  [
+   "of",
+   36.92,
+   37.32
+  ],
+  [
+   "the",
+   37.32,
+   37.6
+  ],
+  [
+   "moon",
+   37.6,
+   37.96
+  ],
+  [
+   "it",
+   38.94,
+   39.74
+  ],
+  [
+   "grows",
+   39.74,
+   40.16
+  ],
+  [
+   "and",
+   40.16,
+   40.58
+  ],
+  [
+   "it",
+   40.58,
+   40.7
+  ],
+  [
+   "shrinks",
+   40.7,
+   41.1
+  ],
+  [
+   "like",
+   41.1,
+   41.34
+  ],
+  [
+   "a",
+   41.34,
+   41.48
+  ],
+  [
+   "big",
+   41.48,
+   41.62
+  ],
+  [
+   "balloon",
+   41.62,
+   42.3
+  ],
+  [
+   "eight",
+   44.06,
+   44.36
+  ],
+  [
+   "shapes",
+   44.36,
+   44.68
+  ],
+  [
+   "every",
+   44.68,
+   45.18
+  ],
+  [
+   "month",
+   45.18,
+   45.54
+  ],
+  [
+   "so",
+   45.68,
+   46.16
+  ],
+  [
+   "bright",
+   46.16,
+   47.26
+  ],
+  [
+   "phases",
+   48.46,
+   48.94
+  ],
+  [
+   "of",
+   48.94,
+   49.32
+  ],
+  [
+   "the",
+   49.32,
+   49.6
+  ],
+  [
+   "moon",
+   49.6,
+   50.24
+  ],
+  [
+   "at",
+   50.24,
+   50.62
+  ],
+  [
+   "night",
+   50.62,
+   52.18
+  ],
+  [
+   "new",
+   52.28,
+   53.2
+  ],
+  [
+   "moon",
+   53.2,
+   53.76
+  ],
+  [
+   "dark",
+   54.02,
+   54.34
+  ],
+  [
+   "it",
+   54.92,
+   55.0
+  ],
+  [
+   "hides",
+   55.0,
+   55.4
+  ],
+  [
+   "from",
+   55.4,
+   55.84
+  ],
+  [
+   "me",
+   55.84,
+   56.88
+  ],
+  [
+   "waxing",
+   57.32,
+   58.12
+  ],
+  [
+   "crescent",
+   58.12,
+   58.8
+  ],
+  [
+   "a",
+   59.24,
+   59.32
+  ],
+  [
+   "smile",
+   59.32,
+   59.76
+  ],
+  [
+   "i",
+   59.76,
+   60.16
+  ],
+  [
+   "see",
+   60.16,
+   60.84
+  ],
+  [
+   "first",
+   62.0,
+   62.54
+  ],
+  [
+   "quarter",
+   62.54,
+   63.18
+  ],
+  [
+   "half",
+   63.78,
+   64.0
+  ],
+  [
+   "is",
+   64.0,
+   64.46
+  ],
+  [
+   "bright",
+   64.46,
+   64.96
+  ],
+  [
+   "waxing",
+   65.58,
+   65.98
+  ],
+  [
+   "gibbous",
+   65.98,
+   66.42
+  ],
+  [
+   "almost",
+   66.58,
+   66.94
+  ],
+  [
+   "full",
+   66.94,
+   67.44
+  ],
+  [
+   "tonight",
+   67.44,
+   68.4
+  ],
+  [
+   "waxing",
+   69.38,
+   69.82
+  ],
+  [
+   "means",
+   69.82,
+   70.06
+  ],
+  [
+   "its",
+   70.06,
+   70.36
+  ],
+  [
+   "growing",
+   70.36,
+   71.02
+  ],
+  [
+   "growing",
+   71.44,
+   72.2
+  ],
+  [
+   "growing",
+   72.62,
+   73.82
+  ],
+  [
+   "phases",
+   74.75,
+   75.1
+  ],
+  [
+   "phases",
+   75.46,
+   75.6
+  ],
+  [
+   "phases",
+   75.86,
+   76.16
+  ],
+  [
+   "of",
+   76.16,
+   76.6
+  ],
+  [
+   "the",
+   76.6,
+   76.86
+  ],
+  [
+   "moon",
+   76.86,
+   77.24
+  ],
+  [
+   "it",
+   78.3,
+   79.0
+  ],
+  [
+   "grows",
+   79.0,
+   79.44
+  ],
+  [
+   "and",
+   79.44,
+   79.82
+  ],
+  [
+   "it",
+   79.82,
+   79.98
+  ],
+  [
+   "shrinks",
+   79.98,
+   80.34
+  ],
+  [
+   "like",
+   80.34,
+   80.58
+  ],
+  [
+   "a",
+   80.58,
+   80.74
+  ],
+  [
+   "big",
+   80.74,
+   80.92
+  ],
+  [
+   "balloon",
+   80.92,
+   81.58
+  ],
+  [
+   "eight",
+   83.36,
+   83.62
+  ],
+  [
+   "shapes",
+   83.62,
+   83.94
+  ],
+  [
+   "every",
+   83.94,
+   84.44
+  ],
+  [
+   "month",
+   84.44,
+   84.8
+  ],
+  [
+   "so",
+   84.84,
+   85.42
+  ],
+  [
+   "bright",
+   85.42,
+   86.78
+  ],
+  [
+   "phases",
+   87.8,
+   88.18
+  ],
+  [
+   "of",
+   88.18,
+   88.58
+  ],
+  [
+   "the",
+   88.58,
+   88.82
+  ],
+  [
+   "moon",
+   88.82,
+   89.38
+  ],
+  [
+   "at",
+   89.38,
+   89.92
+  ],
+  [
+   "night",
+   89.92,
+   90.54
+  ],
+  [
+   "full",
+   92.28,
+   92.68
+  ],
+  [
+   "moon",
+   92.68,
+   93.04
+  ],
+  [
+   "a",
+   93.22,
+   93.28
+  ],
+  [
+   "big",
+   93.28,
+   93.46
+  ],
+  [
+   "round",
+   93.46,
+   93.74
+  ],
+  [
+   "ball",
+   93.74,
+   94.18
+  ],
+  [
+   "waning",
+   94.74,
+   94.84
+  ],
+  [
+   "gibbous",
+   94.84,
+   95.32
+  ],
+  [
+   "getting",
+   95.42,
+   95.64
+  ],
+  [
+   "small",
+   95.64,
+   96.32
+  ],
+  [
+   "third",
+   96.82,
+   97.02
+  ],
+  [
+   "quarter",
+   97.02,
+   97.32
+  ],
+  [
+   "half",
+   97.5,
+   97.74
+  ],
+  [
+   "once",
+   97.74,
+   98.08
+  ],
+  [
+   "more",
+   98.08,
+   98.5
+  ],
+  [
+   "waning",
+   98.78,
+   99.0
+  ],
+  [
+   "crescent",
+   99.0,
+   99.44
+  ],
+  [
+   "then",
+   99.54,
+   99.74
+  ],
+  [
+   "dark",
+   99.74,
+   100.04
+  ],
+  [
+   "like",
+   100.04,
+   100.18
+  ],
+  [
+   "before",
+   100.18,
+   100.64
+  ],
+  [
+   "waning",
+   100.92,
+   101.24
+  ],
+  [
+   "means",
+   101.24,
+   101.72
+  ],
+  [
+   "its",
+   101.72,
+   102.0
+  ],
+  [
+   "shrinking",
+   102.0,
+   102.26
+  ],
+  [
+   "shrinking",
+   102.38,
+   102.92
+  ],
+  [
+   "shrinking",
+   102.92,
+   103.9
+  ],
+  [
+   "can",
+   104.18,
+   104.92
+  ],
+  [
+   "you",
+   104.92,
+   105.18
+  ],
+  [
+   "say",
+   105.18,
+   105.5
+  ],
+  [
+   "them",
+   105.5,
+   105.9
+  ],
+  [
+   "with",
+   105.9,
+   106.24
+  ],
+  [
+   "me",
+   106.24,
+   106.66
+  ],
+  [
+   "lets",
+   106.92,
+   107.4
+  ],
+  [
+   "go",
+   107.4,
+   107.78
+  ],
+  [
+   "new",
+   109.4,
+   109.4
+  ],
+  [
+   "moon",
+   109.4,
+   110.02
+  ],
+  [
+   "crescent",
+   110.28,
+   110.54
+  ],
+  [
+   "quarter",
+   110.54,
+   111.14
+  ],
+  [
+   "gibbous",
+   111.36,
+   111.74
+  ],
+  [
+   "full",
+   111.74,
+   112.1
+  ],
+  [
+   "gibbous",
+   113.62,
+   114.44
+  ],
+  [
+   "quarter",
+   114.66,
+   114.88
+  ],
+  [
+   "crescent",
+   114.88,
+   115.56
+  ],
+  [
+   "new",
+   115.96,
+   116.48
+  ],
+  [
+   "twenty",
+   117.64,
+   118.06
+  ],
+  [
+   "nine",
+   118.06,
+   118.72
+  ],
+  [
+   "and",
+   118.72,
+   119.7
+  ],
+  [
+   "a",
+   119.7,
+   119.92
+  ],
+  [
+   "half",
+   119.92,
+   120.32
+  ],
+  [
+   "days",
+   120.32,
+   121.16
+  ],
+  [
+   "and",
+   121.92,
+   122.34
+  ],
+  [
+   "it",
+   122.34,
+   122.5
+  ],
+  [
+   "starts",
+   122.5,
+   123.0
+  ],
+  [
+   "all",
+   123.0,
+   123.58
+  ],
+  [
+   "over",
+   123.58,
+   124.3
+  ],
+  [
+   "for",
+   124.3,
+   124.8
+  ],
+  [
+   "you",
+   124.8,
+   126.22
+  ],
+  [
+   "phases",
+   127.3,
+   127.46
+  ],
+  [
+   "phases",
+   127.82,
+   127.94
+  ],
+  [
+   "phases",
+   128.24,
+   128.46
+  ],
+  [
+   "of",
+   128.46,
+   128.96
+  ],
+  [
+   "the",
+   128.96,
+   129.2
+  ],
+  [
+   "moon",
+   129.2,
+   129.6
+  ],
+  [
+   "it",
+   130.52,
+   131.36
+  ],
+  [
+   "grows",
+   131.36,
+   131.74
+  ],
+  [
+   "and",
+   131.74,
+   132.18
+  ],
+  [
+   "it",
+   132.18,
+   132.28
+  ],
+  [
+   "shrinks",
+   132.28,
+   132.68
+  ],
+  [
+   "like",
+   132.68,
+   132.94
+  ],
+  [
+   "a",
+   132.94,
+   133.08
+  ],
+  [
+   "big",
+   133.08,
+   133.26
+  ],
+  [
+   "balloon",
+   133.26,
+   133.92
+  ],
+  [
+   "eight",
+   144.1,
+   144.94
+  ],
+  [
+   "shapes",
+   144.94,
+   145.7
+  ],
+  [
+   "for",
+   145.7,
+   145.98
+  ],
+  [
+   "you",
+   145.98,
+   145.98
+  ],
+  [
+   "tomorrow",
+   145.98,
+   147.6
+  ],
+  [
+   "moon",
+   147.82,
+   149.14
+  ]
+ ]
+}

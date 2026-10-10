@@ -1,0 +1,503 @@
+{
+ "niche": "Body explainers",
+ "date": "2026-10-09",
+ "outliers": [
+  {
+   "id": "J8DGjUv-Vjc",
+   "title": "MINIMALISM: Official Netflix Documentary (Entire Film)",
+   "channel": "The Minimalists",
+   "channel_id": "UCkbFiBwMYMXAqifXF4xo5Uw",
+   "view_count": 17020696,
+   "duration": 4680,
+   "query": "body explained documentary",
+   "subs": 699000,
+   "channel_median": 14000,
+   "outlier": 1215.8,
+   "upload_date": null
+  },
+  {
+   "id": "3Ka7B3hCg08",
+   "title": "What Will Happen to Your Body If You Walk Every Day",
+   "channel": "BRIGHT SIDE",
+   "channel_id": "UC4rlAVgAK0SGk-yTfe48Qpw",
+   "view_count": 20390305,
+   "duration": 609,
+   "query": "what happens to your body if you",
+   "subs": 44500000,
+   "channel_median": 30500.0,
+   "outlier": 668.5,
+   "upload_date": null
+  },
+  {
+   "id": "uBGl2BujkPQ",
+   "title": "Introduction to Anatomy & Physiology: Crash Course Anatomy & Physiology #1",
+   "channel": "CrashCourse",
+   "channel_id": "UCX6b17PVsYBQ0ip5gyeme-Q",
+   "view_count": 13035075,
+   "duration": 680,
+   "query": "body explained documentary",
+   "subs": 17200000,
+   "channel_median": 69000.0,
+   "outlier": 188.9,
+   "upload_date": null
+  },
+  {
+   "id": "yQ6VOOd73MA",
+   "title": "Your Brain: Who's in Control? | Full Documentary | NOVA | PBS",
+   "channel": "NOVA PBS Official",
+   "channel_id": "UCjHz5SVHeMT0AViCYZvsGDA",
+   "view_count": 11421512,
+   "duration": 3213,
+   "query": "body explained documentary",
+   "subs": 1530000,
+   "channel_median": 61000.0,
+   "outlier": 187.2,
+   "upload_date": null
+  },
+  {
+   "id": "EnDQ3LtNaI0",
+   "title": "What Happens to Your Body If You Take Creatine Daily? (Science Explained)",
+   "channel": "Life According to Science",
+   "channel_id": "UCjgcBjK0-FaUx9np7AuM7BQ",
+   "view_count": 377990,
+   "duration": 1143,
+   "query": "what happens to your body if you",
+   "subs": 81100,
+   "channel_median": 2150.0,
+   "outlier": 175.8,
+   "upload_date": null
+  },
+  {
+   "id": "cdkxFXR2esU",
+   "title": "What Happens to Your Body When You Exercise While Fasting? (Fasting Benefits)",
+   "channel": "The Survival Switch",
+   "channel_id": "UC_30V9LuWcqc0SN4C322Hdg",
+   "view_count": 800482,
+   "duration": 881,
+   "query": "what happens to your body when you fast",
+   "subs": 23900,
+   "channel_median": 5400.0,
+   "outlier": 148.2,
+   "upload_date": null
+  },
+  {
+   "id": "t06aTX9jM34",
+   "title": "Decoding the Universe: Quantum | Full Documentary | NOVA | PBS",
+   "channel": "NOVA PBS Official",
+   "channel_id": "UCjHz5SVHeMT0AViCYZvsGDA",
+   "view_count": 8819221,
+   "duration": 3238,
+   "query": "body explained documentary",
+   "subs": 1530000,
+   "channel_median": 61000.0,
+   "outlier": 144.6,
+   "upload_date": null
+  },
+  {
+   "id": "B9C6U9Pb5-U",
+   "title": "What Happens to Your Body When You Quit Sugar for 14 Days | Science Explained",
+   "channel": "Healthy Stickman Science",
+   "channel_id": "UClBbsiboeUTsCraA6wj4wZw",
+   "view_count": 272573,
+   "duration": 1111,
+   "query": "what happens to your body when you stop",
+   "subs": 17800,
+   "channel_median": 2000.0,
+   "outlier": 136.3,
+   "upload_date": null
+  },
+  {
+   "id": "WjfwesuCR3I",
+   "title": "20 Things That Happen to Your Body When You QUIT Drinking ALCOHOL For 30 DAYS  (EP 31)",
+   "channel": "Getting Sober ...Again",
+   "channel_id": "UCsnZf2Il33kY5mST4SD2AwA",
+   "view_count": 1022851,
+   "duration": 1000,
+   "query": "what happens to your body when you stop",
+   "subs": 79300,
+   "channel_median": 9600.0,
+   "outlier": 106.5,
+   "upload_date": null
+  },
+  {
+   "id": "HU6LfXNeQM4",
+   "title": "Your Brain: Perception Deception | Full Documentary | NOVA | PBS",
+   "channel": "NOVA PBS Official",
+   "channel_id": "UCjHz5SVHeMT0AViCYZvsGDA",
+   "view_count": 3235392,
+   "duration": 3213,
+   "query": "body explained documentary",
+   "subs": 1530000,
+   "channel_median": 61000.0,
+   "outlier": 53.0,
+   "upload_date": null
+  },
+  {
+   "id": "vhmtoAYVRSo",
+   "title": "The Truth About Fasting: What Really Happens to Your Body?",
+   "channel": "Dr. Eric Berg DC",
+   "channel_id": "UC3w193M5tYPJqF0Hi-7U-2g",
+   "view_count": 12367108,
+   "duration": 681,
+   "query": "what happens to your body when you fast",
+   "subs": 15000000,
+   "channel_median": 420000.0,
+   "outlier": 29.4,
+   "upload_date": null
+  },
+  {
+   "id": "C65iqOSCZOY",
+   "title": "Explained | World's Water Crisis | FULL EPISODE | Netflix",
+   "channel": "Netflix",
+   "channel_id": "UCWOA1ZGywLbqmigxE4Qlvuw",
+   "view_count": 4983650,
+   "duration": 1123,
+   "query": "body explained documentary",
+   "subs": 33700000,
+   "channel_median": 244500.0,
+   "outlier": 20.4,
+   "upload_date": null
+  },
+  {
+   "id": "DVlhy4-MRtg",
+   "title": "What Happens To Your Body When You Eat Once A Day (Hour By Hour)",
+   "channel": "Think Science",
+   "channel_id": "UCAXvpFXwsm3CyM-fwArWItg",
+   "view_count": 6432585,
+   "duration": 734,
+   "query": "what happens to your body if you",
+   "subs": 242000,
+   "channel_median": 413000,
+   "outlier": 15.6,
+   "upload_date": null
+  },
+  {
+   "id": "gkWByWY3Gdk",
+   "title": "What Happens To Your Body When You Stop Drinking Alcohol",
+   "channel": "The Infographics Show",
+   "channel_id": "UCfdNM3NAhaBOXCafH7krzrA",
+   "view_count": 8532671,
+   "duration": 513,
+   "query": "what happens to your body if you",
+   "subs": 15500000,
+   "channel_median": 578500.0,
+   "outlier": 14.7,
+   "upload_date": null
+  },
+  {
+   "id": "xkVa1LQhb00",
+   "title": "The Wonder of Whales | For Sleep Documentary (No AI Used)",
+   "channel": "Auralis",
+   "channel_id": "UCgGIpjeMg0xxqBT3wkUfvXA",
+   "view_count": 2741762,
+   "duration": 4305,
+   "query": "body explained documentary",
+   "subs": 139000,
+   "channel_median": 204000,
+   "outlier": 13.4,
+   "upload_date": null
+  },
+  {
+   "id": "gfc24OFuEd8",
+   "title": "What Happens To The Body On A 48 Hour Fast! (Reset Your Body) | Dr. Mindy Pelz",
+   "channel": "Dr. Mindy Pelz",
+   "channel_id": "UC4cNjUPc2gQKucX3hLUayYQ",
+   "view_count": 427225,
+   "duration": 807,
+   "query": "what happens to your body when you fast",
+   "subs": 1590000,
+   "channel_median": 36000,
+   "outlier": 11.9,
+   "upload_date": null
+  },
+  {
+   "id": "bOQxOthLSCA",
+   "title": "What Happens When You Quit Alcohol?",
+   "channel": "AsapSCIENCE",
+   "channel_id": "UCC552Sd-3nyi_tk2BudLUzA",
+   "view_count": 4559083,
+   "duration": 584,
+   "query": "what happens to your body when you stop",
+   "subs": 10800000,
+   "channel_median": 410000.0,
+   "outlier": 11.1,
+   "upload_date": null
+  },
+  {
+   "id": "14zW15bJkuU",
+   "title": "What Happens to Your Body While Fasting",
+   "channel": "Gravity Transformation - Fat Loss Experts",
+   "channel_id": "UC0CRYvGlWGlsGxBNgvkUbAg",
+   "view_count": 2151385,
+   "duration": 729,
+   "query": "what happens to your body when you fast",
+   "subs": 5910000,
+   "channel_median": 215000.0,
+   "outlier": 10.0,
+   "upload_date": null
+  },
+  {
+   "id": "MbuzrFb7spw",
+   "title": "How Not Sleeping Actually Kills You",
+   "channel": "SciShow",
+   "channel_id": "UCZYTClx2T1of7BRZ86-8fow",
+   "view_count": 1515583,
+   "duration": 718,
+   "query": "what happens if you dont sleep",
+   "subs": 8420000,
+   "channel_median": 221000.0,
+   "outlier": 6.9,
+   "upload_date": null
+  },
+  {
+   "id": "9Xp8lyxpw9c",
+   "title": "What Happens To Your Body When You Don't Eat (Fast)",
+   "channel": "The Infographics Show",
+   "channel_id": "UCfdNM3NAhaBOXCafH7krzrA",
+   "view_count": 3675874,
+   "duration": 542,
+   "query": "what happens to your body if you",
+   "subs": 15500000,
+   "channel_median": 578500.0,
+   "outlier": 6.4,
+   "upload_date": null
+  }
+ ],
+ "phrases": {
+  "what happens to your body if you fast for 24 hours": "what happens to your body if you",
+  "what happens to your body if you don't eat": "what happens to your body if you",
+  "what happens to your body if you do 100 pushups a day": "what happens to your body if you",
+  "what happens to your body if you eat honey everyday": "what happens to your body if you",
+  "what happens to your body if you stop eating sugar": "what happens to your body if you",
+  "what happens to your body if you don't drink water": "what happens to your body if you",
+  "what happens to your body if you eat turmeric for 30 days": "what happens to your body if you",
+  "what happens to your body if you only eat one meal a day": "what happens to your body if you",
+  "what happens to your body if you run a mile everyday": "what happens to your body if you",
+  "what happens to your body if you only drink water": "what happens to your body if you",
+  "what happens to your body when you stop drinking alcohol": "what happens to your body when you stop",
+  "what happens to your body when you stop smoking": "what happens to your body when you stop",
+  "what happens to your body when you stop eating sugar": "what happens to your body when you stop",
+  "what happens to your body when you stop vaping": "what happens to your body when you stop",
+  "what happens to your body when you stop drinking soda": "what happens to your body when you stop",
+  "what happens to your body when you stop drinking": "what happens to your body when you stop",
+  "what happens to your body when you stop drinking coffee": "what happens to your body when you stop",
+  "what happens to your body when you stop eating": "what happens to your body when you stop",
+  "what happens to your body when you stop eating meat": "what happens to your body when you stop",
+  "what happens to your body when you stop drinking energy drinks": "what happens to your body when you stop",
+  "what happens if you don't sleep": "what happens if you dont sleep",
+  "what happens if you don't sleep for a day": "what happens if you dont sleep",
+  "what happens if you don't sleep enough": "what happens if you dont sleep",
+  "what happens if you don't sleep for 3 days": "what happens if you dont sleep",
+  "what happens if you don't sleep for 2 days": "what happens if you dont sleep",
+  "what happens if you don't sleep well": "what happens if you dont sleep",
+  "what happens if you don't sleep for a week": "what happens if you dont sleep",
+  "what happens if you don't sleep much": "what happens if you dont sleep",
+  "what happens if you don't sleep for 7 days": "what happens if you dont sleep",
+  "what happens if you don't sleep for one day": "what happens if you dont sleep",
+  "what happens to your body when you fast": "what happens to your body when you fast",
+  "what happens to your body when you fast for 3 days": "what happens to your body when you fast",
+  "what happens to your body when you fast for 24 hours": "what happens to your body when you fast",
+  "what happens to your body when you fast for 72 hours": "what happens to your body when you fast",
+  "what happens to your body when you fast for 16 hours": "what happens to your body when you fast",
+  "what happens to your body when you fast for 30 days": "what happens to your body when you fast",
+  "what happens to your body when you fast for 18 hours": "what happens to your body when you fast",
+  "what happens to your body when you fast animation": "what happens to your body when you fast",
+  "what happens to your body when you fast 21 days": "what happens to your body when you fast",
+  "what happens to your body when you fast for 100 hours": "what happens to your body when you fast",
+  "what happens to your body when u fast": "what happens to your body when you fast",
+  "body movie explained in hindi": "body explained documentary",
+  "body movie explained": "body explained documentary"
+ },
+ "candidates": [
+  {
+   "topic": "stop eating bread",
+   "query": "what happens to your body if you stop eating bread",
+   "top_views": 6149239,
+   "videos_100k_plus": 1,
+   "autocomplete": [
+    "stop eating bread",
+    "stop eating bread for 30 days",
+    "stop eating bread to lose weight",
+    "stop eating bread and sugar"
+   ],
+   "opportunity": 15.0
+  },
+  {
+   "topic": "do 100 pushups a day",
+   "query": "what happens to your body if you do 100 pushups a day",
+   "top_views": 5246033,
+   "videos_100k_plus": 1,
+   "autocomplete": [
+    "do 100 pushups a day",
+    "do 100 pushups a day life changing",
+    "does 100 push ups a day work",
+    "doing 100 pushups a day for 1 year"
+   ],
+   "opportunity": 15.0
+  },
+  {
+   "topic": "eat bananas every day",
+   "query": "what happens to your body if you eat bananas every day",
+   "top_views": 1635541,
+   "videos_100k_plus": 1,
+   "autocomplete": [
+    "eat bananas every day",
+    "eat 3 bananas a day",
+    "eat 2 bananas a day",
+    "eating 10 bananas a day"
+   ],
+   "opportunity": 13.2
+  },
+  {
+   "topic": "sleep 5 hours",
+   "query": "what happens to your body if you sleep 5 hours",
+   "top_views": 102,
+   "videos_100k_plus": 0,
+   "autocomplete": [
+    "sleep 5 hours",
+    "sleep 5 hours a day",
+    "sleep 5 hours music",
+    "sleeping 5 hours a day is enough"
+   ],
+   "opportunity": 10.0
+  },
+  {
+   "topic": "drink only water",
+   "query": "what happens to your body if you drink only water",
+   "top_views": 2578393,
+   "videos_100k_plus": 2,
+   "autocomplete": [
+    "drink only water",
+    "drink only water for 30 days",
+    "only drink water when you're thirsty",
+    "hajmola drink only water"
+   ],
+   "opportunity": 10.0
+  },
+  {
+   "topic": "stop using your phone",
+   "query": "what happens to your body if you stop using your phone",
+   "top_views": 3536074,
+   "videos_100k_plus": 2,
+   "autocomplete": [
+    "stop using your phone",
+    "stop using your phone motivation",
+    "stop using the phone",
+    "how to stop using your phone so much"
+   ],
+   "opportunity": 10.0
+  },
+  {
+   "topic": "skip breakfast",
+   "query": "what happens to your body if you skip breakfast",
+   "top_views": 819437,
+   "videos_100k_plus": 1,
+   "autocomplete": [
+    "skip breakfast",
+    "skip breakfast or dinner for intermittent fasting",
+    "skip breakfast or not",
+    "skip breakfast diabetes"
+   ],
+   "opportunity": 9.1
+  },
+  {
+   "topic": "stop eating sugar",
+   "query": "what happens to your body if you stop eating sugar",
+   "top_views": 16565623,
+   "videos_100k_plus": 3,
+   "autocomplete": [
+    "stop eating sugar",
+    "stop eating sugar for 30 days",
+    "stop eating sugar hypnosis",
+    "stop eating sugar subliminal"
+   ],
+   "opportunity": 7.5
+  },
+  {
+   "topic": "eat eggs every day",
+   "query": "what happens to your body if you eat eggs every day",
+   "top_views": 8884714,
+   "videos_100k_plus": 3,
+   "autocomplete": [
+    "eat eggs every day",
+    "eating eggs all day",
+    "eating eggs a day",
+    "eat one egg every day"
+   ],
+   "opportunity": 7.5
+  },
+  {
+   "topic": "walk every day",
+   "query": "what happens to your body if you walk every day",
+   "top_views": 20390312,
+   "videos_100k_plus": 4,
+   "autocomplete": [
+    "walk every day",
+    "walk everyday to lose weight",
+    "walk everyday for a month",
+    "walk everyday results"
+   ],
+   "opportunity": 6.0
+  },
+  {
+   "topic": "sit all day",
+   "query": "what happens to your body if you sit all day",
+   "top_views": 641382,
+   "videos_100k_plus": 2,
+   "autocomplete": [
+    "sit all day",
+    "sit all day stretches",
+    "sitting all day is killing you",
+    "sitting all day exercises"
+   ],
+   "opportunity": 5.5
+  },
+  {
+   "topic": "stop drinking coffee",
+   "query": "what happens to your body if you stop drinking coffee",
+   "top_views": 2883321,
+   "videos_100k_plus": 5,
+   "autocomplete": [
+    "stop drinking coffee",
+    "stop drinking coffee for breakfast",
+    "stop drinking coffee for 30 days",
+    "stop drinking coffee and start eating this instead"
+   ],
+   "opportunity": 5.0
+  },
+  {
+   "topic": "take cold showers",
+   "query": "what happens to your body if you take cold showers",
+   "top_views": 17646176,
+   "videos_100k_plus": 5,
+   "autocomplete": [
+    "take cold showers",
+    "take cold showers everyday",
+    "taking cold showers for 30 days",
+    "taking cold showers in winter"
+   ],
+   "opportunity": 5.0
+  },
+  {
+   "topic": "stop drinking alcohol",
+   "query": "what happens to your body if you stop drinking alcohol",
+   "top_views": 8532671,
+   "videos_100k_plus": 8,
+   "autocomplete": [
+    "stop drinking alcohol",
+    "stop drinking alcohol subliminal",
+    "stop drinking alcohol motivation",
+    "stop drinking alcohol frequency"
+   ],
+   "opportunity": 3.3
+  },
+  {
+   "topic": "fast for 3 days",
+   "query": "what happens to your body if you fast for 3 days",
+   "top_views": 12367108,
+   "videos_100k_plus": 5,
+   "autocomplete": [],
+   "opportunity": 3.3
+  }
+ ]
+}

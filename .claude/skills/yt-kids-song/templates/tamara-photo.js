@@ -1,0 +1,163 @@
+// Tamara as a photo puppet: animates Sam's own reference picture (Pixar-style render) for free, on CPU.
+// v2: a smooth WebGL warp of the whole picture (no cut-out pieces, so no seams):
+//   - rigid sway around planted feet (no shear, so she never looks stretched), a small hop on the beat, breathing
+//   - 3D turns of body and head from a depth map (Depth Anything V2, make_depth.py): near parts move more than far ones
+//   - head tilt that fades out through the neck, hair ends that swing a moment behind the body
+//   - lips that part while singing (opening tapers into the mouth corners, lower lip/chin stretch smoothly)
+//   - blinks that pull real eyelid skin down over the eye
+//   - many pose pictures (poses.json), cross-faded when the pose changes; a pose with `variants` (same picture with
+//     a half-open mouth, open mouth and closed eyes) gets real lip sync and real blinks by blending those faces in
+// Pose pictures + landmarks live in youtube/kids-songs/characters/tamara/ (poses.json). build_song.py embeds the
+// cutouts as tamara-cutout.js (window.TAMARA_POSES with data URLs), because WebGL refuses file:// textures.
+//
+// drawTamaraPhoto(ctx, opts) draws her with the feet's bottom-centre at (0,0) in source-image pixels.
+// opts: { t, beat, pose, prevPose, poseK (0..1 cross-fade into pose), danceAmt (0..1), open (0..1 mouth), blinkSeed }
+(function () {
+  const POSES = window.TAMARA_POSES || {}; // name -> {src, feet, neck, chest, split|null, eyes}
+  const PAD = [140, 70];
+  const VS = 'attribute vec2 a; varying vec2 uv; void main(){ uv = a * 0.5 + 0.5; gl_Position = vec4(a, 0.0, 1.0); }';
+  const FS = `precision highp float;
+  uniform sampler2D tex, dep, texMid, texOpen, texEyes; uniform vec4 mouthM, eyeM1, eyeM2; uniform float hasVar; uniform vec2 size, pad, feet, neck, chest; uniform vec3 sp0, sp1, sp2;
+  uniform vec4 eyeA, eyeB; uniform float rotA, rotB;
+  uniform float sway, lift, tilt, breath, hair, mouth, blink, hasMouth, yaw, hyaw, hpitch;
+  varying vec2 uv;
+  vec4 S(vec2 p) { if (p.x < 0.0 || p.y < 0.0 || p.x > size.x || p.y > size.y) return vec4(0.0); return texture2D(tex, p / size); }
+  float splitY(float x) { // smooth curve through the three split points
+    float t = clamp((x - sp0.x) / (sp2.x - sp0.x), 0.0, 1.0);
+    float c = sp1.y - 0.5 * (sp0.y + sp2.y);
+    return mix(sp0.y, sp2.y, t) + c * (1.0 - pow(2.0 * t - 1.0, 2.0));
+  }
+  vec4 eyelid(vec2 p, vec4 e, float r, vec4 col) {
+    vec2 d = p - e.xy; float cs = cos(-r), sn = sin(-r); vec2 l = vec2(cs * d.x - sn * d.y, sn * d.x + cs * d.y);
+    float inside = (l.x * l.x) / (e.z * e.z * 1.25) + (l.y * l.y) / (e.w * e.w * 1.3);
+    if (inside > 1.0 || blink <= 0.02) return col;
+    float edge = -e.w * 1.15 + 2.3 * e.w * blink;               // lid edge moves down as the eye closes
+    float k = smoothstep(edge + 1.5, edge - 1.5, l.y) * smoothstep(1.0, 0.75, inside);
+    vec2 sl = vec2(l.x * 0.92, -e.w * 1.25 - 8.0 - (edge - l.y) * 0.25); // skin just above the lashes
+    vec2 s = e.xy + vec2(cos(r) * sl.x - sin(r) * sl.y, sin(r) * sl.x + cos(r) * sl.y);
+    vec4 skin = S(s);
+    col = mix(col, vec4(skin.rgb * (0.94 + 0.06 * clamp((l.y - edge) / e.w + 1.0, 0.0, 1.0)), 1.0), k);
+    float lash = smoothstep(3.2, 0.8, abs(l.y - edge)) * smoothstep(1.0, 0.7, inside) * step(0.15, blink);
+    return mix(col, vec4(0.12, 0.07, 0.05, 1.0), lash * 0.9);
+  }
+  void main() {
+    vec2 q = vec2(uv.x * (size.x + 2.0 * pad.x), (1.0 - uv.y) * (size.y + 2.0 * pad.y)) - pad;
+    vec2 p = q;
+    p.y += lift;                                                 // tiny hop (whole body, no squash)
+    vec2 df = p - feet; float sr = -sway, cs0 = cos(sr), sn0 = sin(sr);
+    p = feet + vec2(cs0 * df.x - sn0 * df.y, sn0 * df.x + cs0 * df.y); // rigid sway around the feet: proportions never change
+    vec2 dc = p - chest; float wc = exp(-dot(dc, dc) / (2.0 * 170.0 * 170.0));
+    p = chest + dc / (1.0 + breath * 0.010 * wc);                // breathing
+    float wh = smoothstep(520.0, 400.0, p.y);                    // head + top of hair, fading through the neck
+    vec2 dn = p - neck; float a = -tilt * wh, ca = cos(a), sa = sin(a);
+    p = neck + vec2(ca * dn.x - sa * dn.y, sa * dn.x + ca * dn.y);
+    // 3D turn: parallax from the depth map (near parts like the nose and hands move more than the hair behind)
+    float dz = texture2D(dep, clamp(p / size, 0.0, 1.0)).r - 0.5;
+    float wh2 = smoothstep(520.0, 400.0, p.y);
+    p.x -= (yaw * (1.0 - 0.6 * wh2) + hyaw * wh2) * 13.0 * dz; // kept small + smooth depth: big shifts tear thin near parts (fingers)
+    p.y -= hpitch * wh2 * 14.0 * dz;
+    float side = smoothstep(130.0, 230.0, abs(p.x - neck.x));
+    p.x -= hair * 10.0 * smoothstep(430.0, 760.0, p.y) * side;   // hair ends swing
+    // mouth: lower lip / chin slide down, the gap shows the inside of the mouth
+    float sy = splitY(p.x), d = p.y - sy;
+    float wx = 1.0 - smoothstep(26.0, 56.0, abs(p.x - sp1.x));
+    float wy = 1.0 - smoothstep(14.0, 95.0, d);
+    float disp = hasMouth * mouth * 9.0 * wx * wy * step(-2.0, d);
+    vec2 src = vec2(p.x, p.y - disp);
+    vec4 col = S(src);
+    float gap = src.y - splitY(src.x);
+    if (disp > 0.3 && d >= -1.0 && gap < 0.0) {
+      float depth = clamp(-gap / max(disp, 0.001), 0.0, 1.0);
+      vec3 inner = mix(vec3(0.42, 0.12, 0.13), vec3(0.24, 0.05, 0.07), smoothstep(0.0, 0.6, depth));
+      inner = mix(inner, vec3(0.80, 0.38, 0.42), smoothstep(0.55, 0.15, depth) * 0.6 * step(0.5, mouth)); // tongue near the lower lip
+      float soft = smoothstep(0.0, 1.5, -gap) * smoothstep(0.0, 0.4, wx);
+      col = mix(col, vec4(inner, 1.0), soft);
+    }
+    if (hasVar > 0.5) { // real mouth + eyes from Sam's matching pictures (same pose, different face)
+      vec2 uq = clamp(src / size, 0.0, 1.0);
+      float wm = 1.0 - smoothstep(0.7, 1.0, length((src - mouthM.xy) / mouthM.zw));
+      vec4 vmid = texture2D(texMid, uq), vop = texture2D(texOpen, uq);
+      vec4 v = mouth < 0.5 ? mix(col, vmid, mouth * 2.0) : mix(vmid, vop, mouth * 2.0 - 1.0);
+      col = mix(col, v, wm);
+      float we = max(1.0 - smoothstep(0.65, 1.0, length((src - eyeM1.xy) / eyeM1.zw)), 1.0 - smoothstep(0.65, 1.0, length((src - eyeM2.xy) / eyeM2.zw)));
+      col = mix(col, texture2D(texEyes, uq), we * smoothstep(0.15, 0.7, blink));
+    }
+    col = eyelid(p, eyeA, rotA, col);
+    col = eyelid(p, eyeB, rotB, col);
+    gl_FragColor = col;
+  }`;
+
+  let gl, prog, cv, U = {};
+  const loadImg = src => new Promise(r => { const im = new Image(); im.onload = () => r(im); im.onerror = () => r(null); im.src = src; });
+  window.tamaraPhotoReady = Promise.all(Object.entries(POSES).map(([n, p]) => Promise.all([loadImg(p.src), p.depth ? loadImg(p.depth) : null, ...['mid', 'open', 'eyes'].map(k => p.variants && p.variants[k] ? loadImg(p.variants[k]) : null)]).then(([img, dimg, vm, vo, ve]) => [n, img, dimg, vm, vo, ve]))).then(list => {
+    list = list.filter(x => x[1]); if (!list.length) return;
+    const W = Math.max(...list.map(x => x[1].width)), H = Math.max(...list.map(x => x[1].height));
+    cv = document.createElement('canvas'); cv.width = W + 2 * PAD[0]; cv.height = H + 2 * PAD[1];
+    gl = cv.getContext('webgl', { premultipliedAlpha: false, preserveDrawingBuffer: true, alpha: true });
+    const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; };
+    prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog); gl.useProgram(prog);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    'size pad feet neck chest sp0 sp1 sp2 eyeA eyeB rotA rotB sway lift tilt breath hair mouth blink hasMouth yaw hyaw hpitch tex dep texMid texOpen texEyes mouthM eyeM1 eyeM2 hasVar'.split(' ').forEach(n => U[n] = gl.getUniformLocation(prog, n));
+    const mkTex = img => { const tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER].forEach(f => gl.texParameteri(gl.TEXTURE_2D, f, gl.LINEAR));
+      [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(f => gl.texParameteri(gl.TEXTURE_2D, f, gl.CLAMP_TO_EDGE)); return tx; };
+    let flat = null;
+    list.forEach(([n, img, dimg, vm, vo, ve]) => { POSES[n].tex = mkTex(img);
+      if (vm && vo && ve) POSES[n].vtex = [mkTex(vm), mkTex(vo), mkTex(ve)];
+      if (!dimg) { if (!flat) { const f = document.createElement('canvas'); f.width = f.height = 2; const x = f.getContext('2d'); x.fillStyle = '#808080'; x.fillRect(0, 0, 2, 2); flat = mkTex(f); } }
+      POSES[n].dtex = dimg ? mkTex(dimg) : flat; POSES[n].w = img.width; POSES[n].h = img.height; });
+    gl.uniform1i(U.tex, 0); gl.uniform1i(U.dep, 1); gl.uniform1i(U.texMid, 2); gl.uniform1i(U.texOpen, 3); gl.uniform1i(U.texEyes, 4);
+    gl.uniform2f(U.pad, PAD[0], PAD[1]); gl.viewport(0, 0, cv.width, cv.height);
+  });
+
+  function renderPose(P, m) { // warp one pose picture into the GL canvas
+    if (P.vtex) P.vtex.forEach((tx, i) => { gl.activeTexture(gl.TEXTURE2 + i); gl.bindTexture(gl.TEXTURE_2D, tx); });
+    gl.uniform1f(U.hasVar, P.vtex ? 1 : 0);
+    if (P.vtex) { gl.uniform4f(U.mouthM, ...P.mouthMask); gl.uniform4f(U.eyeM1, ...P.eyeMasks[0]); gl.uniform4f(U.eyeM2, ...P.eyeMasks[1]); }
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, P.dtex);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, P.tex);
+    gl.uniform2f(U.size, P.w, P.h); gl.uniform2f(U.feet, ...P.feet); gl.uniform2f(U.neck, ...P.neck); gl.uniform2f(U.chest, ...P.chest);
+    const sp = P.split || [[0, 0], [1, 0], [2, 0]]; sp.forEach((s, i) => gl.uniform3f(U['sp' + i], s[0], s[1], 0));
+    gl.uniform1f(U.hasMouth, P.split ? 1 : 0);
+    const E = P.eyes || [[-9999, -9999, 1, 1, 0], [-9999, -9999, 1, 1, 0]]; // no drawn eyelids (no landmarks, or real blink pictures)
+    gl.uniform4f(U.eyeA, ...E[0].slice(0, 4)); gl.uniform1f(U.rotA, E[0][4]);
+    gl.uniform4f(U.eyeB, ...E[1].slice(0, 4)); gl.uniform1f(U.rotB, E[1][4]);
+    Object.entries(m).forEach(([k, v]) => gl.uniform1f(U[k], v));
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+
+  window.drawTamaraPhoto = function (c, o) {
+    if (!cv) return;
+    const pick = n => POSES[n] && POSES[n].tex ? POSES[n] : (POSES.sing2 && POSES.sing2.tex ? POSES.sing2 : POSES.sing);
+    const t = o.t || 0, bph = (o.beat || 0) * Math.PI, D = o.danceAmt || 0, I = 1 - D;
+    const bp = (t + (o.blinkSeed || 0)) % 3.9, blink = bp < 0.18 ? Math.sin(bp / 0.18 * Math.PI) : 0;
+    const m = {
+      sway: D * 0.022 * Math.sin(bph) + I * 0.008 * Math.sin(t * 0.8),            // radians, rigid
+      lift: D * 7 * Math.pow(Math.abs(Math.sin(bph)), 2),                          // px hop on the beat
+      tilt: D * 0.03 * Math.sin(bph * 0.5 + 0.6) + I * (0.02 * Math.sin(t * 1.1) + 0.008 * Math.sin(t * 2.3)),
+      yaw: D * 0.8 * Math.sin(bph * 0.5) + I * 0.5 * Math.sin(t * 0.55),         // body turns left/right (3D)
+      hyaw: D * 1.0 * Math.sin(bph * 0.5 + 0.4) + I * 0.9 * Math.sin(t * 0.7 + 1.0), // head turns a little more
+      hpitch: I * 0.5 * Math.sin(t * 1.3) + D * 0.6 * Math.sin(bph),               // gentle nod
+      hair: D * Math.sin(bph - 0.9) + I * 0.35 * Math.sin(t * 0.8 - 0.9),
+      breath: 0.5 + 0.5 * Math.sin(t * 1.7), mouth: o.open || 0, blink: Math.min(1, blink * 1.15),
+    };
+    c.save();
+    c.fillStyle = 'rgba(0,0,0,0.25)'; c.beginPath(); c.ellipse(0, 0, 230 - m.lift * 2, 34, 0, 0, Math.PI * 2); c.fill();
+    const k = o.poseK ?? 1, cur = pick(o.pose), prev = pick(o.prevPose);
+    const layers = k < 1 && prev !== cur ? [[prev, 1 - k], [cur, k]] : [[cur, 1]];
+    for (const [P, alpha] of layers) {
+      renderPose(P, m);
+      c.globalAlpha = alpha; c.drawImage(cv, -P.feet[0] - PAD[0], -P.feet[1] - PAD[1]);
+    }
+    c.restore();
+  };
+
+  // Smoothed mouth opening from the sung words: average of the last few frames, so the lips don't flicker.
+  const OPEN = { X: 0, A: 0.1, B: 0.45, C: 0.75, D: 1, E: 0.8, F: 0.4 };
+  window.tamaraOpen = function (words, t) {
+    let s = 0; for (let i = 0; i < 4; i++) s += OPEN[tamaraMouth(words, t - i / 30)] ?? 0; return s / 4;
+  };
+})();

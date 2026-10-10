@@ -1,0 +1,62 @@
+{
+ "name": "Kids learning songs (ages 4-8, school topics)",
+ "channel": "Little Miss Tamara (new channel)",
+ "slug": "kids-songs",
+ "channel_url": null,
+ "notion_channel": "Kids learning songs",
+ "queries": [
+  "learning songs for kids",
+  "educational songs for toddlers",
+  "nursery rhymes new",
+  "science songs for kids",
+  "counting song for kids"
+ ],
+ "candidate_template": "{} song for kids",
+ "candidates": [
+  "life cycle of a butterfly",
+  "life cycle of a frog",
+  "water cycle",
+  "continents",
+  "skip counting by 5",
+  "skip counting by 3",
+  "parts of a plant",
+  "states of matter",
+  "solar system",
+  "phases of the moon",
+  "food chain",
+  "place value",
+  "telling time",
+  "money coins",
+  "nouns and verbs",
+  "vowels",
+  "rhyming words",
+  "five senses",
+  "weather",
+  "volcano"
+ ],
+ "min_duration": 60,
+ "format": {
+  "length_min": 2,
+  "length_max": 4,
+  "compilation": "every 4 songs \u2192 a 30\u201360 min compilation (watch hours come from compilations)",
+  "title": "The {X} Song | Learn {X} | Kids Learning Songs",
+  "style": "bright cartoon lyric video: recurring characters, big on-screen words that light up as they're sung, one teaching idea per verse, repeated chorus",
+  "song": "lyrics by yt-kids-song; music + vocals made in Suno (paid plan) from the lyrics and style prompt",
+  "presenter": "tamara",
+  "brand": {
+   "name": "LITTLE MISS TAMARA",
+   "initial": "T",
+   "display": "Little Miss Tamara"
+  },
+  "thumbnail": {
+   "layout": "face",
+   "colors": {
+    "accent": "#FFD43B",
+    "alert": "#FF6B6B"
+   }
+  }
+ },
+ "made_for_kids": true,
+ "rpm_notes": "Made for Kids: no personalised ads, so RPM is low (often under $1-2). Wins on volume and watch hours (compilations, replays). No comments, no end screens/cards, no notification bell. Revenue upside: streaming the songs (Spotify/Apple via a distributor) and merch.",
+ "cadence": "2 songs per week (Wed, Sat 14:00 UTC) + 1 compilation every 2 weeks"
+}

@@ -1,0 +1,50 @@
+{
+ "name": "AI tools for business",
+ "slug": "grow-success-online",
+ "channel_url": "https://www.youtube.com/@growsuccess-online",
+ "notion_channel": "AI tools for business",
+ "queries": [
+  "ai automation for small business",
+  "ai tools for small business",
+  "ai for business owners",
+  "ai workflow automation",
+  "ai agents for business"
+ ],
+ "candidate_template": "{} for small business",
+ "candidates": [
+  "AI receptionist",
+  "AI chatbot",
+  "AI bookkeeping",
+  "AI email marketing",
+  "AI lead generation",
+  "AI scheduling",
+  "AI customer service",
+  "AI content creation",
+  "AI sales follow up",
+  "AI invoicing",
+  "AI social media",
+  "AI proposals"
+ ],
+ "min_duration": 480,
+ "format": {
+  "length_min": 15,
+  "length_max": 20,
+  "title": "{N} {Problems|Ways|Tools} AI {verb} for Small Businesses (Step by Step)",
+  "style": "how-to explainer: problem -> cost -> fix -> tools -> setup steps -> worked example -> mistake to avoid; Gia presents",
+  "voice": "af_heart",
+  "speed": 0.93,
+  "music": "lofi-business-85bpm.mp3",
+  "presenter": true,
+  "brand": {
+   "name": "GROW SUCCESS ONLINE",
+   "initial": "G",
+   "display": "Grow Success Online"
+  },
+  "chapterLabel": "PROBLEM",
+  "thumbnail": {
+   "layout": "combo"
+  }
+ },
+ "cadence": "2 per week (Mon, Thu 15:00 UTC)",
+ "rpm_notes": "Software/business advertisers. Each video ends with the agency offer in the description (free audit link). Name tools accurately; no paid promotion unless disclosed."
+}

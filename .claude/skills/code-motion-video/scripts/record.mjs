@@ -3,7 +3,8 @@
 // output is smooth at any CPU speed. Drives requestAnimationFrame,
 // performance.now, Date.now, setTimeout/setInterval, and CSS/Web Animations.
 //
-//   node record.mjs page.html out.mp4 [--w 1080] [--h 1920] [--fps 30] [--sec 15] [--audio track.mp3]
+//   node record.mjs page.html out.mp4 [--w 1080] [--h 1920] [--fps 30] [--sec 15] [--audio track.mp3] [--from 0]
+// --from S starts the clock at S seconds, so long videos can be rendered as parallel chunks and concatenated.
 import { spawn, execSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
@@ -22,7 +23,7 @@ if (!input || !output) {
   console.error('usage: record.mjs page.html out.mp4 [--w W] [--h H] [--fps N] [--sec S] [--audio file]');
   process.exit(1);
 }
-const opt = { w: 1080, h: 1920, fps: 30, sec: 15, audio: null };
+const opt = { w: 1080, h: 1920, fps: 30, sec: 15, audio: null, from: 0 };
 for (let i = 0; i < rest.length; i += 2) {
   const k = rest[i].replace(/^--/, '');
   if (!(k in opt)) { console.error(`unknown flag --${k}`); process.exit(1); }
@@ -73,7 +74,7 @@ const ff = spawn('ffmpeg', args, { stdio: ['pipe', 'inherit', 'inherit'] });
 const done = new Promise((res, rej) => ff.on('close', (c) => (c ? rej(new Error(`ffmpeg exit ${c}`)) : res())));
 
 for (let f = 0; f < frames; f++) {
-  await page.evaluate((ms) => window.__advance(ms), f === 0 ? 0 : step);
+  await page.evaluate((ms) => window.__advance(ms), f === 0 ? opt.from * 1000 : step);
   const buf = await page.screenshot({ type: 'png' });
   if (!ff.stdin.write(buf)) await new Promise((r) => ff.stdin.once('drain', r));
   if (f % opt.fps === 0) process.stdout.write(`\r${Math.round((f / frames) * 100)}%`);

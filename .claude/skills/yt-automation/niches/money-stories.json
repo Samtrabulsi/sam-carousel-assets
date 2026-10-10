@@ -1,0 +1,66 @@
+{
+ "name": "Money stories",
+ "channel": "CashFlow Champions",
+ "queries": [
+  "how company actually makes money",
+  "the entire history of company",
+  "how company lost billions",
+  "rise and fall of company",
+  "business documentary"
+ ],
+ "candidate_template": "the entire history of {}",
+ "candidates": [
+  "Walmart",
+  "Nike",
+  "Coca-Cola",
+  "McDonald's",
+  "Apple",
+  "Amazon",
+  "Toyota",
+  "IKEA",
+  "Starbucks",
+  "Disney",
+  "Costco",
+  "Samsung",
+  "Lego",
+  "Ford",
+  "Nintendo",
+  "Red Bull",
+  "Rolex",
+  "Ferrari"
+ ],
+ "min_duration": 480,
+ "format": {
+  "length_min": 15,
+  "length_max": 20,
+  "title": "The ENTIRE History of {X} in {N} Minutes",
+  "style": "photo-led documentary: photo/year/timeline/stat/quote/compare scenes, 6-8 chapters",
+  "voice": "af_heart",
+  "speed": 0.93,
+  "music": "lofi-business-85bpm.mp3",
+  "presenter": false,
+  "brand": {
+   "name": "CASHFLOW CHAMPIONS",
+   "initial": "C",
+   "display": "CashFlow Champions"
+  },
+  "chapterLabel": "CHAPTER",
+  "thumbnail": {
+   "layout": "number",
+   "colors": {
+    "accent": "#FFB547",
+    "alert": "#FF5C6C"
+   }
+  }
+ },
+ "rpm_notes": "Business/finance advertisers; avoid defamation, cite sources for every number.",
+ "slug": "cashflow-champions",
+ "channel_url": "https://www.youtube.com/@CashFlow-Champions",
+ "notion_channel": "Money stories (CashFlow Champions)",
+ "cadence": "2 per week (Tue, Fri 15:00 UTC)",
+ "title_patterns": [
+  "How {X} Actually Makes Money",
+  "The ENTIRE History of {X} in {N} Minutes",
+  "How {X} Lost ${N} Billion"
+ ]
+}

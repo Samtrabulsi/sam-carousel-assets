@@ -1,0 +1,50 @@
+{
+ "name": "Personal finance explained",
+ "slug": "personal-finance",
+ "channel_url": null,
+ "notion_channel": "Personal finance",
+ "queries": [
+  "personal finance for beginners",
+  "how does compound interest work",
+  "how credit scores work",
+  "finance explained simply",
+  "how to invest for beginners"
+ ],
+ "candidate_template": "how {} works",
+ "candidates": [
+  "compound interest",
+  "credit score",
+  "index funds",
+  "inflation",
+  "the stock market",
+  "mortgages",
+  "credit cards",
+  "401k",
+  "roth ira",
+  "emergency fund",
+  "bonds",
+  "taxes"
+ ],
+ "min_duration": 480,
+ "format": {
+  "length_min": 15,
+  "length_max": 18,
+  "title": "How {X} Actually Works (Explained Simply)",
+  "style": "explainer with stat/timeline/compare scenes and worked examples with round numbers",
+  "voice": "af_heart",
+  "speed": 0.93,
+  "music": "lofi-business-85bpm.mp3",
+  "presenter": true,
+  "brand": {
+   "name": "MONEY EXPLAINED",
+   "initial": "$",
+   "display": "Money Explained"
+  },
+  "chapterLabel": "PART",
+  "thumbnail": {
+   "layout": "number"
+  }
+ },
+ "cadence": "start only after the first two channels run smoothly",
+ "rpm_notes": "Highest RPM, strictest scrutiny (YMYL). Education only, never advice; disclaimer in every description; numbers must be dated and sourced (rates change)."
+}

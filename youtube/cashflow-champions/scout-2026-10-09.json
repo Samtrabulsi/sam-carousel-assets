@@ -1,0 +1,515 @@
+{
+ "niche": "Money stories",
+ "date": "2026-10-09",
+ "outliers": [
+  {
+   "id": "7TWKKww-F30",
+   "title": "\"I Got Rich When I Understood This\" | Jeff Bezos",
+   "channel": "Business Motiversity",
+   "channel_id": "UCSRQ9pHE6CFqEib7rMmvgNw",
+   "view_count": 15963288,
+   "duration": 494,
+   "query": "how company actually makes money",
+   "subs": 446000,
+   "channel_median": 9600.0,
+   "outlier": 1662.8,
+   "upload_date": null
+  },
+  {
+   "id": "5JpIz7mYKUw",
+   "title": "How to Be a Billionaire | Finance Documentary",
+   "channel": "Moconomy",
+   "channel_id": "UCoOHTipX1_cNiC9seIPfUXA",
+   "view_count": 1682598,
+   "duration": 2821,
+   "query": "business documentary",
+   "subs": 1280000,
+   "channel_median": 3200,
+   "outlier": 525.8,
+   "upload_date": null
+  },
+  {
+   "id": "tKdI3kvHZJY",
+   "title": "The Economy of Tomorrow | Aging Future | Documentary Economy",
+   "channel": "Moconomy",
+   "channel_id": "UCoOHTipX1_cNiC9seIPfUXA",
+   "view_count": 1166174,
+   "duration": 4128,
+   "query": "business documentary",
+   "subs": 1280000,
+   "channel_median": 3200,
+   "outlier": 364.4,
+   "upload_date": null
+  },
+  {
+   "id": "ysqING18SxA",
+   "title": "The Rise and Fall of Black Rifle Coffee",
+   "channel": "Ryan Daniel Moran",
+   "channel_id": "UCVneetxSKb5lwa2_6c-qO8Q",
+   "view_count": 1392948,
+   "duration": 1346,
+   "query": "rise and fall of company",
+   "subs": 188000,
+   "channel_median": 8100,
+   "outlier": 172.0,
+   "upload_date": null
+  },
+  {
+   "id": "9VlvbpXwLJs",
+   "title": "30 Years of Business Knowledge in 2hrs 26mins",
+   "channel": "Simon Squibb",
+   "channel_id": "UCGznz4NfW5iymkvn1l40qyA",
+   "view_count": 17884357,
+   "duration": 8773,
+   "query": "how company actually makes money",
+   "subs": 2460000,
+   "channel_median": 119000,
+   "outlier": 150.3,
+   "upload_date": null
+  },
+  {
+   "id": "eHJnEHyyN1Y",
+   "title": "6 Tips on Being a Successful Entrepreneur | John Mullins | TED",
+   "channel": "TED",
+   "channel_id": "UCAuUUnT6oDeKwE6v1NGQxug",
+   "view_count": 5109251,
+   "duration": 920,
+   "query": "business documentary",
+   "subs": 27900000,
+   "channel_median": 96500.0,
+   "outlier": 52.9,
+   "upload_date": null
+  },
+  {
+   "id": "zmotKKgVBYM",
+   "title": "The Rothschilds - History\u2019s Richest Family Documentary",
+   "channel": "Dynastic Profiles",
+   "channel_id": "UClakdY321DmXjjieiA8Bqag",
+   "view_count": 1460923,
+   "duration": 3819,
+   "query": "business documentary",
+   "subs": 104000,
+   "channel_median": 32000,
+   "outlier": 45.7,
+   "upload_date": null
+  },
+  {
+   "id": "G_H-BoEfwjo",
+   "title": "From $42 Billion to $0 \u2013 How Anil Ambani Lost All His Money",
+   "channel": "BE AMAZED",
+   "channel_id": "UCkQO3QsgTpNTsOw6ujimT5Q",
+   "view_count": 11136405,
+   "duration": 1436,
+   "query": "how company lost billions",
+   "subs": 13500000,
+   "channel_median": 336500.0,
+   "outlier": 33.1,
+   "upload_date": null
+  },
+  {
+   "id": "zPIhMJGWiM8",
+   "title": "Capitalism and the Dutch East India Company: Crash Course World History 229",
+   "channel": "CrashCourse",
+   "channel_id": "UCX6b17PVsYBQ0ip5gyeme-Q",
+   "view_count": 2260413,
+   "duration": 940,
+   "query": "the entire history of company",
+   "subs": 17200000,
+   "channel_median": 69000.0,
+   "outlier": 32.8,
+   "upload_date": null
+  },
+  {
+   "id": "LuJxo_I1iNc",
+   "title": "Principles for Making Money",
+   "channel": "Leila Hormozi",
+   "channel_id": "UCxCcu9pet4dljrBLf8R5nwA",
+   "view_count": 1543733,
+   "duration": 1773,
+   "query": "how company actually makes money",
+   "subs": 1750000,
+   "channel_median": 97500.0,
+   "outlier": 15.8,
+   "upload_date": null
+  },
+  {
+   "id": "kJVj3vp-lho",
+   "title": "How McDonald's Really Makes Money",
+   "channel": "PolyMatter",
+   "channel_id": "UCgNg3vwj3xt7QOrcIDaHdFg",
+   "view_count": 3976929,
+   "duration": 547,
+   "query": "how company actually makes money",
+   "subs": 1930000,
+   "channel_median": 285500.0,
+   "outlier": 13.9,
+   "upload_date": null
+  },
+  {
+   "id": "5jjdErDkDZE",
+   "title": "J.P. Morgan Documentary: How One Man Financed America",
+   "channel": "Business Casual",
+   "channel_id": "UC_E4px0RST-qFwXLJWBav8Q",
+   "view_count": 5296813,
+   "duration": 2422,
+   "query": "business documentary",
+   "subs": 1150000,
+   "channel_median": 411500.0,
+   "outlier": 12.9,
+   "upload_date": null
+  },
+  {
+   "id": "uzGULZhhYKo",
+   "title": "Vans - The Rise and Fall...And Rise Again",
+   "channel": "Company Man",
+   "channel_id": "UCQMyhrt92_8XM0KgZH6VnRg",
+   "view_count": 1871820,
+   "duration": 632,
+   "query": "rise and fall of company",
+   "subs": 1800000,
+   "channel_median": 156500.0,
+   "outlier": 12.0,
+   "upload_date": null
+  },
+  {
+   "id": "X2LwIiKhczo",
+   "title": "The Spectacular Rise and Fall of WeWork",
+   "channel": "Bloomberg Originals",
+   "channel_id": "UCUMZ7gohGI9HcU9VNsr2FJQ",
+   "view_count": 4200932,
+   "duration": 809,
+   "query": "rise and fall of company",
+   "subs": 5170000,
+   "channel_median": 412000.0,
+   "outlier": 10.2,
+   "upload_date": null
+  },
+  {
+   "id": "0O9okfu1hm8",
+   "title": "From $10 Billion To Nothing: How Wish.com Lost Everything",
+   "channel": "Logically Answered",
+   "channel_id": "UCZRoNJu1OszFqABP8AuJIuw",
+   "view_count": 1916252,
+   "duration": 1033,
+   "query": "how company lost billions",
+   "subs": 928000,
+   "channel_median": 223000.0,
+   "outlier": 8.6,
+   "upload_date": null
+  },
+  {
+   "id": "35ExeVMzuqk",
+   "title": "$1 Billion To Forgotten: How Dollar Shave Club Lost Everything",
+   "channel": "Logically Answered",
+   "channel_id": "UCZRoNJu1OszFqABP8AuJIuw",
+   "view_count": 1441775,
+   "duration": 932,
+   "query": "how company lost billions",
+   "subs": 928000,
+   "channel_median": 223000.0,
+   "outlier": 6.5,
+   "upload_date": null
+  },
+  {
+   "id": "cndVRiZ9Pdc",
+   "title": "How India's Day Retail Traders Lost Billions",
+   "channel": "Bloomberg Originals",
+   "channel_id": "UCUMZ7gohGI9HcU9VNsr2FJQ",
+   "view_count": 2114303,
+   "duration": 688,
+   "query": "how company lost billions",
+   "subs": 5170000,
+   "channel_median": 412000.0,
+   "outlier": 5.1,
+   "upload_date": null
+  },
+  {
+   "id": "SC2eSujzrUY",
+   "title": "How this substance ended up in all our blood",
+   "channel": "Veritasium",
+   "channel_id": "UCHnyfMqiRRG1u-2MsSQLbXA",
+   "view_count": 37020724,
+   "duration": 3248,
+   "query": "the entire history of company",
+   "subs": 21300000,
+   "channel_median": 9700000,
+   "outlier": 3.8,
+   "upload_date": null
+  },
+  {
+   "id": "aatEQRJK6ms",
+   "title": "The Business Strategies Behind McDonald\u2019s, Aldi, 7-Eleven and More | WSJ The Economics Of",
+   "channel": "The Wall Street Journal",
+   "channel_id": "UCK7tptUDHh-RYDsdxO1-5QQ",
+   "view_count": 1668061,
+   "duration": 3748,
+   "query": "business documentary",
+   "subs": 6710000,
+   "channel_median": 442000,
+   "outlier": 3.8,
+   "upload_date": null
+  },
+  {
+   "id": "coIn8DopwY0",
+   "title": "What Was the Biggest Company in History? - $7.9 Trillion!",
+   "channel": "ColdFusion",
+   "channel_id": "UC4QZ_LsYcvcq7qOsOhpAX4A",
+   "view_count": 2716134,
+   "duration": 632,
+   "query": "the entire history of company",
+   "subs": 5250000,
+   "channel_median": 842000.0,
+   "outlier": 3.2,
+   "upload_date": null
+  }
+ ],
+ "phrases": {
+  "the entire story of limbus company": "the entire history of company",
+  "the entire history of the world's richest company voc": "the entire history of company",
+  "rise and fall of company": "rise and fall of company",
+  "rise and fall of east india company": "rise and fall of company",
+  "rise and fall of white motor company": "rise and fall of company",
+  "rise and fall of dutch east india company": "rise and fall of company",
+  "rise and fall of a small film company": "rise and fall of company",
+  "business documentary": "business documentary",
+  "business documentary 2025": "business documentary",
+  "business documentary real stories": "business documentary",
+  "business documentary movies": "business documentary",
+  "business documentary india": "business documentary",
+  "business documentary channel": "business documentary",
+  "business documentary video": "business documentary",
+  "business documentary background music": "business documentary",
+  "business documentary hindi": "business documentary",
+  "business documentary netflix": "business documentary"
+ },
+ "candidates": [
+  {
+   "topic": "Rolex",
+   "query": "the entire history of Rolex",
+   "top_views": 5533193,
+   "videos_100k_plus": 3,
+   "autocomplete": [
+    "history of rolex",
+    "history of rolex submariner",
+    "history of rolex explorer",
+    "history of rolex daytona"
+   ],
+   "opportunity": 7.5
+  },
+  {
+   "topic": "Walmart",
+   "query": "the entire history of Walmart",
+   "top_views": 2554923,
+   "videos_100k_plus": 3,
+   "autocomplete": [
+    "history of walmart",
+    "dark history of walmart",
+    "the true history of walmart"
+   ],
+   "opportunity": 6.5
+  },
+  {
+   "topic": "Nike",
+   "query": "the entire history of Nike",
+   "top_views": 5611449,
+   "videos_100k_plus": 4,
+   "autocomplete": [
+    "history of nike",
+    "history of nike dunk",
+    "history of nike cortez",
+    "history of nike sb"
+   ],
+   "opportunity": 6.0
+  },
+  {
+   "topic": "Toyota",
+   "query": "the entire history of Toyota",
+   "top_views": 6761444,
+   "videos_100k_plus": 4,
+   "autocomplete": [
+    "history of toyota",
+    "history of toyota tacoma",
+    "history of toyota corolla",
+    "history of toyota land cruiser"
+   ],
+   "opportunity": 6.0
+  },
+  {
+   "topic": "IKEA",
+   "query": "the entire history of IKEA",
+   "top_views": 4701390,
+   "videos_100k_plus": 3,
+   "autocomplete": [
+    "history of ikea",
+    "history of ikea company"
+   ],
+   "opportunity": 6.0
+  },
+  {
+   "topic": "Nintendo",
+   "query": "the entire history of Nintendo",
+   "top_views": 13145139,
+   "videos_100k_plus": 4,
+   "autocomplete": [
+    "history of nintendo",
+    "history of nintendo consoles",
+    "history of nintendo handhelds",
+    "history of nintendo song"
+   ],
+   "opportunity": 6.0
+  },
+  {
+   "topic": "Apple",
+   "query": "the entire history of Apple",
+   "top_views": 4946842,
+   "videos_100k_plus": 5,
+   "autocomplete": [
+    "history of apple pie",
+    "history of apple products",
+    "history of apple watch",
+    "history of apple cider"
+   ],
+   "opportunity": 5.0
+  },
+  {
+   "topic": "Starbucks",
+   "query": "the entire history of Starbucks",
+   "top_views": 970946,
+   "videos_100k_plus": 3,
+   "autocomplete": [
+    "history of starbucks",
+    "history of starbucks logo",
+    "history of starbucks coffee",
+    "history of starbucks in hindi"
+   ],
+   "opportunity": 4.9
+  },
+  {
+   "topic": "Coca-Cola",
+   "query": "the entire history of Coca-Cola",
+   "top_views": 7643582,
+   "videos_100k_plus": 6,
+   "autocomplete": [
+    "history of coca-cola",
+    "history of coca-cola company",
+    "history of coca cola documentary",
+    "history of coca cola santa claus"
+   ],
+   "opportunity": 4.3
+  },
+  {
+   "topic": "McDonald's",
+   "query": "the entire history of McDonald's",
+   "top_views": 55219863,
+   "videos_100k_plus": 6,
+   "autocomplete": [
+    "history of mcdonald's",
+    "history of mcdonald's 1938-today",
+    "history of mcdonald's mascots",
+    "history of mcdonald's menu"
+   ],
+   "opportunity": 4.3
+  },
+  {
+   "topic": "Samsung",
+   "query": "the entire history of Samsung",
+   "top_views": 7477981,
+   "videos_100k_plus": 6,
+   "autocomplete": [
+    "history of samsung",
+    "history of samsung galaxy",
+    "history of samsung phones",
+    "history of samsung startup and shutdown"
+   ],
+   "opportunity": 4.3
+  },
+  {
+   "topic": "Ford",
+   "query": "the entire history of Ford",
+   "top_views": 5479647,
+   "videos_100k_plus": 6,
+   "autocomplete": [
+    "history of ford",
+    "history of ford motor company",
+    "history of ford trucks",
+    "history of ford mustang"
+   ],
+   "opportunity": 4.3
+  },
+  {
+   "topic": "Amazon",
+   "query": "the entire history of Amazon",
+   "top_views": 43511499,
+   "videos_100k_plus": 8,
+   "autocomplete": [
+    "history of amazon",
+    "history of amazon company",
+    "history of amazon rainforest",
+    "history of amazon forest"
+   ],
+   "opportunity": 3.3
+  },
+  {
+   "topic": "Lego",
+   "query": "the entire history of Lego",
+   "top_views": 78398951,
+   "videos_100k_plus": 8,
+   "autocomplete": [
+    "history of lego",
+    "history of lego star wars",
+    "history of lego games",
+    "history of lego castle"
+   ],
+   "opportunity": 3.3
+  },
+  {
+   "topic": "Ferrari",
+   "query": "the entire history of Ferrari",
+   "top_views": 988924,
+   "videos_100k_plus": 5,
+   "autocomplete": [
+    "history of ferrari",
+    "history of ferrari f1",
+    "history of ferrari cars",
+    "history of ferrari and lamborghini"
+   ],
+   "opportunity": 3.3
+  },
+  {
+   "topic": "Costco",
+   "query": "the entire history of Costco",
+   "top_views": 5236913,
+   "videos_100k_plus": 6,
+   "autocomplete": [
+    "history of costco"
+   ],
+   "opportunity": 3.1
+  },
+  {
+   "topic": "Red Bull",
+   "query": "the entire history of Red Bull",
+   "top_views": 9811688,
+   "videos_100k_plus": 8,
+   "autocomplete": [
+    "history of red bull",
+    "history of red bull f1",
+    "history of red bull racing",
+    "history of red bull rampage"
+   ],
+   "opportunity": 3.1
+  },
+  {
+   "topic": "Disney",
+   "query": "the entire history of Disney",
+   "top_views": 27146728,
+   "videos_100k_plus": 9,
+   "autocomplete": [
+    "history of disneyland",
+    "history of disney",
+    "history of disney world",
+    "history of disney channel"
+   ],
+   "opportunity": 3.0
+  }
+ ]
+}
