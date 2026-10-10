@@ -56,35 +56,40 @@ def need(var, why):
 
 
 # ---------------------------------------------------------------- speed
-def cmd_speed(a):
+def psi(url, strat, ts=""):
+    """One PageSpeed Insights run -> (row, scores, [(saving_ms, title)]). Raises HTTPError."""
     key = os.environ.get("PSI_API_KEY")
-    if not key:
+    qs = urllib.parse.urlencode({"url": url, "strategy": strat}) + "".join(f"&category={c}" for c in ("performance", "seo", "accessibility", "best-practices"))
+    if key:
+        qs += f"&key={key}"
+    d = jget("https://www.googleapis.com/pagespeedonline/v5/runPagespeed?" + qs, timeout=150)
+    lh = d["lighthouseResult"]; au = lh["audits"]
+    scores = {k: round(v["score"] * 100) for k, v in lh["categories"].items() if v.get("score") is not None}
+    field = {k: v.get("category") for k, v in d.get("loadingExperience", {}).get("metrics", {}).items()}
+    row = {"time": ts, "strategy": strat, **{f"score_{k}": v for k, v in scores.items()},
+           "LCP": au["largest-contentful-paint"]["displayValue"], "CLS": au["cumulative-layout-shift"]["displayValue"],
+           "TBT": au["total-blocking-time"]["displayValue"], "FCP": au["first-contentful-paint"]["displayValue"],
+           "field_LCP": field.get("LARGEST_CONTENTFUL_PAINT_MS", "n/a"), "field_INP": field.get("INTERACTION_TO_NEXT_PAINT", "n/a"),
+           "field_CLS": field.get("CUMULATIVE_LAYOUT_SHIFT_SCORE", "n/a")}
+    opps = sorted(((v.get("details", {}).get("overallSavingsMs", 0), v["title"]) for v in au.values()
+                   if v.get("details", {}).get("overallSavingsMs")), reverse=True)[:5]
+    return row, scores, opps
+
+
+def cmd_speed(a):
+    if not os.environ.get("PSI_API_KEY"):
         need("PSI_API_KEY", "PageSpeed's shared keyless quota is usually exhausted")
     out, ts = [], dt.datetime.now().strftime("%Y-%m-%d %H:%M")
     for strat in (["mobile", "desktop"] if a.strategy == "both" else [a.strategy]):
-        q = {"url": a.url, "strategy": strat}
-        qs = urllib.parse.urlencode(q) + "".join(f"&category={c}" for c in ("performance", "seo", "accessibility", "best-practices"))
-        if key:
-            qs += f"&key={key}"
         try:
-            d = jget("https://www.googleapis.com/pagespeedonline/v5/runPagespeed?" + qs, timeout=150)
+            row, scores, opps = psi(a.url, strat, ts)
         except urllib.error.HTTPError as e:
             print(f"{strat}: PageSpeed error {e.code}: {e.read().decode()[:160]}")
             continue
-        lh = d["lighthouseResult"]; au = lh["audits"]
-        scores = {k: round(v["score"] * 100) for k, v in lh["categories"].items() if v.get("score") is not None}
-        field = {k: v.get("category") for k, v in d.get("loadingExperience", {}).get("metrics", {}).items()}
-        row = {"time": ts, "strategy": strat, **{f"score_{k}": v for k, v in scores.items()},
-               "LCP": au["largest-contentful-paint"]["displayValue"], "CLS": au["cumulative-layout-shift"]["displayValue"],
-               "TBT": au["total-blocking-time"]["displayValue"], "FCP": au["first-contentful-paint"]["displayValue"],
-               "field_LCP": field.get("LARGEST_CONTENTFUL_PAINT_MS", "n/a"), "field_INP": field.get("INTERACTION_TO_NEXT_PAINT", "n/a"),
-               "field_CLS": field.get("CUMULATIVE_LAYOUT_SHIFT_SCORE", "n/a")}
         out.append(row)
         print(f"\n{strat.upper()}: " + ", ".join(f"{k} {v}" for k, v in scores.items()))
         print(f"  lab: LCP {row['LCP']} | CLS {row['CLS']} | TBT {row['TBT']} | FCP {row['FCP']}")
         print(f"  real users (CrUX): LCP {row['field_LCP']} | INP {row['field_INP']} | CLS {row['field_CLS']}")
-        opps = sorted(((v.get("details", {}).get("overallSavingsMs", 0), v["title"]) for v in au.values()
-                       if v.get("details", {}).get("overallSavingsMs")), reverse=True)[:5]
         for ms, t in opps:
             print(f"  fix: {t} (~{ms/1000:.1f}s)")
     if out:
@@ -115,20 +120,21 @@ def suggest(q, lang, country, source):
         return []
 
 
-def cmd_keywords(a):
-    seeds = [a.seed]
-    seeds += [f"{a.seed} {m}" for m in MODS[a.lang]] + [f"{m} {a.seed}" for m in MODS[a.lang][:5]]
-    if a.deep and a.lang == "en":
-        seeds += [f"{a.seed} {c}" for c in "abcdefghijklmnopqrstuvwxyz"]
+def keyword_ideas(seed, lang="en", country="lb", deep=False):
+    """Autocomplete keyword ideas from Google, YouTube and Bing, scored and intent-tagged."""
+    seeds = [seed]
+    seeds += [f"{seed} {m}" for m in MODS[lang]] + [f"{m} {seed}" for m in MODS[lang][:5]]
+    if deep and lang == "en":
+        seeds += [f"{seed} {c}" for c in "abcdefghijklmnopqrstuvwxyz"]
     found = {}
     for s in seeds:
         for src in ("google", "youtube", "bing"):
-            for kw in suggest(s, a.lang, a.country, src):
+            for kw in suggest(s, lang, country, src):
                 k = kw.strip().lower()
                 f = found.setdefault(k, {"keyword": k, "google": 0, "youtube": 0, "bing": 0, "seed": s})
                 f[src] += 1
         time.sleep(0.15)
-    rows = sorted(found.values(), key=lambda r: (-(r["google"] + r["youtube"] + r["bing"]), r["keyword"]))
+    rows = list(found.values())
     for r in rows:
         q = r["keyword"]
         r["intent"] = ("commercial" if re.search(r"price|cost|agency|company|hire|best|services?|سعر|اسعار|أسعار|شركة|شركات|أفضل|افضل|كم", q) else
@@ -136,6 +142,11 @@ def cmd_keywords(a):
                        "local" if re.search(r"near me|lebanon|beirut|dubai|لبنان|بيروت", q) else "info")
         r["score"] = r["google"] * 2 + r["youtube"] + r["bing"]
     rows.sort(key=lambda r: (-r["score"], r["keyword"]))
+    return rows
+
+
+def cmd_keywords(a):
+    rows = keyword_ideas(a.seed, a.lang, a.country, a.deep)
     p = os.path.join(DATA, "keywords", re.sub(r"\W+", "-", a.seed)[:40] + f"_{a.lang}-{a.country}.csv")
     os.makedirs(os.path.dirname(p), exist_ok=True)
     write_csv(p, rows)
