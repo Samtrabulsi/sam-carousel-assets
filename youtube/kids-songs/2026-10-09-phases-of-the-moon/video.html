@@ -111,8 +111,27 @@ function poseAt(t) {
   return { pose: i % 2 ? 'sing' : 'open', since: l.start - 0.25 };
 }
 
+// Tamara's stage: a light card behind the photo puppet (hides the light fringe around her hair, frames her)
+function stageCard(t) {
+  const x = 60, y = 96, w = 720, h = 960, r = 44;
+  c.save();
+  c.shadowColor = 'rgba(0,0,0,0.35)'; c.shadowBlur = 40; c.shadowOffsetY = 12;
+  const g = c.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, '#FFF7EC'); g.addColorStop(0.65, '#FDEBF3'); g.addColorStop(1, '#F3E3FA');
+  c.fillStyle = g; c.beginPath(); c.roundRect(x, y, w, h, r); c.fill();
+  c.shadowColor = 'transparent';
+  c.save(); c.beginPath(); c.roundRect(x, y, w, h, r); c.clip();
+  const sp = c.createRadialGradient(430, 520, 40, 430, 520, 520); sp.addColorStop(0, 'rgba(255,255,255,0.75)'); sp.addColorStop(1, 'rgba(255,255,255,0)');
+  c.fillStyle = sp; c.fillRect(x, y, w, h); // soft spotlight
+  c.fillStyle = 'rgba(214,188,236,0.45)'; c.beginPath(); c.ellipse(430, y + h + 40, 420, 120, 0, 0, Math.PI * 2); c.fill(); // floor
+  for (let i = 0; i < 14; i++) { const sx = x + 40 + rand(i + 300) * (w - 80), sy = y + 40 + rand(i + 400) * (h * 0.55);
+    c.fillStyle = ['#FFD43B', '#FF8FB8', '#9AD7FF'][i % 3]; c.globalAlpha = 0.35 + 0.25 * Math.sin(t * 1.5 + i); star(sx, sy, 7 + (i % 3) * 3); }
+  c.restore();
+  c.globalAlpha = 1; c.strokeStyle = 'rgba(255,255,255,0.9)'; c.lineWidth = 6; c.beginPath(); c.roundRect(x, y, w, h, r); c.stroke();
+  c.restore();
+}
+
 // photo puppet choreography: real pose names from characters/<name>/poses.json
-const DANCE = ['dance1', 'dance2', 'dance5', 'dance3', 'dance6', 'jump', 'dance4', 'dance7', 'dance8'];
+const DANCE = ['dance1', 'dance2', 'dance5', 'dance3', 'dance6', 'dance4', 'dance7', 'dance8']; // 'jump' removed (Sam: looked too small)
 function photoPoseAt(t) {
   const l = lineAt(t), custom = VIS.photoPose && VIS.photoPose(t, l); if (custom) return custom;
   if (t < LINES[0].start - 0.3) return t < 2.6 ? { pose: 'book', since: 0 } : { pose: 'hello', since: 2.6 };
@@ -132,7 +151,8 @@ function draw(t) {
   VIS.draw(c, t, { lineAt, beatAt, ease, FONT, LINES, WORDS, titleOn: t < LINES[0].start - 0.3 });
   const p = poseAt(t);
   const mouth = tamaraMouth(WORDS, t);
-  if (S.host === 'photo') { // her real picture as a puppet (tamara-photo.js)
+  if (S.host === 'photo') {
+    stageCard(t); // her real picture as a puppet (tamara-photo.js)
     c.save(); c.translate(430, 1035); c.scale(0.59, 0.59);
     const q = photoPoseAt(t), prev = photoPoseAt(q.since - 0.02), k = ease((t - q.since) / 0.6);
     const on = !!q.dance, was = !!prev.dance;
