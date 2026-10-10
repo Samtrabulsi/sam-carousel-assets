@@ -41,3 +41,8 @@ publisher/.render_cache/
 
 # Local backups
 *.backup-*
+
+# Secrets: never commit credentials
+*service_account*.json
+client_secrets*.json
+.env

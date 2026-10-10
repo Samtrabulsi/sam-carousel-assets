@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "geo-optimizer": {
+      "command": "uvx",
+      "args": ["--from", "geo-optimizer-skill[mcp]", "--with", "mcp<2", "geo-mcp"]
+    }
+  }
+}

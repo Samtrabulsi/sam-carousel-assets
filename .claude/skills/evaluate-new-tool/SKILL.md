@@ -51,6 +51,11 @@ Check this list first. If the tool is here, give the recorded verdict in a few l
 | synctoon (Automate-Animation) | 2026-10-09 | Skip | GPL-3, needs paid ElevenLabs, known A/V drift bugs. |
 | yt-dlp / YouTube autocomplete / Openverse / Pexels API / YouTube Data + Analytics API | 2026-10-09 | In use (yt-* skills) | Free replacements for vidIQ research, stock photos and uploading. yt-dlp search + channel lists work from cloud; full video pages hit YouTube's bot check (use the Data API key for dates). Unaudited API projects upload as private only. TubeGen-style pipeline rebuilt in-house: yt-scout → yt-script → yt-produce → yt-thumbnail → yt-publish → yt-analytics, run by yt-automation. |
 | Open Generative AI (Anil-matcha/Open-Generative-AI; forks like "Open-Higgsfield-AI") | 2026-10-10 | Skip | MIT front-end for 600+ image/video models, but cloud generations bill per use through MuAPI (prepaid credits); the app is the funnel (MuAPI white-label from $49/mo). Truly free only with local models: images via bundled sd.cpp, video via Wan2GP on an NVIDIA/AMD GPU (480p, slow). Markets "no content filters"; desktop app not Apple-notarized. Same models are already in Runway. Forks shown in Reels are stale copies; check upstream. |
+| GEO Optimizer (Auriti-Labs/geo-optimizer-skill) | 2026-10-10 | Installed + MCP live | `geo-optimizer` skill + `site_spam_scan.py`; MCP in `.mcp.json` (needs `--with mcp<2`). Free, no key. Found the growsuccessonline.com hack. |
+| Google Search Console MCP (AminForou/mcp-gsc) | 2026-10-10 | Installed, needs credential | `gsc-mcp` setup + 4 `gsc-*` skills. Service-account JSON as env secret. |
+| OpenSEO (every-app/open-seo) | 2026-10-10 | Installed, needs account | `openseo` setup + 12 `openseo-*` skills. DataForSEO pay-per-use; hosted adds 28%. |
+| MiniMax H3 / Hailuo 3.0 | 2026-10-10 | Use via Runway | Open weights since 2026-08-03 (33B, community license, application needed in US/EU/UK/KR, 768p locally, no 2K module); impractical to self-host. In Runway as `hailuo-3` / `h3-max`. |
+| MuAPI (muapi.ai, Vadoo, Bangalore) | 2026-10-10 | Skip | 765-model reseller API, prepaid credits; white-label studio $49/$149/$499/mo + per-generation cost, your own Stripe. No independent reviews; unofficial Midjourney access; "spicy" models. |
 
 ## Guardrails
 
