@@ -151,11 +151,14 @@ def gsc_token():
     if not raw and not (path and os.path.exists(path)):
         need("GSC_CREDENTIALS_PATH or GSC_SA_JSON", "rank tracking reads your real Google positions from Search Console")
         return None
+    lib = os.path.expanduser("~/.cache/seodata-pylib")
+    sys.path.insert(0, lib)
     try:
         from google.oauth2 import service_account
         from google.auth.transport.requests import Request
     except ImportError:
-        os.system(f"{sys.executable} -m pip install -q --user google-auth requests >/dev/null 2>&1")
+        os.system(f"{sys.executable} -m pip install -q --target {lib} google-auth requests >/dev/null 2>&1")
+        import importlib; importlib.invalidate_caches()
         from google.oauth2 import service_account
         from google.auth.transport.requests import Request
     info = json.loads(raw) if raw else json.load(open(path))
@@ -181,8 +184,16 @@ def cmd_ranks(a):
     cur_s = end - dt.timedelta(days=a.days - 1)
     prev_e = cur_s - dt.timedelta(days=1)
     prev_s = prev_e - dt.timedelta(days=a.days - 1)
-    cur = {r["keys"][0]: r for r in gsc_query(tok, a.site, str(cur_s), str(end), ["query"], a.country)}
-    prev = {r["keys"][0]: r for r in gsc_query(tok, a.site, str(prev_s), str(prev_e), ["query"], a.country)}
+    try:
+        cur = {r["keys"][0]: r for r in gsc_query(tok, a.site, str(cur_s), str(end), ["query"], a.country)}
+        prev = {r["keys"][0]: r for r in gsc_query(tok, a.site, str(prev_s), str(prev_e), ["query"], a.country)}
+    except urllib.error.HTTPError as e:
+        sites = jget("https://www.googleapis.com/webmasters/v3/sites", headers={"Authorization": f"Bearer {tok}"}).get("siteEntry", [])
+        print(f"Search Console refused '{a.site}' (HTTP {e.code}). Properties this service account can read: "
+              + (", ".join(x["siteUrl"] for x in sites) or "NONE"))
+        print("Fix: Search Console > Settings > Users and permissions > Add user > the service account's client_email "
+              "(Restricted is enough), on the exact property (sc-domain:site.com or https://site.com/).")
+        return
     rows = []
     for q, r in cur.items():
         p = prev.get(q)
