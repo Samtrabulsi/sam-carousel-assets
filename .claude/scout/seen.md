@@ -16,3 +16,8 @@ major new release appears. Full reviews live in `.claude/skills/evaluate-new-too
 - DanielSWolf/rhubarb-lip-sync | saved as skill | 2026-10-09
 - JohnHeibel/ClaudeAnimationBase | approach adopted | 2026-10-09
 - Automate-Animation/synctoon | skip | 2026-10-09
+- metricool/mcp-metricool | test once | 2026-10-11
+- AgriciDaniel/claude-seo | test once | 2026-10-11
+- pipeboard-co/meta-ads-mcp | skip (BSL, hosted token) | 2026-10-11
+- Asif2BD/WordPress-Publishing-Skill-for-Claude | skip (GPL-3, password on CLI) | 2026-10-11
+- marcolang/Marketing-Skills | skip (no license, duplicates ig-carousel) | 2026-10-11
