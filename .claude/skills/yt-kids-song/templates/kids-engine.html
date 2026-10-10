@@ -111,22 +111,22 @@ function poseAt(t) {
   return { pose: i % 2 ? 'sing' : 'open', since: l.start - 0.25 };
 }
 
-// Tamara's stage: a light card behind the photo puppet (hides the light fringe around her hair, frames her)
-function stageCard(t) {
-  const x = 60, y = 96, w = 720, h = 960, r = 44;
+// Tamara's stage: soft moonlight around her (no frame, no edges): a glow behind her that fades into the sky,
+// a pool of light at her feet and a few sparkles drifting up. Sam rejected a framed card as "cheap".
+function stageGlow(t) {
   c.save();
-  c.shadowColor = 'rgba(0,0,0,0.35)'; c.shadowBlur = 40; c.shadowOffsetY = 12;
-  const g = c.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, '#FFF7EC'); g.addColorStop(0.65, '#FDEBF3'); g.addColorStop(1, '#F3E3FA');
-  c.fillStyle = g; c.beginPath(); c.roundRect(x, y, w, h, r); c.fill();
-  c.shadowColor = 'transparent';
-  c.save(); c.beginPath(); c.roundRect(x, y, w, h, r); c.clip();
-  const sp = c.createRadialGradient(430, 520, 40, 430, 520, 520); sp.addColorStop(0, 'rgba(255,255,255,0.75)'); sp.addColorStop(1, 'rgba(255,255,255,0)');
-  c.fillStyle = sp; c.fillRect(x, y, w, h); // soft spotlight
-  c.fillStyle = 'rgba(214,188,236,0.45)'; c.beginPath(); c.ellipse(430, y + h + 40, 420, 120, 0, 0, Math.PI * 2); c.fill(); // floor
-  for (let i = 0; i < 14; i++) { const sx = x + 40 + rand(i + 300) * (w - 80), sy = y + 40 + rand(i + 400) * (h * 0.55);
-    c.fillStyle = ['#FFD43B', '#FF8FB8', '#9AD7FF'][i % 3]; c.globalAlpha = 0.35 + 0.25 * Math.sin(t * 1.5 + i); star(sx, sy, 7 + (i % 3) * 3); }
-  c.restore();
-  c.globalAlpha = 1; c.strokeStyle = 'rgba(255,255,255,0.9)'; c.lineWidth = 6; c.beginPath(); c.roundRect(x, y, w, h, r); c.stroke();
+  const pulse = 1 + 0.03 * Math.sin(t * 0.9);
+  let g = c.createRadialGradient(430, 470, 30, 430, 520, 560 * pulse);
+  g.addColorStop(0, 'rgba(255,236,214,0.30)'); g.addColorStop(0.35, 'rgba(196,182,255,0.18)'); g.addColorStop(1, 'rgba(120,110,220,0)');
+  c.fillStyle = g; c.fillRect(0, 0, 1000, 1080);
+  g = c.createRadialGradient(430, 1035, 10, 430, 1035, 330);
+  g.addColorStop(0, 'rgba(255,240,220,0.42)'); g.addColorStop(0.5, 'rgba(210,195,255,0.16)'); g.addColorStop(1, 'rgba(210,195,255,0)');
+  c.save(); c.translate(430, 1035); c.scale(1, 0.2); c.translate(-430, -1035); c.fillStyle = g; c.beginPath(); c.arc(430, 1035, 330, 0, Math.PI * 2); c.fill(); c.restore();
+  for (let i = 0; i < 12; i++) { // sparkles drifting up around her
+    const ph = (t * 0.06 + rand(i + 700)) % 1, x = 430 + (rand(i + 710) - 0.5) * 620 + Math.sin(t * 0.7 + i) * 14, y = 1040 - ph * 900;
+    c.globalAlpha = Math.sin(ph * Math.PI) * (0.45 + 0.35 * Math.sin(t * 3 + i)); c.fillStyle = i % 3 ? '#FFF3D6' : '#E8DEFF';
+    star(x, y, 3 + (i % 3) * 2);
+  }
   c.restore();
 }
 
@@ -152,7 +152,7 @@ function draw(t) {
   const p = poseAt(t);
   const mouth = tamaraMouth(WORDS, t);
   if (S.host === 'photo') {
-    stageCard(t); // her real picture as a puppet (tamara-photo.js)
+    stageGlow(t); // her real picture as a puppet (tamara-photo.js)
     c.save(); c.translate(430, 1035); c.scale(0.59, 0.59);
     const q = photoPoseAt(t), prev = photoPoseAt(q.since - 0.02), k = ease((t - q.since) / 0.6);
     const on = !!q.dance, was = !!prev.dance;

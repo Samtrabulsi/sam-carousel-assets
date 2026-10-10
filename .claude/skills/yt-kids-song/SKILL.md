@@ -47,7 +47,7 @@ Poses: `youtube/kids-songs/characters/tamara/` holds Sam's pictures (sing, point
 - `sing2` + `sing2-mid` / `sing2-open` / `sing2-eyes`: the same picture with a half-open mouth, open mouth and closed eyes. Default pose for sung lines: real lip sync (mouth area blended between the three by the sung words) and real blinks.
 - gestures: `book`, `hello`, `point` (up), `pointL`, `pointR`, `shrug`, `think`, `count`, `thumbs`, `cheer`, `clap`, `wave`, `sleep`
 - dance flipbook: `dance1`–`dance8` (from Sam's dance sheet; `jump` is not used, Sam said it looked too small); in choruses and instrumental gaps the engine switches to the next move every 2 beats.
-- Tamara stands on a light rounded card (`stageCard()` in the engine, left side): it hides the light fringe around her hair on the dark sky. Keep it for photo-puppet videos.
+- Stage: soft moonlight glow + light pool + drifting sparkles behind her (`stageGlow()`); Sam rejected a framed card as cheap. Cutouts get `fix_edges.py` (edge pixels take the colour of the hair next to them) so no light fringe shows on the dark sky; pictures cut from a sheet on white may also need the grey rim peeled.
 - Choreography: `photoPoseAt()` in the engine (intro book → hello, sung lines sing2, choruses dance, ending hello → sleep) plus the song's `VIS.photoPose(t, line)` for gestures on matching lyrics (e.g. pointR at the moon on each phase name, then back to sing2).
 - New pose: `add_pose.py <character-dir> <name> <picture>` (cutout, depth map, estimated landmarks). For lip sync/blinks on a new base pose, Sam makes the same picture with mouth half-open, open, and eyes closed; add `variants`, `mouthMask`, `eyeMasks` to poses.json.
    - No photos of real children, no real people.
